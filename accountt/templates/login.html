@@ -1,0 +1,74 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+
+</head>
+
+<body>
+    <!-- header with login and waves start  -->
+    <div class="header">
+        <!-- contents before waves -->
+        <div id="login" >
+            <div class="container">
+                <div id="login-row" class="row justify-content-center align-items-center">
+                    <div id="login-column" class="col-md-4">
+                        <div id="login-box" class="col-md-12">
+                            <form class="form-inline" id="login-form"  method="post">
+                                {% csrf_token %}
+                                <p class="text-right text-info"> اگر در نانوی شاپ حساب دارید وارد شوید : </p>
+                                <label for="phone" class="text-info mt-3">شماره تلفن همراه :</label><br>
+                                <div class="input-group form-group">
+                                    <input type="text" name='phone_number' id="phone" class="form-control" placeholder="شماره تلفن همراه">
+                                    <div class="input-group-prepend ">
+                                        <input type="submit" name="submit" class="btn btn-info btn-md " value="ادامه">
+                                    </div>
+                                </div>
+    
+                            </form>
+                            <div id="register-link" class="text-right">
+                                <a href="#" class="text-info ">هنوز ثبت نام نکردی ؟ </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- waves start  -->
+        <div style="margin-top:80px;">
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                <defs>
+                    <path id="gentle-wave"
+                        d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                </defs>
+                <g class="parallax">
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+                </g>
+            </svg>
+        </div>
+        <!-- waves end -->
+
+      
+    </div>
+    <!-- header  ends  -->
+    <div class="content flex">
+        <p>نانوایی انلاین  </p>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,38 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+{% for bread in breads %}
+<section>
+   <div class="container">
+      <div class="row">
+            <div class="col-6">
+               <img src="{{bread.image.url}}" alt="">
+            </div>
+            <div class="col-6" style='padding-top:55px'>
+               <h1>نام محصول :<span style='font-size:30'>{{bread.title}}</span></h1>
+               <h4>توضیحات :</h4>
+               <p> 
+                  {{bread.description}} 
+               </p>
+                  
+                  <form method='post'>
+                     تعداد: <input type="number" class="form-control" value="1" min="1" max="15">
+                     <br>
+                     <p>نوع  دریافت نان :</p>
+                     پیک <input type="radio" name="delivery" value="pake" checked>
+                     حضوری<input type="radio" name="delivery" value="Presence">
+                     <h1 style='text-align: left;margin-top:20px;'><span style='font-size:30;color:red'>{{bread.price|intcomma:False}}</span>تومان</h1>
+                     <button class="btn btn-primary w-100 " style="float:left;margin-top:20px">اضافه به سبد خرید</button>
+                  </form>
+            </div>
+
+      </div>
+   </div>
+
+</section>
+{% endfor %}
+{% endblock  %}
+
+
