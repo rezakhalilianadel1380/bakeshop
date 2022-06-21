@@ -1,0 +1,63 @@
+{% extends 'base_login/main_layout.html' %}
+{% load static %}
+
+    
+{% block content %}
+<div id="login" >
+    <div class="container">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-4">
+                <div id="login-box" class="col-md-12 h-75">
+                    <form class="form-inline" id="login-form"  method="post">
+                        {% csrf_token %}
+                        <p class="text-right text-info">فرم ثبت نام </p>
+
+                        <div class="form-group">
+                            <label for="name" class="text-info mt-2">نام :</label><br>
+                            {{form.name}}                                       
+                        </div>
+                        {% for error in form.name.errors %}
+                        <span class='text-danger'>{{error}} </span>
+                        {% endfor %}
+                        <div class="form-group">
+                            <label for="family" class="text-info mt-2">نام و خانوادگی :</label><br>
+                            {{form.family}}                                       
+                        </div>
+                        {% for error in form.family.errors %}
+                        <span class='text-danger'>{{error}} </span>
+                        {% endfor %}
+                        <div class="form-group">
+                            <label for="password" class="text-info mt-2">پسورد :</label><br>
+                            {{form.password}}                                       
+                        </div>
+                        {% for error in form.password.errors %}
+                        <span class='text-danger'>{{error}} </span>
+                        {% endfor %}
+                        <div class="form-group">
+                            <label for="password_confirm" class="text-info mt-2">تایید پسورد :</label><br>
+                            {{form.password_confirm}}                                       
+                        </div>
+                        {% for error in form.password_confirm.errors %}
+                        <span class='text-danger'>{{error}} </span>
+                        {% endfor %}
+                        <div class="form-group">
+                            <label for="address" class="text-info mt-2">ادرس :</label><br>
+                            {{form.address}}   
+                        </div> 
+                        {% for error in form.address.errors %}
+                        <span class='text-danger'>{{error}} </span>
+                        {% endfor %}
+                        <br>                                   
+                        <button type="submit" class="btn btn-info w-100">ثبت نام</button>
+                    </form>
+
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+        
+{% endblock %}

@@ -3,34 +3,48 @@
 {% load humanize %}
 
 {% block content %}
+{% for message in messages  %}
+<div class="alert alert-{{ message.type }}">
+    {{message}}
+</div>
+{% endfor %}
 {% for bread in breads %}
 <section>
    <div class="container">
       <div class="row">
-            <div class="col-6">
-               <img src="{{bread.image.url}}" alt="">
+            <div class="col-12 mt-3 bg-white shadow " style="border-radius:20px;">
+                        <div class="col-sm-12 col-md-6 col-lg-6 " style="float:right;">
+                           <img src="{{bread.image.url}}" height="600px" alt="">
+                        </div>
+                        <div class="col-sm-12 col-md-6 col-lg-6" style="float:left;padding-top:50px;">
+                           <h3 class="font-weight-bold title_bread">نان {{bread.title}}</h3>
+                           <hr class="bg-secondary">
+                           <p class="text-left"><span style='font-size:20;color:red'>{{bread.price|intcomma:False}} تومان</span></p>
+                           <h4>توضیحات :</h4>
+                           <p> 
+                              {{bread.description}} 
+                           </p>
+                              <form method='POST' action=''>
+                                 تعداد: {{form.quantity}}
+                                 <br>
+                                 <input type="hidden" value="{{bread.id}}" name="product_id" id="id_product_id">
+                                 {% csrf_token %}
+                                 <span class='ml-4'> ما را در شبکه های اجتماعی دنبال کنید :</span>
+                                 <div class='social-icon d-flex justify-content-end'>
+                                    <a href='https://telegram.org/' target='_blank'><i class='bi bi-telegram'></i> </a>
+                                    <a href='https://www.instagram.com/' target='_blank'> <i class='bi bi-instagram text-dark'></i></a>
+                                    {% comment %} <a> <i class='bi bi-heart-fill text-danger'></i></a> {% endcomment %}
+                                    <a href='javascript:void(0)' onclick='heart_icon_func({{bread.id}})'><i id='heart_icon' class='bi bi-heart text-dark'></i></a>
+                                 </div>
+                                 
+                                 <button type='sumbit' class="btn btn-primary w-100 " style="float:left;margin-top:20px">اضافه به سبد خرید</button>
+                              </form>
+                           
+                        </div>
             </div>
-            <div class="col-6" style='padding-top:55px'>
-               <h1>نام محصول :<span style='font-size:30'>{{bread.title}}</span></h1>
-               <h4>توضیحات :</h4>
-               <p> 
-                  {{bread.description}} 
-               </p>
-                  
-                  <form method='post'>
-                     تعداد: <input type="number" class="form-control" value="1" min="1" max="15">
-                     <br>
-                     <p>نوع  دریافت نان :</p>
-                     پیک <input type="radio" name="delivery" value="pake" checked>
-                     حضوری<input type="radio" name="delivery" value="Presence">
-                     <h1 style='text-align: left;margin-top:20px;'><span style='font-size:30;color:red'>{{bread.price|intcomma:False}}</span>تومان</h1>
-                     <button class="btn btn-primary w-100 " style="float:left;margin-top:20px">اضافه به سبد خرید</button>
-                  </form>
-            </div>
-
+            
       </div>
    </div>
-
 </section>
 {% endfor %}
 {% endblock  %}

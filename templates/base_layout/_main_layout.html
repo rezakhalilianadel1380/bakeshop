@@ -1,17 +1,19 @@
 {% load static %}
 {% load humanize %}
 {% url 'login_page' as login %}
+{% url 'log_out' as log_out %}
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>
+        <title>       نانوی شاپ         </title>
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
         <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
         <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="shortcut icon" href="https://media.flaticon.com/dist/min/img/favicon.ico">
         <style>
             .navbar-nav li{
                 margin-right:29px;
@@ -19,6 +21,15 @@
             .dropdown a {
                 color:black
 
+            }
+            .title_bread{
+                font-size:35px;
+                font-weight: bold;
+                color: #2b2626;
+            }
+            .social-icon i{
+                font-size:23px;
+                margin-right:5px;
             }
         </style>
     </head>
@@ -29,11 +40,10 @@
                 <div class="main-menu">
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-2 col-3">
-                                <span class='text-info'>نانوی شاپ</span>
-                            <img src="{% static 'logo/6-removebg-preview.png' %}" alt="" height="70px" width="125px" style="margin-top:2px">
+                            <div class="col-md-1 col-2">
+                                <p class='text-info mt-4'>نانوی شاپ</p>
                             </div>
-                            <div class="col-md-7 col-5 pt-2">
+                            <div class="col-md-8 col-6 pt-2">
                             <nav class="navbar navbar-expand-lg navbar-light">
                                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -71,7 +81,7 @@
                                       
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                           <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> پروفایل </a></li>
-                                          <li><a class="dropdown-item" href="/admin/logout"><i class="bi bi-box-arrow-left"></i>   خروج  </a></li>
+                                          <li><a class="dropdown-item" href="{{log_out}}"><i class="bi bi-box-arrow-left"></i>   خروج  </a></li>
                                         </ul>
                                     </div>
                                       
@@ -95,5 +105,34 @@
             <script src="{% static 'js/owl.carousel.js' %}"></script>
             <script src="{% static 'js/index.js' %}"></script>
             <script src="https://seo90.ir/downloads/category/html-theme/"></script>
+            <script>  
+                function heart_icon_func(product_id){
+                    var heart_icon = document.getElementById('heart_icon');
+                    if (heart_icon.classList.contains('bi-heart')) {
+                        heart_icon.classList.remove('bi-heart');
+                        heart_icon.classList.remove('text-dark');
+                        heart_icon.classList.add('bi-heart-fill');
+                        heart_icon.classList.add('text-danger');
+                        $.ajax({
+                            url:'/city',
+                            type:'POST',
+                            headers: {'X-CSRFToken': csrftoken},
+                            data:{
+                                "state":$('#AttorneyEmpresa option:selected').val()
+                            },
+                            success:function(rsp){
+                                
+                            },
+                        });
+
+                    } 
+                    else {
+                        heart_icon.classList.remove('bi-heart-fill');
+                        heart_icon.classList.add('bi-heart');
+                        heart_icon.classList.remove('text-danger');
+                        heart_icon.classList.add('text-dark');
+                    }
+                }
+            </script>
     </body>
 </html>

@@ -1,8 +1,8 @@
 {% extends 'base_login/main_layout.html' %}
 {% load static %}
 
-{% block content %}
-
+    
+{% block content %} 
 <div id="login" >
     <div class="container">
         <div id="login-row" class="row justify-content-center align-items-center">
@@ -10,30 +10,27 @@
                 <div id="login-box" class="col-md-12">
                     <form class="form-inline" id="login-form"  method="post">
                         {% csrf_token %}
-                        <p class="text-right text-info"> اگر در نانوی شاپ حساب دارید وارد شوید : </p>
-                        <label for="phone" class="text-info mt-3">شماره تلفن همراه :</label><br>
+                        <p class="text-right text-info">رمز پیامکی  به شماره تلفن ({{request.session.phone_number_sign_code}}) ارسال شد  </p>
+                        <label for="phone" class="text-info mt-2">کد پیامکی : </label><br>
                         <div class="input-group form-group">
-                            {{form.phone}}                                       
+                            {{form.codes}}                                       
                             <div class="input-group-prepend ">
                                 <input type="submit" name="submit" class="btn btn-info btn-md " value="ادامه">
                             </div>
                         </div>
-                        {% for error in form.phone.errors %}
-                        <span class='text-danger'>{{error}} </span>
+                        {% for error in form.codes.errors %}
+                        <span class='text-danger'>{{error}} </span><br>
                         {% endfor %}
+                        <a href='/login/code' id='link' style='pointer-events: none;' class='text-muted mt-4'>  ارسال مجدد کد در <span id='time'> (04:00) </span> </a>  
                     </form>
                     <div id="register-link" class="text-right">
-                        <a href="{% url 'sign_up' %}" class="text-info ">هنوز ثبت نام نکردی ؟ </a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
-
-{% load static %}
 
 
 
-       
+{%endblock%}

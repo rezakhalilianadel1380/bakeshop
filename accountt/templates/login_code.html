@@ -1,0 +1,38 @@
+{% extends 'base_login/main_layout.html' %}
+{% load static %}
+
+    
+    {% block content %}
+    
+    <div id="login" >
+        <div class="container">
+            <div id="login-row" class="row justify-content-center align-items-center">
+                <div id="login-column" class="col-md-4">
+                    <div id="login-box" class="col-md-12">
+                        <form class="form-inline" id="login-form"  method="post">
+                            {% csrf_token %}
+                            <p class="text-right text-info">رمز پیامکی  به شماره تلفن ({{request.session.phone_number}}) ارسال شد  </p>
+                            <label for="phone" class="text-info mt-2">کد پیامکی : </label><br>
+                            <div class="input-group form-group">
+                                {{form.code}}                                       
+                                <div class="input-group-prepend ">
+                                    <input type="submit" name="submit" class="btn btn-info btn-md " value="ادامه">
+                                </div>
+                            </div>
+                            {% for error in form.code.errors %}
+                            <span class='text-danger'>{{error}} </span>
+                            {% endfor %}
+                            
+                                 <a href='/login/code' id='link' style='pointer-events: none;' class='text-muted mt-4'>  ارسال مجدد کد در <span id='time'> (04:00) </span> </a>  
+                           
+                        </form>
+                        <div id="register-link" class="text-right">
+                            <a href="/login/password" class="text-info ">ورود با رمز عبور</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endblock %}

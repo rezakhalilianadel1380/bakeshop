@@ -1,8 +1,6 @@
 {% extends 'base_login/main_layout.html' %}
 {% load static %}
-
 {% block content %}
-
 <div id="login" >
     <div class="container">
         <div id="login-row" class="row justify-content-center align-items-center">
@@ -10,7 +8,7 @@
                 <div id="login-box" class="col-md-12">
                     <form class="form-inline" id="login-form"  method="post">
                         {% csrf_token %}
-                        <p class="text-right text-info"> اگر در نانوی شاپ حساب دارید وارد شوید : </p>
+                        <p class="text-right text-info">ایجاد حساب کاربری </p>
                         <label for="phone" class="text-info mt-3">شماره تلفن همراه :</label><br>
                         <div class="input-group form-group">
                             {{form.phone}}                                       
@@ -23,17 +21,16 @@
                         {% endfor %}
                     </form>
                     <div id="register-link" class="text-right">
-                        <a href="{% url 'sign_up' %}" class="text-info ">هنوز ثبت نام نکردی ؟ </a>
+                        <a href="/login" class="text-info ">برگشت به صفحه ورود</a>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% load static %}
-
+{% endblock  %}
 
 
-       
+
+
