@@ -26,7 +26,7 @@ def homepage(request):
         else:
             cart=Cart.objects.create(user_id=request.user.id)
             cart_item=Cart_Item.objects.create(cart_id=cart,product_id=product_id,quantity=quantity)
-
+    
     context={
         'breads':breads,
         'form':form

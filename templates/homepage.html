@@ -8,15 +8,18 @@
     {{message}}
 </div>
 {% endfor %}
-{% for bread in breads %}
+
+<div class="alert-messages">
+</div>
 <section>
    <div class="container">
       <div class="row">
-            <div class="col-12 mt-3 bg-white shadow " style="border-radius:20px;">
+         {% for bread in breads %}
+            <div class="col-12 mt-3 bg-white shadow mb-2 " style="border-radius:20px;">
                         <div class="col-sm-12 col-md-6 col-lg-6 " style="float:right;">
-                           <img src="{{bread.image.url}}" height="600px" alt="">
+                           <img src="{{bread.image.url}}" height="500px" alt="">
                         </div>
-                        <div class="col-sm-12 col-md-6 col-lg-6" style="float:left;padding-top:50px;">
+                        <div class="col-sm-12 col-md-6 col-lg-6 mb-3" style="float:left;padding-top:50px;">
                            <h3 class="font-weight-bold title_bread">نان {{bread.title}}</h3>
                            <hr class="bg-secondary">
                            <p class="text-left"><span style='font-size:20;color:red'>{{bread.price|intcomma:False}} تومان</span></p>
@@ -34,19 +37,28 @@
                                     <a href='https://telegram.org/' target='_blank'><i class='bi bi-telegram'></i> </a>
                                     <a href='https://www.instagram.com/' target='_blank'> <i class='bi bi-instagram text-dark'></i></a>
                                     {% comment %} <a> <i class='bi bi-heart-fill text-danger'></i></a> {% endcomment %}
-                                    <a href='javascript:void(0)' onclick='heart_icon_func({{bread.id}})'><i id='heart_icon' class='bi bi-heart text-dark'></i></a>
+                                    {% if request.user.is_authenticated %}
+                                        <a href='javascript:void(0)' onclick='heart_icon_func(this,{{bread.id}},{{request.user.id}})' id='bread_{{bread.id}}'><i class='bi bi-heart text-dark'></i></a>
+                                          {% for user in bread.favorite %}
+                                                {% if user.id == request.user.id %}
+                                                <script>
+                                                   a = document.getElementById('bread_{{bread.id}}');
+                                                   a.remove()
+                                                </script>
+                                                <a href='javascript:void(0)' onclick='heart_icon_func(this,{{bread.id}},{{request.user.id}})' id='bread_{{bread.id}}'><i class='bi bi-heart-fill text-danger'></i></a>
+                                                {% endif %}
+                                          {% endfor %}
+                                    {%endif%}   
                                  </div>
-                                 
-                                 <button type='sumbit' class="btn btn-primary w-100 " style="float:left;margin-top:20px">اضافه به سبد خرید</button>
+                                 <button type='sumbit' class="btn btn-primary w-100 " style="float:left">اضافه به سبد خرید</button>
                               </form>
                            
                         </div>
             </div>
-            
+         {% endfor %}  
       </div>
    </div>
 </section>
-{% endfor %}
 {% endblock  %}
 
 

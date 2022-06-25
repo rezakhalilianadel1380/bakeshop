@@ -8,6 +8,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('',homepage),
     path('',include('accountt.urls')),
+    path('',include('bread.urls')),
 ]
 
 if settings.DEBUG:
