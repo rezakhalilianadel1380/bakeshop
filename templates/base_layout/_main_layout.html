@@ -7,13 +7,21 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>       نانوی شاپ         </title>
+        <title>{% block title %}{% endblock title %}</title>
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
         <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
         <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
         <link rel="shortcut icon" href="https://media.flaticon.com/dist/min/img/favicon.ico">
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+            jQuery(function($){
+            $('.loader').fadeOut('slow');
+            $("#success-alert").delay(900).fadeOut('slow');
+
+            }); });
+        </script>
         <style>
             .navbar-nav li{
                 margin-right:29px;
@@ -30,6 +38,7 @@
             .social-icon i{
                 font-size:23px;
                 margin-right:5px;
+               
             }
             div.alert-messages {
                 position: fixed;
@@ -46,17 +55,44 @@
                 background-color: #dd4b39 !important;
                 color:white;
             }
+            .alert-order{
+                position: fixed;
+                top:75px;
+                left:70%;
+                right:1%;
+                z-index: 7000;
+            }
+            .personel-sec  span{
+                display:block;
+            }
+            .active2{
+                font-weight:bolder;
+                
+            }
+            .loader {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background: url('{% static "loader.gif" %}') 50% 50% no-repeat #fff; /* Change the #fff here to your background color of choice for the preloader fullscreen section */
+                }
+            .elementor-editor-active .loader{
+                display: none;
+                }
         </style>
     </head>
     <body>
             {% comment %} this is a header and navbar {% endcomment %}
+            <div class="loader"></div>
             <header>
                 <div class="index-top position-relative w-100 bg-white">
                 <div class="main-menu">
                     <div class="container">
                         <div class="row">
                             <div class="col-md-1 col-2">
-                                <p class='text-info mt-4'>نانوی شاپ</p>
+                                <p class='mt-4'><a class='text-info ' href='{% url 'homepage' %}'> نانوی شاپ</a></p>
                             </div>
                             <div class="col-md-8 col-6 pt-2">
                             <nav class="navbar navbar-expand-lg navbar-light">
@@ -69,16 +105,15 @@
                                     id="navbarSupportedContent">
                                     <ul class="navbar-nav mb-2 mb-lg-0 " >
                                             <li class="nav-item">
-                                            <a class="nav-link active" aria-current="page" href="#">خانه</a>
+                                            <a class="nav-link {% if request.path == '/' %}active2 {% endif %}"  href="{% url 'homepage' %}">خانه</a>
                                             </li>
                                             <li class="nav-item">
-                                            <a class="nav-link" href="#">تماس با ما </a>
+                                            <a class="nav-link {% if request.path == '/contact_us' %}active2 {% endif %}" href="{% url 'contact-us' %}">تماس با ما </a>
                                             </li>
                                             <li class="nav-item">
-                                            <a class="nav-link" href="#">درباره ما </a>
+                                            <a class="nav-link {% if request.path == '/about_us' %}active2 {% endif %}" href="{% url 'about-us' %}">درباره ما </a>
                                             </li>
                                             
-                                    
                                         </ul>
                                 </div>
                             </nav>
@@ -119,81 +154,8 @@
             <script src="{% static 'js/bootstrap.js' %}"></script>
             <script src="{% static 'js/owl.carousel.js' %}"></script>
             <script src="{% static 'js/index.js' %}"></script>
-            <script>
-                function showAndDismissAlert(type, message) {
-                    var htmlAlert = '<div class="alert alert-' + type + '"  style="height:70px">'+
-                        "<i class='bi bi-lightbulb-fill' style='color:yellow'></i><br>"
-                         + '<span>'+message +'</span>'+ 
-                         
-                         '</div>';
-        
-                    // Prepend so that alert is on top, could also append if we want new alerts to show below instead of on top.
-                    $(".alert-messages").prepend(htmlAlert);
-        
-                    // Since we are prepending, take the first alert and tell it to fade in and then fade out.
-                    // Note: if we were appending, then should use last() instead of first()
-                    $(".alert-messages .alert").first().hide().fadeIn(200).delay(2000).fadeOut(1000, function () { $(this).remove(); });
-                }
-            </script>
-              <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+            <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
             <script src="https://seo90.ir/downloads/category/html-theme/"></script>
-            <script>  
-                function heart_icon_func(el,bread_id,user_id){
-                    var heart_icon=el.firstElementChild
-                    if (heart_icon.classList.contains('bi-heart')) {
-                        heart_icon.classList.remove('bi-heart');
-                        heart_icon.classList.remove('text-dark');
-                        heart_icon.classList.add('bi-heart-fill');
-                        heart_icon.classList.add('text-danger');
-                        $.ajax({
-                            url:'/add-to-favorite',
-                            headers: {'X-CSRFToken': csrftoken},
-                            type:'POST',
-                            data:{
-                                "bread_id":bread_id,
-                            },
-                            success:function(rsp){
-                                 showAndDismissAlert('green','با موفقیت به علاقه مندی ها اضافه شد ! ');
-                            },
-                        });
-                    } 
-                    else {
-                        heart_icon.classList.remove('bi-heart-fill');
-                        heart_icon.classList.add('bi-heart');
-                        heart_icon.classList.remove('text-danger');
-                        heart_icon.classList.add('text-dark');
-                        $.ajax({
-                            url:'/Delete-from-favorite',
-                            headers: {'X-CSRFToken': csrftoken},
-                            type:'POST',
-                            data:{
-                                "bread_id":bread_id,
-                            },
-                            success:function(rsp){
-                                showAndDismissAlert('red','از علاقه مندی ها حذف شد !  ');
-                            },
-                        });
-                       
-                    }
-                }
-
-                function getCookie(name) {
-                let cookieValue = null;
-                if (document.cookie && document.cookie !== '') {
-                    const cookies = document.cookie.split(';');
-                    for (let i = 0; i < cookies.length; i++) {
-                        const cookie = cookies[i].trim();
-                        // Does this cookie string begin with the name we want?
-                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                            break;
-                        }
-                    }
-                }
-                    return cookieValue;
-                    }
-                const csrftoken = getCookie('csrftoken');
-
-            </script>
+            <script src="{% static 'js/main.js' %}"></script>
     </body>
 </html>

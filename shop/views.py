@@ -8,25 +8,31 @@ from order.models import Cart,Cart_Item
 
 def homepage(request):
     breads=Bread.objects.all()
-    form=Cart_Form(request.POST or None,initial={'radio_type':"1"})
+    form=Cart_Form(request.POST or None)
     if form.is_valid():
         if not request.user.is_authenticated:
             return redirect('/login')
         quantity=form.cleaned_data.get('quantity')
-        product_id=form.cleaned_data.get('product_id')
-        radio_type=form.cleaned_data.get('radio_type')
+        bread_id=form.cleaned_data.get('bread_id')
         cart=Cart.objects.filter(user=request.user,is_paid=False)
         if cart:
-            cart_item=Cart_Item.objects.filter(cart_id=cart.id,product_id=product_id)
+            cart_item=Cart_Item.objects.filter(cart=cart.first(),bread_id=bread_id)
             if cart_item:
                 messages.error(request,'این محصول در سبد خرید شما موجود است')
                 return redirect('/')
             else:
-                cart_item=Cart_Item.objects.create(cart_id=cart.first().id,product_id=product_id,quantity=quantity)
+                cart_item=Cart_Item.objects.create(cart=cart.first(),bread_id=bread_id,quantity=quantity)
+                messages.success(request,'با موفقیت به سبد خرید شما اضافه شد ')
+                return redirect('/')
         else:
             cart=Cart.objects.create(user_id=request.user.id)
-            cart_item=Cart_Item.objects.create(cart_id=cart,product_id=product_id,quantity=quantity)
-    
+            cart_item=Cart_Item.objects.create(cart=cart,bread_id=bread_id,quantity=quantity)
+            messages.success(request,'با موفقیت به سبد خرید شما اضافه شد ')
+            return redirect('/')
+    if form.errors:
+       for i in form:
+            for j in i.errors:
+                messages.error(request,j)
     context={
         'breads':breads,
         'form':form

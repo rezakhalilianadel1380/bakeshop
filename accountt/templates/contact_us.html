@@ -1,0 +1,38 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% block title %}
+تماس با ما
+{% endblock title %}
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row mt-2   mb-2 ">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d201.0007364265252!2d59.64770327104834!3d36.28776399359385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3f6c90adadad60fb%3A0x1d0d29e36dd4a1fd!2z2YXbjNmI2Ycg2LPYsdin24wg2KfZhduM2LHYudmE24w!5e0!3m2!1sfa!2s!4v1656321000035!5m2!1sfa!2s" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <div class="row">
+            <div class="col-12 mt-3 bg-white shadow mb-2 " style="padding-right:0px">
+                <div class="col-sm-12 col-md-6 col-lg-6 p-4  " style="float:right;">
+                    <h4>آدرس : </h4>
+                    <p><i class="bi bi-geo-alt-fill"></i> خراسان رضوی -مشهد- خیابان علیمردانی -علیمردانی  39.2 </p>
+                    <h4>شماره تلفن : </h4>
+                    <p> <i class="bi bi-telephone-fill"></i> 32560511 - 09150521364 </p>
+                    <h4> ایمیل  : </h4>
+                    <p> <i class="bi bi-envelope-fill"></i> reza.kh.adel@gmail.com </p>
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6  pt-3 " style="float:left;">
+                    <h4>با ما در تعامل باشید</h4>
+                    <form action="">
+                    <label for="name">نام *</label>
+                    <input type="text" class="form-control" id="name">
+                    <label for="email">ایمیل *</label>
+                    <input type="email" class="form-control" id="email">
+                    <label for="comment">پیام شما *</label>
+                    <textarea name="" id="comment" style="resize: none;" cols="30" rows="10"></textarea>
+                    <button type="submit" class="btn btn-info w-100 mt-2 mb-2">ارسال</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

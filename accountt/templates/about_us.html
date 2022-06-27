@@ -1,0 +1,52 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% block title %}
+درباره ما
+{% endblock title %}
+{% block content %}
+<section>
+    <div class="container">
+        <div class="row">
+            <div class="col-12 mt-3 bg-white shadow mb-2 " style="border-radius:20px;padding-right:0px">
+                <div class="col-sm-12 col-md-6 col-lg-6  " style="float:right;">
+                    <img src="{% static 'images/about_pic.jpg' %}"  style="border-radius:20px;" height="450px" alt="">
+                </div>
+                <div class="col-sm-12 col-md-6 col-lg-6  pt-3 " style="float:left;">
+                    <h4>درباره ما</h4>
+                    <p class='mt-4'>
+                            این نانوایی در سال 1401 در مهرماه تاسیس شد هدف از تاسیس این نانوایی وجود نانوایی است که در وقت مردم عزیز ایران صرفه جویی شود و نانی با کیفیت و بدون اتلاف وقت به دست مردم عزیز برسد  ایده این نانوایی اولین بار توسط این سایت ثبت شد وحق ثبت در اختیار مجمعه نانوی شاپ است 
+                            انشالله که بتوانیم در راه کسب رضای خداوند  و احترام به مشتریان عزیز  عمل کنیم و در این راه از هیچ عمل مضایقه نخواهیم کرد
+                    </p>
+                    <p>پرسنل نانوایی :</p>
+                    <div class='row personel-sec mt-4'>
+                        <div class="col-sm-12 col-md-3 col-lg-3" >
+                            <img style='border-radius:50%;'src="{%static 'images/personel/img_avatar2.png'%}" alt="">
+                            <br>
+                            <span class="text-center text-info mt-1"  >مریم اکبری</span>
+                            <span class="text-center mt-1" >سئوکار</span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3" >
+                            <img style='border-radius:50%;'src="{%static 'images/personel/shater.jpg'%}" alt="">
+                            <br>
+                            <span class="text-center  text-info  mt-1"  >علیرضا  ثابت</span>
+                            <span class="text-center mt-1" >شاطر</span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3" >
+                            <img style='border-radius:50%;'src="{%static 'images/personel/img_avatar.png'%}" alt="">
+                            <br>
+                            <span class="text-center  text-info mt-1"  >رضا خلیلیان عادل</span>
+                            <span class="text-center  mt-1" >برنامه نویس</span>
+                        </div>
+                        <div class="col-sm-12 col-md-3 col-lg-3" >
+                            <img style='border-radius:50%;'src="{%static 'images/personel/nanva.jpg'%}" alt="">
+                            <br>
+                            <span class="text-center text-info mt-1"  >محسن ظریف</span>
+                            <span class="text-center mt-1" >کارکن نانوایی</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock content %}

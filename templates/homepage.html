@@ -1,14 +1,26 @@
 {% extends 'base_layout/_main_layout.html' %}
 {% load static %}
 {% load humanize %}
-
+{% block title %}
+نانوی شاپ - صفحه اصلی 
+{% endblock %}
 {% block content %}
 {% for message in messages  %}
-<div class="alert alert-{{ message.type }}">
-    {{message}}
+<div class='alert-order'>
+   {% if message.tags == "error" %}
+      <div class="alert alert-red" style="height:70px" id="success-alert">
+         <i class='bi bi-lightbulb-fill' style='color:yellow'></i>
+         <strong> {{message}} !</strong>
+      </div>
+   {% endif %}
+   {% if message.tags == "success" %}
+      <div class="alert alert-green" style="height:70px" id="success-alert">
+         <i class='bi bi-lightbulb-fill' style='color:yellow'></i>
+         <strong> {{message}} !</strong>
+      </div>
+   {% endif %}
 </div>
 {% endfor %}
-
 <div class="alert-messages">
 </div>
 <section>
@@ -30,7 +42,7 @@
                               <form method='POST' action=''>
                                  تعداد: {{form.quantity}}
                                  <br>
-                                 <input type="hidden" value="{{bread.id}}" name="product_id" id="id_product_id">
+                                 <input type="hidden" value="{{bread.id}}" name="bread_id" id="id_bread_id">
                                  {% csrf_token %}
                                  <span class='ml-4'> ما را در شبکه های اجتماعی دنبال کنید :</span>
                                  <div class='social-icon d-flex justify-content-end'>
@@ -38,14 +50,14 @@
                                     <a href='https://www.instagram.com/' target='_blank'> <i class='bi bi-instagram text-dark'></i></a>
                                     {% comment %} <a> <i class='bi bi-heart-fill text-danger'></i></a> {% endcomment %}
                                     {% if request.user.is_authenticated %}
-                                        <a href='javascript:void(0)' onclick='heart_icon_func(this,{{bread.id}},{{request.user.id}})' id='bread_{{bread.id}}'><i class='bi bi-heart text-dark'></i></a>
+                                        <a href='javascript:void(0)' onclick='heart_icon_func(this,{{bread.id}})' id='bread_{{bread.id}}'><i class='bi bi-heart text-dark'></i></a>
                                           {% for user in bread.favorite %}
                                                 {% if user.id == request.user.id %}
                                                 <script>
                                                    a = document.getElementById('bread_{{bread.id}}');
                                                    a.remove()
                                                 </script>
-                                                <a href='javascript:void(0)' onclick='heart_icon_func(this,{{bread.id}},{{request.user.id}})' id='bread_{{bread.id}}'><i class='bi bi-heart-fill text-danger'></i></a>
+                                                <a href='javascript:void(0)' onclick='heart_icon_func(this,{{bread.id}})' id='bread_{{bread.id}}'><i class='bi bi-heart-fill text-danger'></i></a>
                                                 {% endif %}
                                           {% endfor %}
                                     {%endif%}   

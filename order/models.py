@@ -4,15 +4,20 @@ from bread.models import Bread
 # Create your models here.
 
 class Cart(models.Model):
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    payment_date=models.DateTimeField()
+    user= models.ForeignKey(User,on_delete=models.CASCADE)
+    payment_date=models.DateTimeField(null=True)
     delivery_mode=models.CharField(max_length=1,choices=(('1','حضوری'),('2','پیک')))
     is_paid=models.BooleanField(default=False)
     is_delivered=models.BooleanField(default=False)
     
+    def __str__(self) -> str:
+        return self.user.username
 
 
 class Cart_Item(models.Model):
-    cart_id = models.ForeignKey(Cart,on_delete=models.CASCADE)
-    product_id = models.ForeignKey(Bread,on_delete=models.CASCADE)
+    cart= models.ForeignKey(Cart,on_delete=models.CASCADE)
+    bread= models.ForeignKey(Bread,on_delete=models.CASCADE)
     quantity=models.IntegerField()
+
+    def __str__(self) -> str:
+        return self.cart.user.username
