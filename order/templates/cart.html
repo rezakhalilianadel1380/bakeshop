@@ -1,0 +1,75 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% load humanize %}
+{% block title %}
+سبد خرید
+{% endblock title %}
+{% block content %}
+
+{% if cart.is_empty %}
+
+
+<div class="container">
+    <div class="row d-flex justify-content-between">
+        <div class="col-md-9 bg-white shadow mt-3 " style="border-radius:15px">
+            <div class="title">
+                <div class="row">
+                    <div class="col pt-2"><p style='font-size:20px'>سبد خرید</p></div>
+                </div>
+            </div> 
+            {% for cart_item in  cart.cart_item.all %}
+                        <div class="row border-top border-bottom">
+                                <div class="row main align-items-center">
+                                    <div class="col-2"><img class="img-fluid" src="{{cart_item.bread.image.url}}"></div>
+                                    <div class="col">
+                                        <div class="row text-muted">نان</div>
+                                        <div class="row">{{cart_item.bread.title}}</div>
+                                    </div>
+                                    <div class="col">
+                                        <div class="number-input d-flex justify-content-center">
+                                            <button onclick="decrease_quantity({{cart_item.id}},this)" class="minus bg-danger" ><i class="bi bi-dash"></i></button>
+                                            <input id='quantity' class="quantity" onchange="raise_quantity({{cart_item.id}},this)" min="1" max="15" name="quantity" value="{{cart_item.quantity}}" type="number">
+                                            <button onclick="raise_quantity({{cart_item.id}},this)" class="plus bg-success"><i class="bi bi-plus"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="col d-flex justify-content-center">{{cart_item.bread.price|intcomma:False}} تومان</div>
+                                    <div class="col d-flex justify-content-end"><span class="close">&#10005;</span></div>
+                                </div>
+                        </div>
+            {% endfor %}
+        </div>
+       <div class='col-md-3' >
+            <div class="content  bg-white shadow mt-3" style="border-radius:10px;padding:8px;">
+               <div class="col mt-3 d-flex justify-content-between">
+                    <span style='font-size:14px'>قیمت کالاها :</span>
+                    <span style='font-size:14px' id='product_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>
+                </div>
+                <div class="col mt-3 d-flex justify-content-between">
+                    <span style='font-size:14px'> جمع سبد خرید:</span>
+                    <span style='font-size:14px' id='cart_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>
+                </div>
+                <button class="btn btn-danger w-100" style="margin-top:50%;">ادامه</button>
+            </div>
+       </div>
+    </div>
+</div>
+
+
+{% else %}
+<div class="container">
+    <div class="row">
+    <div class="col-12 d-flex justify-content-center">
+        <img src="{% static 'images/empty-cart.png' %}">  
+    </div>
+    <h4 style='text-align:center;' class='mb-3'>سبد خرید  شما خالی است !</h4>
+    <p style='text-align:center;' class='mb-4'>
+    می‌توانید برای مشاهده محصولات بیشتر به صفحات زیر بروید
+    </p>
+    <div class="col-12 d-flex justify-content-center">
+       <a href="/" style='margin-right:20px;' class='text-info'>صفحه اصلی</a>
+    </div>
+    </div>
+    </div>
+{% endif %}
+
+{% endblock content %}

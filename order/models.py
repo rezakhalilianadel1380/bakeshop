@@ -13,9 +13,23 @@ class Cart(models.Model):
     def __str__(self) -> str:
         return self.user.username
 
+    def is_empty(self):
+        cart_item=self.cart_item.all()
+        if cart_item:
+            return True
+        return False
+    
+    def cart_total_price(self):
+        sum=0
+        cart_item=self.cart_item.all()
+        for i in cart_item:
+            sum+=i.bread.price*i.quantity
+        return sum
+
+
 
 class Cart_Item(models.Model):
-    cart= models.ForeignKey(Cart,on_delete=models.CASCADE)
+    cart= models.ForeignKey(Cart,on_delete=models.CASCADE,related_name='cart_item')
     bread= models.ForeignKey(Bread,on_delete=models.CASCADE)
     quantity=models.IntegerField()
 

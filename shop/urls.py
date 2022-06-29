@@ -9,6 +9,7 @@ urlpatterns = [
     path('',homepage,name='homepage'),
     path('',include('accountt.urls')),
     path('',include('bread.urls')),
+    path('',include('order.urls')),
 ]
 
 if settings.DEBUG:

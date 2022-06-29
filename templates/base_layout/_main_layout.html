@@ -18,7 +18,7 @@
             document.addEventListener('DOMContentLoaded', function() {
             jQuery(function($){
             $('.loader').fadeOut('slow');
-            $("#success-alert").delay(900).fadeOut('slow');
+            $("#success-alert").delay(1200).fadeOut('slow');
 
             }); });
         </script>
@@ -81,9 +81,31 @@
             .elementor-editor-active .loader{
                 display: none;
                 }
+            .close{
+                margin-right:auto;
+                font-size: 0.7rem;
+            }
+            .number-input input[type="number"] {
+            -webkit-appearance: textfield;
+            -moz-appearance: textfield;
+            appearance: textfield;
+            }
+            .quantity{
+                width:30px;
+                border: none;
+                padding: 5px;
+                text-align: center;
+            }
+            .number-input button{
+                border-radius: 5px;
+                font-size:15px;
+            }
+           
         </style>
     </head>
     <body>
+        <div class="alert-messages">
+        </div>
             {% comment %} this is a header and navbar {% endcomment %}
             <div class="loader"></div>
             <header>
@@ -92,7 +114,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-md-1 col-2">
-                                <p class='mt-4'><a class='text-info ' href='{% url 'homepage' %}'> نانوی شاپ</a></p>
+                                <p class='mt-4'><a class='text-info ' href="{% url 'homepage' %}"> نانوی شاپ</a></p>
                             </div>
                             <div class="col-md-8 col-6 pt-2">
                             <nav class="navbar navbar-expand-lg navbar-light">
@@ -119,11 +141,11 @@
                             </nav>
                             </div>
                             <div class="col-md-3 col-4 text-start">
-                            <div class="top-account">
+                            <div class="top-account d-flex justify-content-end">
+                               
                                 {% if request.user.is_authenticated  %}
                                     {% comment %} <a href="{{login}}" class="text-dark"><i class="bi bi-person"></i><span style='font-size:15px'>سلام کاربر گرامی</span></a>
                                     <a href="/admin/logout" class="text-dark"><i class="bi bi-box-arrow-left"></i><span style='font-size:15px'>  </span></a> {% endcomment %}  
-                                   
                                     <div class="dropdown">
                                         <a class=" dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="bi bi-person"></i> {{request.user.username}}
@@ -134,11 +156,10 @@
                                           <li><a class="dropdown-item" href="{{log_out}}"><i class="bi bi-box-arrow-left"></i>   خروج  </a></li>
                                         </ul>
                                     </div>
-                                      
                                     {% else %}
                                     <a href="{{login}}" class="text-dark"><i class="bi bi-box-arrow-in-right"></i><span style='font-size:15px'>ورود</span></a>
                                 {% endif %}
-                                
+                                <a class='mt-1 text-dark' href='cart' style='font-size:10px ;padding-right:8px'><i class="bi bi-cart" style='font-size:20px ;'></i> </a>
                                
                             </div>
                             </div>
@@ -157,5 +178,44 @@
             <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
             <script src="https://seo90.ir/downloads/category/html-theme/"></script>
             <script src="{% static 'js/main.js' %}"></script>
+            <script>
+                function decrease_quantity(cart_item,self){
+                    self.parentNode.querySelector('input[type=number]').stepDown();
+                    $.ajax({
+                        url:'/quantity',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "cart_item_id":cart_item,
+                            "quantity":self.parentNode.querySelector('input[type=number]').value,
+                        },
+                        success:function(rsp){
+                            $('#cart_price').html(rsp.total_price+' تومان')
+                            $('#product_price').html(rsp.total_price+' تومان')
+                            showAndDismissAlert('red','محصول کم شد');
+                        },
+                    }); 
+                }
+                
+                function raise_quantity(cart_item,self){
+                    self.parentNode.querySelector('input[type=number]').stepUp(); 
+                    $.ajax({
+                        url:'/quantity',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "cart_item_id":cart_item,
+                            "quantity":self.parentNode.querySelector('input[type=number]').value,
+                        },
+                        success:function(rsp){
+                            $('#cart_price').html(rsp.total_price+' تومان')
+                            $('#product_price').html(rsp.total_price+' تومان')
+                            showAndDismissAlert('green','محصلول افزایش یافت');
+                        },
+                    });
+                    
+                }
+
+            </script>
     </body>
 </html>

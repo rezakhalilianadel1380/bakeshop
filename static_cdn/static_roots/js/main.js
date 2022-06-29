@@ -1,4 +1,3 @@
-
 function showAndDismissAlert(type, message) {
     var htmlAlert = '<div class="alert alert-' + type + '"  style="height:70px">'+
         "<i class='bi bi-lightbulb-fill' style='color:yellow'></i> "
@@ -13,6 +12,7 @@ function showAndDismissAlert(type, message) {
     // Note: if we were appending, then should use last() instead of first()
     $(".alert-messages .alert").first().hide().fadeIn(200).delay(2000).fadeOut(1000, function () { $(this).remove(); });
 }
+
 function heart_icon_func(el,bread_id){
     var heart_icon=el.firstElementChild;
     if (heart_icon.classList.contains('bi-heart')) {
