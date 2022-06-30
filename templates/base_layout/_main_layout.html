@@ -104,8 +104,27 @@
         </style>
     </head>
     <body>
+
         <div class="alert-messages">
         </div>
+        {% for message in messages  %}
+            <div class='alert-order'>
+            {% if message.tags == "error" %}
+                <div class="alert alert-red" style="height:70px" id="success-alert">
+                    <i class='bi bi-lightbulb-fill' style='color:yellow'></i>
+                    <strong> {{message}} !</strong>
+                </div>
+            {% endif %}
+            {% if message.tags == "success" %}
+                <div class="alert alert-green" style="height:70px" id="success-alert">
+                    <i class='bi bi-lightbulb-fill' style='color:yellow'></i>
+                    <strong> {{message}} !</strong>
+                </div>
+            {% endif %}
+            </div>
+        {% endfor %}
+
+
             {% comment %} this is a header and navbar {% endcomment %}
             <div class="loader"></div>
             <header>
@@ -192,8 +211,11 @@
                         success:function(rsp){
                             $('#cart_price').html(rsp.total_price+' تومان')
                             $('#product_price').html(rsp.total_price+' تومان')
-                            showAndDismissAlert('red','محصول کم شد');
+                            showAndDismissAlert('green','محصول با موفقیت ویرایش شد ');
                         },
+                        error: function(rsp) {
+                            showAndDismissAlert('red',data.er);
+                        }
                     }); 
                 }
                 
@@ -210,12 +232,17 @@
                         success:function(rsp){
                             $('#cart_price').html(rsp.total_price+' تومان')
                             $('#product_price').html(rsp.total_price+' تومان')
-                            showAndDismissAlert('green','محصلول افزایش یافت');
+                            showAndDismissAlert('green','محصول با موفقیت ویرایش شد ');
                         },
+                        error: function(data) {
+                            showAndDismissAlert('red',data.er);
+                        }
                     });
                     
                 }
-
+                function det_item(cart_item){
+                    location.replace("http://127.0.0.1:8000/delete_item/"+cart_item)
+                }
             </script>
     </body>
 </html>

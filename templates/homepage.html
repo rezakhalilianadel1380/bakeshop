@@ -5,23 +5,6 @@
 نانوی شاپ - صفحه اصلی 
 {% endblock %}
 {% block content %}
-{% for message in messages  %}
-<div class='alert-order'>
-   {% if message.tags == "error" %}
-      <div class="alert alert-red" style="height:70px" id="success-alert">
-         <i class='bi bi-lightbulb-fill' style='color:yellow'></i>
-         <strong> {{message}} !</strong>
-      </div>
-   {% endif %}
-   {% if message.tags == "success" %}
-      <div class="alert alert-green" style="height:70px" id="success-alert">
-         <i class='bi bi-lightbulb-fill' style='color:yellow'></i>
-         <strong> {{message}} !</strong>
-      </div>
-   {% endif %}
-</div>
-{% endfor %}
-
 <section>
    <div class="container">
       <div class="row">
@@ -44,7 +27,7 @@
                                  <input type="hidden" value="{{bread.id}}" name="bread_id" id="id_bread_id">
                                  {% csrf_token %}
                                  <span class='ml-4'> ما را در شبکه های اجتماعی دنبال کنید :</span>
-                                 <div class='social-icon d-flex justify-content-end'>
+                                 <div class='social-icon mb-1 d-flex justify-content-end'>
                                     <a href='https://telegram.org/' target='_blank'><i class='bi bi-telegram'></i> </a>
                                     <a href='https://www.instagram.com/' target='_blank'> <i class='bi bi-instagram text-dark'></i></a>
                                     {% comment %} <a> <i class='bi bi-heart-fill text-danger'></i></a> {% endcomment %}

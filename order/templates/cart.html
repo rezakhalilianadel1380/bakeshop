@@ -33,7 +33,7 @@
                                         </div>
                                     </div>
                                     <div class="col d-flex justify-content-center">{{cart_item.bread.price|intcomma:False}} تومان</div>
-                                    <div class="col d-flex justify-content-end"><span class="close">&#10005;</span></div>
+                                    <div class="col d-flex justify-content-end"><span class="close"><a onclick='det_item({{cart_item.id}})' href="javascript:void(0)"> &#10005;</a></span></div>
                                 </div>
                         </div>
             {% endfor %}
