@@ -5,8 +5,8 @@ from bread.models import Bread
 
 class Cart(models.Model):
     user= models.ForeignKey(User,on_delete=models.CASCADE)
-    payment_date=models.DateTimeField(null=True)
-    delivery_mode=models.CharField(max_length=1,choices=(('1','حضوری'),('2','پیک')))
+    payment_date=models.DateTimeField(null=True,blank=True)
+    delivery_mode=models.CharField(max_length=1,choices=(('1','حضوری'),('2','پیک')),blank=True)
     is_paid=models.BooleanField(default=False)
     is_delivered=models.BooleanField(default=False)
     

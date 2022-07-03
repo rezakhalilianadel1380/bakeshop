@@ -19,7 +19,16 @@ def cart_item_delete(request,id):
     return  redirect('/cart')
 
 
-
+def checkout(request):
+    cart=Cart.objects.filter(user=request.user,is_paid=False).first()
+    if cart is None:
+        return redirect('/cart')
+    if not cart.is_empty():
+        return redirect('/cart')
+    context={
+        'cart':cart
+    }   
+    return render(request,'checkout.html',context)
 
 class quantity(APIView):
     def post(self, request):

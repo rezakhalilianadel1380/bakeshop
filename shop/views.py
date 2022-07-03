@@ -1,9 +1,10 @@
-import re
 from django.shortcuts import redirect, render
 from bread.models import Bread
 from order.forms import Cart_Form
 from django.contrib import messages
 from order.models import Cart,Cart_Item
+
+
 
 
 def homepage(request):
