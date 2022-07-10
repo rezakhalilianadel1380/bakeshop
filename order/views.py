@@ -7,9 +7,13 @@ from django.contrib.auth.decorators import login_required
 from .models import Cart_Item
 from django.contrib import messages
 from django.contrib.humanize.templatetags.humanize import intcomma
+from accountt.models import Address
+from decorators.decorator import check_of_or_on
 # Create your views here.
 
 
+
+@check_of_or_on
 @login_required(login_url='/login')
 def cart_item_delete(request,id):
     cart=Cart.objects.filter(user=request.user,is_paid=False).first()
@@ -18,9 +22,15 @@ def cart_item_delete(request,id):
     messages.success(request,'با موفقیت حذف شد')
     return  redirect('/cart')
 
-
+@check_of_or_on
 def checkout(request):
     cart=Cart.objects.filter(user=request.user,is_paid=False).first()
+    address=request.user.address_set.all().first()
+    if address is None:
+        messages.error(request,'ادرس ثبت نشده')
+        return redirect('/')
+    cart.address=address
+    cart.save()
     if cart is None:
         return redirect('/cart')
     if not cart.is_empty():
@@ -31,6 +41,7 @@ def checkout(request):
     return render(request,'checkout.html',context)
 
 class quantity(APIView):
+    @check_of_or_on
     def post(self, request):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
@@ -46,9 +57,31 @@ class quantity(APIView):
         sum=cart.cart_total_price()
         return Response({'total_price':intcomma(sum)},status=status.HTTP_200_OK)
 
+class Delivery_mode_assign(APIView):
+    @check_of_or_on
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        delivery_mode=request.data.get('delivery_mode')
+        cart=Cart.objects.filter(user=request.user,is_paid=False).first()
+        cart.delivery_mode=delivery_mode
+        cart.save()
+        return Response({'delivery_mode':cart.delivery_mode},status=status.HTTP_200_OK)
+
+class Set_Address(APIView):
+    @check_of_or_on
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return Response(status=status.HTTP_403_FORBIDDEN)
+        address=request.data.get('address')
+        cart=Cart.objects.filter(user=request.user,is_paid=False).first()
+        cart.address=Address.objects.get(id=address)
+        cart.save()
+        return Response(status=status.HTTP_200_OK)
 
 
 
+@check_of_or_on
 @login_required(login_url='/login')
 def cart(request):
     cart=Cart.objects.filter(user=request.user,is_paid=False).first()

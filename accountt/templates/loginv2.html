@@ -1,0 +1,311 @@
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ورود</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bootstrap-icons.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.carousel.css' %}">
+    <link rel="stylesheet" href="{% static 'css/owl.theme.default.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/login_style.css' %}">
+    <link rel="shortcut icon" href="https://media.flaticon.com/dist/min/img/favicon.ico">
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+        jQuery(function($){
+        $('.loader').fadeOut('slow');
+        $("#success-alert").delay(1200).fadeOut('slow');
+
+        }); });
+    </script>
+    <style>
+           .loader {
+                position: fixed;
+                left: 0px;
+                top: 0px;
+                width: 100%;
+                height: 100%;
+                z-index: 9999;
+                background: url('{% static "loader.gif" %}') 50% 50% no-repeat #fff; /* Change the #fff here to your background color of choice for the preloader fullscreen section */
+                }
+    </style>
+</head>
+
+<body>
+    <div class="loader" ></div>
+    <!-- header with login and waves start  -->
+    <div class="header">
+        <!-- contents before waves -->
+        <div id="login">
+            <div class="container">
+                <div id="login-row" class="row justify-content-center align-items-center">
+                    <div id="login-column" class="col-md-4">
+                        <div id="login-box" class="col-md-12">
+                            <div class="form-inline" id="login-form">
+                                {% csrf_token %}
+                                <p class="text-right text-info"> اگر در نانوی شاپ حساب دارید وارد شوید : </p>
+                                <label for="phone" class="text-info mt-3">شماره تلفن همراه :</label><br>
+                                <div class="input-group form-group">
+                                    <input type="text" onKeyDown="if(event.keyCode==13) send_phone();" name="phone" id="phone" class="form-control" placeholder="شماره تلفن همراه" required="">                                       
+                                    <div class="input-group-prepend ">
+                                        <button class="btn btn-info btn-md " style="height:46px;" onclick="send_phone()">ادامه</button>
+                                    </div>
+                                </div>
+                                <span class="text-danger" id="error" style="display:none;"></span>
+                            </div>
+                            <div id="register-link" class="text-right">
+                                <a href="{% url 'sign_up' %}" class="text-info ">هنوز ثبت نام نکردی ؟ </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- waves start  -->
+        <div style="margin-top:80px;">
+            <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+                <defs>
+                    <path id="gentle-wave"
+                        d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+                </defs>
+                <g class="parallax">
+                    <use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+                    <use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+                    <use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+                    <use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+                </g>
+            </svg>
+        </div>
+        <!-- waves end -->
+    </div>
+    <!-- header  ends  -->
+    <div class="content flex">
+        <p>نانوایی انلاین  </p>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script>
+        function startTimer(duration, display) {
+            var timer = duration, minutes, seconds;
+            myinterval=setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+                display.textContent = '('+minutes + ":" + seconds+')';
+                if (--timer < 0) {
+                    $('#link').html("<a onclick='resend()' href='javascript:void' class='text-danger '>ارسال مجدد</a>");
+                    clearInterval(myinterval); 
+                }
+            }, 1000);
+        }
+        
+        function resend(){
+            $.ajax({
+                        url:'/api/v1/Resend',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "phone":getCookie('phonenumber'),
+                        },
+                        success:function(rsp){
+                            $('.loader').fadeIn('fast');
+                            $("#link").html('ارسال مجدد کد در <span id="time"> (04:00) </span>')
+                            document.title = 'ارسال کد';
+                            var fourMinutes = 60*4,
+                            display = document.querySelector('#time');
+                            startTimer(fourMinutes,display);
+                            $('.loader').fadeOut('slow');
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('#error').html(err.password_error);
+                            $('#error').fadeIn()
+                            $('.loader').fadeOut('slow');
+                        }
+                    });
+        }
+
+        function check_the_code(){
+            code=document.getElementById('code')
+            if (code.value==''){
+                $('#error').html("پسورد  نمیتواند خالی باشد ")
+                $('#error').fadeIn()
+            }
+            else{
+                $.ajax({
+                        url:'/api/v1/step3',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "phone":getCookie('phonenumber'),
+                            "code":$('#code').val(),
+                        },
+                        success:function(rsp){
+                            location.replace(rsp.address)
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('#error').html(err.code_error);
+                            $('#error').fadeIn()
+                            $('.loader').fadeOut('slow');
+                        }
+                    });
+            }
+        }
+
+        function send_code(){
+            $.ajax({
+                        url:'/api/v1/Send_The_Code',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "phone":getCookie('phonenumber'),
+                        },
+                        success:function(rsp){
+                            $('.loader').fadeIn('fast');
+                            $('#login-box').html(rsp.html);
+                            document.title = 'ارسال کد';
+                            var fourMinutes = 60*4,
+                            display = document.querySelector('#time');
+                            startTimer(fourMinutes,display);
+                            $('.loader').fadeOut('slow');
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('#error').html(err.password_error);
+                            $('#error').fadeIn()
+                            $('.loader').fadeOut('slow');
+                        }
+                    });
+        }
+        function send_password(){
+            password=document.getElementById('password')
+            if (password.value==''){
+                $('#error').html("پسورد  نمیتواند خالی باشد ")
+                $('#error').fadeIn()
+            }
+            else{
+                $.ajax({
+                        url:'/api/v1/step2',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "phone":getCookie('phonenumber'),
+                            "password":$('#password').val(),
+                        },
+                        success:function(rsp){
+                            location.replace(rsp.address)
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('#error').html(err.password_error);
+                            $('#error').fadeIn()
+                            $('.loader').fadeOut('slow');
+                        }
+                    });
+            }
+        }
+        function by_pass(){
+            $.ajax({
+                        url:'/api/v1/step1',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "phone":getCookie('phonenumber'),
+                        },
+                        success:function(rsp){
+                            $('.loader').fadeIn('fast');
+                            $('#login-box').html(rsp.password);
+                            document.title = 'پسورد';
+                            $('.loader').fadeOut('slow');
+                            document.cookie="phonenumber="+rsp.phone;
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('#error').html(err.phone_error);
+                            $('#error').fadeIn()
+                            $('.loader').fadeOut('slow');
+                            
+                        }
+                    });
+        }
+        function send_phone(){
+            phone=document.getElementById('phone')
+            if (phone.value==''){
+                $('#error').html("شماره تلفن نمیتواند خالی باشد ")
+                $('#error').fadeIn()
+            }
+            else{
+                $.ajax({
+                        url:'/api/v1/step1',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "phone":$('#phone').val(),
+                        },
+                        success:function(rsp){
+                            $('.loader').fadeIn('fast');
+                            $('#login-box').html(rsp.password);
+                            document.title = 'پسورد';
+                            $('.loader').fadeOut('slow');
+                            document.cookie="phonenumber="+rsp.phone;
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('#error').html(err.phone_error);
+                            $('#error').fadeIn()
+                            $('.loader').fadeOut('slow');
+                            
+                        }
+                    });
+            }
+        }
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+                return cookieValue;
+        }
+        const csrftoken = getCookie('csrftoken');
+        function getCookie(cname) {
+            let name = cname + "=";
+            let decodedCookie = decodeURIComponent(document.cookie);
+            let ca = decodedCookie.split(';');
+            for(let i = 0; i <ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+                }
+            }
+            return "";
+            }
+    </script>
+</body>
+
+</html>
+
+

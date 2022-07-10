@@ -11,7 +11,7 @@
 
 <div class="container">
     <div class="row d-flex justify-content-between">
-        <div class="col-md-9 bg-white shadow mt-3 " style="border-radius:15px">
+        <div class="col-md-9 col-sm-12 bg-white shadow mt-3 " style="border-radius:15px">
             <div class="title">
                 <div class="row">
                     <div class="col pt-2"><p style='font-size:20px'>سبد خرید</p></div>
@@ -25,10 +25,10 @@
                                         <div class="row text-muted">نان</div>
                                         <div class="row">{{cart_item.bread.title}}</div>
                                     </div>
-                                    <div class="col">
+                                    <div class="col col-sm-6">
                                         <div class="number-input d-flex justify-content-center">
                                             <button onclick="decrease_quantity({{cart_item.id}},this)" class="minus bg-danger" ><i class="bi bi-dash"></i></button>
-                                            <input id='quantity' class="quantity" onchange="raise_quantity({{cart_item.id}},this)" min="1" max="15" name="quantity" value="{{cart_item.quantity}}" type="number">
+                                            <input id='quantity' class="quantity" disabled  min="1" max="15" name="quantity" value="{{cart_item.quantity}}" type="number">
                                             <button onclick="raise_quantity({{cart_item.id}},this)" class="plus bg-success"><i class="bi bi-plus"></i></button>
                                         </div>
                                     </div>
@@ -38,7 +38,7 @@
                         </div>
             {% endfor %}
         </div>
-       <div class='col-md-3' >
+       <div class='col-md-3 col-sm-12' >
             <div class="content  bg-white shadow mt-3" style="border-radius:10px;padding:8px;">
                <div class="col mt-3 d-flex justify-content-between">
                     <span style='font-size:14px'>قیمت کالاها :</span>

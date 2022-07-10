@@ -1,0 +1,110 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% load static %}
+{% block title %}پنل مدیریت {% endblock title %} 
+
+{% block content %}
+    <!-- Content Header (Page header) -->
+    <section class="content-header" style="margin-bottom: 20px;">
+      <h1>
+        داشبرد
+       
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> خانه</a></li>
+        <li class="active">داشبرد</li>
+      </ol>
+    </section>
+    <!-- django messages start -->
+    {% for msg in messages %}
+        <div class='row' style="margin-bottom: 20px;margin-top:20px">   
+            <div class="col-12">
+                {% if msg.tags == 'success' %}
+                <div class="alert alert-success alert-dismissible" style="padding-right: 30px;" >
+                    <button type="button" class="close pull-left" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    <p >{{msg}}</p>
+                </div>
+                {% endif %}
+                {% if msg.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible" style="padding-right: 30px;" >
+                    <button type="button" class="close pull-left" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{msg}}
+                </div>
+                {% endif %}
+                {% if msg.tags == 'warning' %}
+                <div class="alert alert-warning alert-dismissible" style="padding-right: 30px;" >
+                    <button type="button" class="close pull-left" data-dismiss="alert" aria-hidden="true">&times;</button>
+                    {{msg}}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    {% endfor %}
+    <!-- django messages end -->
+    <!-- Main content -->
+    <section class="content" >
+      <!-- Info boxes -->
+      <div class="row">
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-aqua"><i class="ion ion-ios-gear-outline"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">قدرت سرور</span>
+              <span class="info-box-number">90<small>%</small></span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-red"><i class="fa fa-laptop"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">محصولات</span>
+              <span class="info-box-number">{{bread_num}}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+
+        <!-- fix for small devices only -->
+        <div class="clearfix visible-sm-block"></div>
+
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-green"><i class="ion ion-ios-cart-outline"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">سفارشات</span>
+              <span class="info-box-number">{{cart_num}}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+        <div class="col-md-3 col-sm-6 col-xs-12">
+          <div class="info-box">
+            <span class="info-box-icon bg-yellow"><i class="ion ion-ios-people-outline"></i></span>
+
+            <div class="info-box-content">
+              <span class="info-box-text">کاربران </span>
+              <span class="info-box-number">{{user_num}}</span>
+            </div>
+            <!-- /.info-box-content -->
+          </div>
+          <!-- /.info-box -->
+        </div>
+        <!-- /.col -->
+      </div>
+      <!-- /.row -->
+
+      
+    </section>
+    <!-- /.content -->
+
+{% endblock content %}

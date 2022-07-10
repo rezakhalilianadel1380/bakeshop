@@ -1,10 +1,60 @@
 {% extends 'base_layout/_main_layout.html' %}
 {% load static %}
+{% load humanize %}
 {% block title %}
 نانوی شاپ - زمانبدی و نوع تحویل  
 {% endblock title %}
 
 {% block content %}
+<div class="container">
+    <div class="row d-flex justify-content-between">
+        <div class="col-md-9  mt-3 " >
+            <div class="title bg-white shadow p-2" style="border-radius:15px">
+                <div class="row">
+                    <div class="col-12 pt-2"><p style='font-size:20px'>نوع ارسال </p>
+                        <hr>
+                    </div>
+                    <br>
+                    <div class="col-12 pt-2">
+                        <input onchange='delivery_mode()' class='mr-3' type="radio" value='2' name="transfer" {% if cart.delivery_mode == '2' %}checked{% endif %} id="pake" > ارسال با پیک
+                        <input onchange='delivery_mode()' type="radio" name="transfer" value='1' id="hozori" {% if cart.delivery_mode == '1' %}checked{% endif %}  > حضوری
+                    </div>
+                    
+                    <div class="col-12 mt-2" {% if cart.delivery_mode == '1' %}style='display:none;'{% endif %} id='address'>
+                        {% for address in request.user.address_set.all %}
+                            <input type="radio" onchange='set_address()' value='{{address.id}}' name="addresses" class='mr-2' {% if address.id == cart.address.id %}checked{% endif %}> {{address}} <br>
+                        {% endfor %}
+                    </div>
+                    
+                </div>
+            </div> 
+            <div class="title bg-white shadow mt-3 p-2" style="border-radius:15px">
+                <div class="row">
+                    <div class="col-12 pt-2">
+                        <p style='font-size:20px'>کد تخفیف</p><hr>
+                    </div><br>
+                    <div class="col-12 d-flex justify-content-inline pt-2">
+                        <input class='form-control w-50' type="text" name="dicount" id="">
+                        <button class='btn btn-info '>ثبت</button>
+                    </div>
+                    
+                </div>
+            </div> 
 
-
+        </div>
+       <div class='col-md-3' >
+            <div class="content  bg-white shadow mt-3" style="border-radius:10px;padding:8px;">
+               <div class="col mt-3 d-flex justify-content-between">
+                    <span style='font-size:14px'>قیمت کالاها :</span>
+                    <span style='font-size:14px' id='product_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>
+                </div>
+                <div class="col mt-3 d-flex justify-content-between">
+                    <span style='font-size:14px'> جمع سبد خرید:</span>
+                    <span style='font-size:14px' id='cart_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>
+                </div>
+                <button onclick="check_order()" class="btn btn-danger w-100" style="margin-top:50%;">پرداخت</button>
+            </div>
+       </div>
+    </div>
+</div>
 {% endblock content %}

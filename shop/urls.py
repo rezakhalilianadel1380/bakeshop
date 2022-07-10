@@ -6,6 +6,7 @@ from .views import homepage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('adminlte/',include('adminlte.urls')),
     path('',homepage,name='homepage'),
     path('',include('accountt.urls')),
     path('',include('bread.urls')),

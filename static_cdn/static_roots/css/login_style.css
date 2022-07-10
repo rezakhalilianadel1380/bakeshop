@@ -22,6 +22,7 @@ body {
 
 #login .container #login-row #login-column #login-box #login-form {
     padding: 20px;
+    padding-bottom:2px;
 }
 
 #login .container #login-row #login-column #login-box #login-form #register-link {

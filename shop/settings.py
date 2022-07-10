@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'bread',
     'accountt',
     'order',
+    'adminlte',
 ]
 
 MIDDLEWARE = [

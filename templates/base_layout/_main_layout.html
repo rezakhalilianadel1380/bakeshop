@@ -99,7 +99,7 @@
             .number-input button{
                 border-radius: 5px;
                 font-size:15px;
-            }
+                }
            
         </style>
     </head>
@@ -108,15 +108,15 @@
         <div class="alert-messages">
         </div>
         {% for message in messages  %}
-            <div class='alert-order'>
+            <div class='alert-order '>
             {% if message.tags == "error" %}
-                <div class="alert alert-red" style="height:70px" id="success-alert">
+                <div class="alert alert-red  " style="height:70px" id="success-alert">
                     <i class='bi bi-lightbulb-fill' style='color:yellow'></i>
                     <strong> {{message}} !</strong>
                 </div>
             {% endif %}
             {% if message.tags == "success" %}
-                <div class="alert alert-green" style="height:70px" id="success-alert">
+                <div class="alert alert-green col-sm-12  col-md-12" style="height:70px" id="success-alert">
                     <i class='bi bi-lightbulb-fill' style='color:yellow'></i>
                     <strong> {{message}} !</strong>
                 </div>
@@ -245,6 +245,64 @@
                 }
                 function redir(){
                     location.replace("http://127.0.0.1:8000/checkout")
+                }
+
+                function delivery_mode(){
+                    a=document.getElementsByName('transfer')
+                    for(i = 0; i < a.length; i++)
+                    {
+                      if (a[i].checked == true) {
+                        delivery_mode_radio=a[i]
+                      }
+                    } 
+                    $.ajax({
+                        url:'/delivery_mode',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "delivery_mode":delivery_mode_radio.value,
+                        },
+                        success:function(rsp){
+                            showAndDismissAlert('green','ویرایش انجام شد ');
+                            if (rsp.delivery_mode == '2'){
+                                $('#address').fadeIn()
+                            }
+                            if (rsp.delivery_mode == '1'){
+                                $('#address').fadeOut()
+                            }
+                        },
+                        error: function(data) {
+                            showAndDismissAlert('red',data.er);
+                        }
+                    });
+                    
+                }
+                function set_address(){
+                    a=document.getElementsByName('addresses')
+                    for(i = 0; i < a.length; i++)
+                    {
+                      if (a[i].checked == true) {
+                        address=a[i]
+                      }
+                    } 
+                    $.ajax({
+                        url:'/Set_Address',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "address":address.value,
+                        },
+                        success:function(rsp){
+                            showAndDismissAlert('green','ادرس ست شد ');
+                            
+                        },
+                        error: function(data) {
+                            showAndDismissAlert('red',data.er);
+                        }
+                    });
+                }
+                function check_order(){
+                    alert('beep')
                 }
             </script>
     </body>

@@ -3,10 +3,13 @@ from bread.models import Bread
 from order.forms import Cart_Form
 from django.contrib import messages
 from order.models import Cart,Cart_Item
+from decorators.decorator import check_of_or_on
 
 
 
 
+
+@check_of_or_on
 def homepage(request):
     breads=Bread.objects.all()
     form=Cart_Form(request.POST or None)

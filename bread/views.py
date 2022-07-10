@@ -4,11 +4,12 @@ from .models import Bread
 from rest_framework.response import Response
 from .models import Bread
 from rest_framework import status
+from decorators.decorator import check_of_or_on
 
 # Create your views here.
 
-
 class Add_To_favorite(APIView):
+    @check_of_or_on
     def post(self, request):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)
@@ -20,6 +21,7 @@ class Add_To_favorite(APIView):
 
 
 class Delete_from_favorite(APIView):
+    @check_of_or_on
     def post(self, request):
         if not request.user.is_authenticated:
             return Response(status=status.HTTP_403_FORBIDDEN)

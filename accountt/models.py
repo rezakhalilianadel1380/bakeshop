@@ -1,18 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
-import uuid
-from bread.models import Bread
+from django.templatetags.static import static
 # Create your models here.
 
-
-class User_Favorite_Breads(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    bread = models.ForeignKey(Bread, on_delete=models.CASCADE)
-
+class Setting(models.Model):
+    is_on=models.BooleanField(default=True)
+    limit_buy=models.IntegerField(default=15)
+    limit_day=models.IntegerField(default=7000)
 
     def __str__(self):
-        return self.bread.name
-
+        return f'{self.is_on}'
 
 
 class Address(models.Model):
@@ -22,6 +19,8 @@ class Address(models.Model):
     def __str__(self):
         return self.address
 
+
+
 class User_detail(models.Model):
     phone_number=models.CharField(max_length=11,unique=True)
     image=models.ImageField(upload_to='avatar/',null=True,blank=True) 
@@ -29,6 +28,11 @@ class User_detail(models.Model):
 
     def __str__(self):
         return self.phone_number
+
+    def get_image(self):
+        if self.image:
+            return self.image.url
+        return static("adminlte/dist/img/avatar5.png")
 
 
 

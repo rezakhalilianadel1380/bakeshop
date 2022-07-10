@@ -1,14 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 from bread.models import Bread
+from accountt.models import Address
 # Create your models here.
 
 class Cart(models.Model):
     user= models.ForeignKey(User,on_delete=models.CASCADE)
     payment_date=models.DateTimeField(null=True,blank=True)
-    delivery_mode=models.CharField(max_length=1,choices=(('1','حضوری'),('2','پیک')),blank=True)
+    delivery_mode=models.CharField(max_length=1,choices=(('1','حضوری'),('2','پیک')),blank=True,default='2')
     is_paid=models.BooleanField(default=False)
     is_delivered=models.BooleanField(default=False)
+    address=models.ForeignKey(Address,on_delete=models.SET_NULL,null=True,blank=True)
     
     def __str__(self) -> str:
         return self.user.username
