@@ -1,11 +1,21 @@
 {% load static %}
-
+{% load render_partial %}
+{% url 'dashboard'  as dashboard %}
+{% url 'show_bread_list'  as bread_list %}
 <!DOCTYPE html>
 <html>
 
 <head>
   <title>{% block title %}{% endblock title %}</title>
   {% include "adminlte/headerrefrence.html" %}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+    jQuery(function($){
+    $('.loader').fadeOut('slow');
+    $("#success-alert").delay(1200).fadeOut('slow');
+
+    }); });
+  </script>
   <style type="text/css">
     .bootstrap-tagsinput {
       width: 100%;
@@ -19,10 +29,37 @@
       color: white;
       border-radius: 4px;
     }
+    div.alert-messages {
+              position: fixed;
+              top:20px;
+              left:72%;
+              right:1%;
+              z-index: 7000;
+    }
+    .loader {
+              position: fixed;
+              left: 0px;
+              top: 0px;
+              width: 100%;
+              height: 100%;
+              z-index: 9999;
+              background: url('{% static "loader.gif" %}') 50% 50% no-repeat #fff; /* Change the #fff here to your background color of choice for the preloader fullscreen section */
+     }
+     .alert-green{
+                background-color: #00a65a !important;
+                color:white;
+            }
+            .alert-red{
+                background-color: #dd4b39 !important;
+                color:white;
+            }
   </style>
 </head>
 
 <body class="hold-transition skin-blue sidebar-mini">
+  <div class="loader"></div>
+  <div class="alert-messages">
+  </div>
   <!-- wraperr start  -->
   <div class="wrapper">
 
@@ -47,8 +84,9 @@
           <ul class="nav navbar-nav">
             <!-- Messages: style can be found in dropdown.less-->
             <li>
-              <a href="/" title="دیدن  سایت"><i class="fa fa-eye"></i></a>
+              <a href="/" target="_blank" title="دیدن  سایت"><i class="fa fa-eye"></i></a>
             </li>
+            {% render_partial 'adminlte.views.switch_render' %}
             
             <!-- Notifications: style can be found in dropdown.less -->
             
@@ -132,15 +170,15 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">منو</li>
-          <li class="active">
+          <li {% if request.path == dashboard %}class="active"{% endif %}>
             <a href="/adminlte">
               <i class="fa fa-dashboard"></i>
               <span> داشبرد </span>
 
             </a>
           </li>
-          <li>
-            <a href="/logout">
+          <li {% if request.path == bread_list %}class="active"{% endif %}>
+            <a href="{{bread_list}}">
               <i class="fa fa-laptop"></i>
               <span>نان</span>
 
@@ -350,7 +388,7 @@
 
 
     <footer class="main-footer text-left">
-      <strong>Copyleft &copy; 2022-2023 <a href="https://adminlte.io">narange Studio</a> </strong>
+      <strong>Copyleft &copy; 2022-2023 <a href="http://127.0.0.1:8000/about_us">نانوی شاپ</a> </strong>
     </footer>
 
 

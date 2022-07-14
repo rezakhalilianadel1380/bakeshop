@@ -29,7 +29,7 @@ def homepage(request):
                 messages.success(request,'با موفقیت به سبد خرید شما اضافه شد ')
                 return redirect('/')
         else:
-            cart=Cart.objects.create(user_id=request.user.id)
+            cart=Cart.objects.create(user_id=request.user.id,status='1')
             cart_item=Cart_Item.objects.create(cart=cart,bread_id=bread_id,quantity=quantity)
             messages.success(request,'با موفقیت به سبد خرید شما اضافه شد ')
             return redirect('/')

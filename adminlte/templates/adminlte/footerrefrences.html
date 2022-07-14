@@ -1,11 +1,6 @@
 {% load static %}
-{% url 'order_edite' form.instance.id  as d%}
 <script src="{% static 'adminlte/bower_components/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'adminlte/bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-{% if request.path == d %}
-<link rel="stylesheet" href="{% static 'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css' %}">
-<script src="{% static 'admin/js/django_jalali.min.js' %}"></script>
-{% endif %}
 <script  type="text/javascript" src="{% static 'adminlte/dist/js/adminlte.min.js' %}"></script>
 <!-- Bootstrap 3.3.7 -->
 <!-- FastClick -->
@@ -21,6 +16,8 @@
 <script src="{% static 'adminlte/bower_components/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
 <!-- ChartJS -->
+<script src="{% static 'adminlte/plugins/iCheck/icheck.min.js' %}"></script>
+<script src="{% static 'adminlte/plugins/iCheck/icheck.js' %}"></script>
 <script src="{% static 'adminlte/dist/js/demo.js' %}"></script>
 <script src="{% static 'adminlte/dist/js/pages/dashboard2.js' %}"></script>
 <script src="{% static 'adminlte/bower_components/select2/dist/js/select2.full.min.js' %}"></script>
@@ -113,7 +110,41 @@
           },
       });
   }
+  function turn(){
+    var heart_icon=document.getElementById('shut_ico');
+    if (heart_icon.classList.contains('text-danger')) {
+        heart_icon.classList.remove('text-danger');
+        heart_icon.classList.add('text-success');
+        $.ajax({
+          url:'/adminlte/api/v1/switch',
+          headers: {'X-CSRFToken': csrftoken},
+          type:'POST',
+          data:{
+              "is_on":1,
+          },
+          success:function(rsp){
+            showAndDismissAlert('success','سایت بازه')
+          },
+      });
+    } 
+    else {
+        heart_icon.classList.remove('text-success');
+        heart_icon.classList.add('text-danger');
+        $.ajax({
+          url:'/adminlte/api/v1/switch',
+          headers: {'X-CSRFToken': csrftoken},
+          type:'POST',
+          data:{
+              "is_on":0,
+          },
+          success:function(rsp){
+            showAndDismissAlert('success','سایت بستست')
+          },
+      });
+    }
 
+   
+  }
   function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -126,11 +157,72 @@
                 break;
             }
         }
-  }
+     }
       return cookieValue;
       }
       const csrftoken = getCookie('csrftoken');
+    function showAndDismissAlert(type, message) {
+            var htmlAlert = '<div class="alert alert-' + type + '"  style="height:70px">'+
+                "<i class='bi bi-lightbulb-fill' style='color:yellow'></i> "
+                + '<span> ' +message +' </span>'+ 
+                
+                '</div>';
 
+            // Prepend so that alert is on top, could also append if we want new alerts to show below instead of on top.
+            $(".alert-messages").prepend(htmlAlert);
+
+            // Since we are prepending, take the first alert and tell it to fade in and then fade out.
+            // Note: if we were appending, then should use last() instead of first()
+            $(".alert-messages .alert").first().hide().fadeIn(200).delay(2000).fadeOut(1000, function () { $(this).remove(); });
+        }
   </script>
 
+<script>
+    $('input[type="checkbox"].flat-red, input[type="radio"].flat-red').iCheck({
+          checkboxClass: 'icheckbox_flat-green',
+          radioClass   : 'iradio_flat-green'
+        })
 
+    $(".checkbox-toggle").click(function () {
+      var clicks = $(this).data('clicks');
+      if (clicks) {
+        //Uncheck all checkboxes
+        $(".mailbox-messages input[type='checkbox']").iCheck("uncheck");
+        $(".fa", this).removeClass("fa-check-square-o").addClass('fa-square-o');
+      } else {
+        //Check all checkboxes
+        $(".mailbox-messages input[type='checkbox']").iCheck("check");
+        $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
+      }
+      console.log($(this));
+      $(this).data("clicks", !clicks);
+    });
+
+      $(".RD").click(function() {
+            checkboxes=$(".mailbox-messages input[type='checkbox']:checked");
+            if (checkboxes.length == 0){
+              showAndDismissAlert('red','هیچ ایتمی انتخاب نشده است ')
+            }
+            else{
+              values=[];
+              for(i=0;i<checkboxes.length;i++){
+                values.push(checkboxes[i].value);
+              }
+              $.ajax({
+                url:'/adminlte/api/v1/delete_item',
+                headers: {'X-CSRFToken': csrftoken},
+                type:'POST',
+                data:{
+                    'items':values,
+                },
+                success:function(rsp){
+                  $(".mailbox-messages input[type='checkbox']").iCheck("uncheck");
+                  location.reload(); 
+                },
+            });
+              
+            }
+      });
+
+    
+</script>

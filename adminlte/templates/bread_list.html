@@ -1,0 +1,117 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% url 'dashboard' as dashboard %}
+{% load static %}
+{% block title %}لیست نان{% endblock title %} 
+{% block content %}
+<section class="content-header" style="margin-bottom: 20px;">
+    <h1>
+      لیست نان
+     
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{dashboard}}"><i class="fa fa-dashboard"></i> خانه</a></li>
+      <li class="active">لیست نان </li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+      <div class="col-md-3">
+        <a href="/adminlte/bread/add" class="btn btn-success btn-block "><i class='fa fa-plus ml-5'></i>  اضافه کردن نان </a>
+        <a href="javascript:void(0)"  class="btn btn-danger btn-block margin-bottom RD"><i class='fa fa-remove ml-5'></i> حذف کردن نان</a>
+        <div class="box box-solid">
+          <div class="box-header with-border">
+            <h3 class="box-title">پوشه ها</h3>
+
+            <div class="box-tools">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="box-body no-padding">
+            <ul class="nav nav-pills nav-stacked">
+              <li class="active"><a href="#"><i class="fa fa-inbox"></i> ابنباکس
+                <span class="label label-primary pull-left">12</span></a></li>
+              <li><a href="#"><i class="fa fa-envelope-o"></i> ارسال شده</a></li>
+              <li><a href="#"><i class="fa fa-file-text-o"></i> پیش نویس</a></li>
+              <li><a href="#"><i class="fa fa-filter"></i> هرزنامه <span class="label label-warning pull-left">65</span></a>
+              </li>
+              <li><a href="#"><i class="fa fa-trash-o"></i> سطح زباله</a></li>
+            </ul>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /. box -->
+        <div class="box box-solid">
+          <div class="box-header with-border">
+            <h3 class="box-title">برچسب ها</h3>
+
+            <div class="box-tools">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="box-body no-padding">
+            <ul class="nav nav-pills nav-stacked">
+              <li><a href="#"><i class="fa fa-circle-o text-red"></i> مهم</a></li>
+              <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> شخصی</a></li>
+              <li><a href="#"><i class="fa fa-circle-o text-light-blue"></i> شبکه های اجتماعی</a></li>
+            </ul>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+      </div>
+      <!-- /.col -->
+      <div class="col-md-9">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title">نان</h3>
+            <!-- /.box-tools -->
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body no-padding">
+            <div class="table-responsive mailbox-messages">
+              <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                    <th><button type="button" style='border:none;background-color: white;padding-right:5px;' class="btn  btn-sm checkbox-toggle"><i class="fa fa-square-o " style="font-size:15px;"></i>
+                    </button></td>
+                      <th>شماره</th>
+                      <th>عنوان</th>
+                      <th>قیمت</th>
+                      <th>ویرایش</th>
+                    </tr>
+                    </thead>
+                <tbody>
+               {% for bread in breads %}
+                <tr>
+                <td>
+                  <input type="checkbox" value="{{bread.id}}" class="flat-red">
+                </td>
+                  <td class="mailbox-name">{{bread.id}}</td>
+                  <td class="mailbox-subject">{{bread.title}}</td>
+                  <td class="mailbox-subject">{{bread.price}}</td>
+                  <td class="mailbox-subject"><a href="/adminlte/bread/{{bread.id}}"><i class='fa fa-pencil'></i></a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <!-- /.table -->
+            </div>
+            <!-- /.mail-box-messages -->
+          </div>
+          <!-- /.box-body -->
+          
+        </div>
+        <!-- /. box -->
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+  </section>
+
+{% endblock content %}
+
+
+

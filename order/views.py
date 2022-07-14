@@ -13,6 +13,12 @@ from decorators.decorator import check_of_or_on
 
 
 
+
+
+
+
+
+
 @check_of_or_on
 @login_required(login_url='/login')
 def cart_item_delete(request,id):
@@ -55,7 +61,7 @@ class quantity(APIView):
         cart_item.save()
         cart=Cart.objects.get(id=cart_item.cart.id)
         sum=cart.cart_total_price()
-        return Response({'total_price':intcomma(sum)},status=status.HTTP_200_OK)
+        return Response({'total_price':intcomma(sum,False)},status=status.HTTP_200_OK)
 
 class Delivery_mode_assign(APIView):
     @check_of_or_on

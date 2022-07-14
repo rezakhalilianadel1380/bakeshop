@@ -1,15 +1,25 @@
+from telnetlib import STATUS
 from django.db import models
 from django.contrib.auth.models import User
 from bread.models import Bread
 from accountt.models import Address
 # Create your models here.
 
+status_choices=(
+    ('1','در انتظار پرداخت'),
+    ('2','در انتظار تولید'),
+    ('3','در حال تولید'),
+    ('4','تولید شده '),
+    ('5','تحویل داده شده'),
+
+)
+
 class Cart(models.Model):
     user= models.ForeignKey(User,on_delete=models.CASCADE)
     payment_date=models.DateTimeField(null=True,blank=True)
-    delivery_mode=models.CharField(max_length=1,choices=(('1','حضوری'),('2','پیک')),blank=True,default='2')
+    delivery_mode=models.CharField(max_length=1,choices=(('1','حضوری'),('2','پیک')),default='1')
     is_paid=models.BooleanField(default=False)
-    is_delivered=models.BooleanField(default=False)
+    status=models.CharField(max_length=1,choices=status_choices,blank=True,default='1')
     address=models.ForeignKey(Address,on_delete=models.SET_NULL,null=True,blank=True)
     
     def __str__(self) -> str:
@@ -27,6 +37,18 @@ class Cart(models.Model):
         for i in cart_item:
             sum+=i.bread.price*i.quantity
         return sum
+
+    def get_lable_color(self):
+        if self.status =='1':
+            return 'label-warning'
+        if self.status =='2':
+            return 'label-warning'
+        if self.status =='3':
+            return 'label-info'
+        if self.status =='4':
+            return 'label-danger'
+        if self.status =='5':
+            return 'label-success'
 
 
 
