@@ -17,6 +17,8 @@ from django.contrib.auth.models import User
  
 
 def login2(request):
+    if request.user.is_authenticated:
+        return redirect('/')
     return render(request,'loginv2.html',{})
 
 

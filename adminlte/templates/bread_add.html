@@ -1,0 +1,86 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% load static %}
+{% block title %}اضافه کردن نان{% endblock title %} 
+{% block content %}
+<section class="content-header" style="margin-bottom: 20px;">
+    <h1>
+        فرم اضافه کردن نان
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{dashboard}}"><i class="fa fa-dashboard"></i> خانه</a></li>
+      <li ><a href="/adminlte/bread"><i class="fa fa-laptop"></i>نان</a></li>
+      <li class="active">اضافه کردن نان</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <form method="post" enctype="multipart/form-data">
+            <div class="col-md-3">
+                    
+                    <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">عکس </h3>
+
+                        <div class="box-tools">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        </div>
+                    </div>
+                    <div class="box-body padding">
+                        <img src="" id="preview" width="100%">
+                        {{form.image}}
+                        {% for error in form.image.errors %}
+                            <span class='text-danger'>{{error}}</span>
+                        {% endfor %}
+                    </div>
+                    <!-- /.box-body -->
+                    </div>
+                    
+            </div>
+            <div class="col-md-9">
+                    <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">نان</h3>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body padding">
+                        <div class="table-responsive mailbox-messages">
+                            {% csrf_token %}
+                            <label for="id_title ">عنوان :</label>
+                            {{form.title}}
+                            {% for error in form.title.errors %}
+                            <span class='text-danger'>{{error}}</span>
+                            {% endfor %}
+                            <br>
+                            <label for="id_description mt-3">توضیحات :</label>
+                            <br>
+                            {{form.description}}
+                            {% for error in form.description.errors %}
+                            <span class='text-danger'>{{error}}</span>
+                            {% endfor %}
+                            <br>
+                            <label for="id_price">قیمت :</label>
+                            {{form.price}}
+                            {% for error in form.price.errors %}
+                            <span class='text-danger'>{{error}}</span>
+                            {% endfor %}
+
+                            {{form.media}}
+                             <br>
+                            <button class='btn btn-success btn-block '>ثبت</button>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                    
+                    </div>
+                    <!-- /. box -->
+            </div>
+        </form>
+    </div>
+    
+  </section>
+
+
+{% endblock %}

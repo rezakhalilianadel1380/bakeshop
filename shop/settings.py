@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django_render_partial',
+    'ckeditor',
+    'ckeditor_uploader',
     'bread',
     'accountt',
     'order',
@@ -138,3 +140,13 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'static_cdn','media_roots')
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CKEDITOR_UPLOAD_PATH='uploadfiles/'
+
+CKEDITOR_CONFIGS={
+    'default':{
+        'toolbar':'Advanced',
+        'height': 300,
+        'width': 'full', 
+    }
+}

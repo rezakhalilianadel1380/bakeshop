@@ -22,94 +22,6 @@
 <script src="{% static 'adminlte/dist/js/pages/dashboard2.js' %}"></script>
 <script src="{% static 'adminlte/bower_components/select2/dist/js/select2.full.min.js' %}"></script>
 <script>
-  $(function () {
-    //Initialize Select2 Elements
-    $('.select2').select2()
-  })
-</script>
-<!-- confirm delete product  adminlte -->
-<script>
-  $('#modal-danger').on('show.bs.modal', function (event) {
-    var myVal = $(event.relatedTarget).data('val');
-    $(this).find("#pid").attr("href",myVal)
-  }); 
-
-</script>
-<!-- /confirm delete product  adminlte -->
-<script>
-    function a(){
-        alert('sdf');
-        }
-
-    var labels=[];
-    var datas=[];
-        $.ajax({
-            url:'/adminlte/chartjs',
-            type:'GET',
-            success:function(response){
-                lables=response.lables
-                datas=response.data
-                chart()
-            },
-        });
-        
-  function chart(){
-    const ctx = document.getElementById('myChart').getContext('2d');
-    const myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels:lables,
-            datasets: [{
-                label: 'تعداد',
-                data:datas,
-                backgroundColor: [
-                    'rgba(255, 99, 132)',
-                    'rgba(54, 162, 235)',
-                    'rgba(255, 206, 86)',
-                    'rgba(75, 192, 192)',
-                    'rgba(153, 102, 255)',
-                    'rgba(255, 159, 64)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 86, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 64, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-  }
-</script>
-<script>
-  function category_add(){
-      $.ajax({
-          url:'/adminlte/add_category',
-          headers: {'X-CSRFToken': csrftoken},
-          type:'POST',
-          data:{
-              "name":$('#categoryname').val(),
-              "title":$('#categorytitle').val(),
-          },
-          success:function(rsp){
-            $('#id_category').append('<option value='+rsp.id+' selected>'+rsp.title+'</option>');
-            $('#categroy_add_button').click();
-            $('input[name="category_name"]').val("");
-            $('input[name="title_category"]').val("");
-            
-          },
-      });
-  }
   function turn(){
     var heart_icon=document.getElementById('shut_ico');
     if (heart_icon.classList.contains('text-danger')) {
@@ -224,5 +136,7 @@
             }
       });
 
-    
+      $("#id_image").change(function() {
+        preview.src=URL.createObjectURL(event.target.files[0]);
+      });
 </script>

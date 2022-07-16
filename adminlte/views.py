@@ -1,5 +1,6 @@
 from multiprocessing import context
-from django.shortcuts import render
+from pyexpat.errors import messages
+from django.shortcuts import redirect, render
 from bread.models import Bread
 from order.models import Cart
 from django.contrib.auth.models import User
@@ -7,7 +8,43 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from accountt.models import Setting
 from rest_framework import status
+from django.contrib import messages
+from .forms import Bread_Form
 # Create your views here.
+
+
+def user_list(request):
+    users=User.objects.all()
+    admins=len(User.objects.filter(is_staff=True))
+    context={
+        'users':users,
+        'admin_num':admins
+    }
+    return render(request,'user_list.html',context)
+
+
+def edite_bread(request,id):
+    form=Bread_Form(request.POST or None ,request.FILES or None,instance=Bread.objects.get(id=id))
+    if form.is_valid():
+        form.save()
+        messages.success(request,'نان با موفیت ویرایش شد ')
+        return redirect('/adminlte/bread')
+    context={
+        'form':form,
+    }
+    return render(request,'bread_edite.html',context)
+
+
+def add_bread(request):
+    form=Bread_Form(request.POST or None ,request.FILES or None )
+    if form.is_valid():
+        form.save()
+        messages.success(request,'نان با موفقیت اضافه شد ')
+        return redirect('/adminlte/bread')
+    context={
+        'form':form,
+    }
+    return render(request,'bread_add.html',context)
 
 
 

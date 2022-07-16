@@ -19,7 +19,7 @@
                            <p class="text-left"><span style='font-size:20;color:red'>{{bread.price|intcomma:False}} تومان</span></p>
                            <h4>توضیحات :</h4>
                            <p> 
-                              {{bread.description}} 
+                              {{bread.description|safe}} 
                            </p>
                               <form method='POST' action=''>
                                  تعداد: {{form.quantity}}

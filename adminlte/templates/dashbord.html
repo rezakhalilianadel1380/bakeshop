@@ -1,6 +1,6 @@
 {% extends 'adminlte/_Main_layout.html' %}
 {% load static %}
-{% block title %}پنل مدیریت {% endblock title %} 
+{% block title %}داشبرد{% endblock title %} 
 
 {% block content %}
     <!-- Content Header (Page header) -->
@@ -10,36 +10,10 @@
        
       </h1>
       <ol class="breadcrumb">
-        <li><a href="#"><i class="fa fa-dashboard"></i> خانه</a></li>
-        <li class="active">داشبرد</li>
+        <li class="active"><i class="fa fa-dashboard"></i> خانه</li>
       </ol>
     </section>
-    <!-- django messages start -->
-    {% for msg in messages %}
-        <div class='row' style="margin-bottom: 20px;margin-top:20px">   
-            <div class="col-12">
-                {% if msg.tags == 'success' %}
-                <div class="alert alert-success alert-dismissible" style="padding-right: 30px;" >
-                    <button type="button" class="close pull-left" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    <p >{{msg}}</p>
-                </div>
-                {% endif %}
-                {% if msg.tags == 'error' %}
-                <div class="alert alert-danger alert-dismissible" style="padding-right: 30px;" >
-                    <button type="button" class="close pull-left" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{msg}}
-                </div>
-                {% endif %}
-                {% if msg.tags == 'warning' %}
-                <div class="alert alert-warning alert-dismissible" style="padding-right: 30px;" >
-                    <button type="button" class="close pull-left" data-dismiss="alert" aria-hidden="true">&times;</button>
-                    {{msg}}
-                </div>
-                {% endif %}
-            </div>
-        </div>
-    {% endfor %}
-    <!-- django messages end -->
+  
     <!-- Main content -->
     <section class="content" >
       <!-- Info boxes -->

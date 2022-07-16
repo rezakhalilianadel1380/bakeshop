@@ -19,9 +19,10 @@
       <div class="col-md-3">
         <a href="/adminlte/bread/add" class="btn btn-success btn-block "><i class='fa fa-plus ml-5'></i>  اضافه کردن نان </a>
         <a href="javascript:void(0)"  class="btn btn-danger btn-block margin-bottom RD"><i class='fa fa-remove ml-5'></i> حذف کردن نان</a>
+        
         <div class="box box-solid">
           <div class="box-header with-border">
-            <h3 class="box-title">پوشه ها</h3>
+            <h3 class="box-title">جزئیات</h3>
 
             <div class="box-tools">
               <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -30,37 +31,17 @@
           </div>
           <div class="box-body no-padding">
             <ul class="nav nav-pills nav-stacked">
-              <li class="active"><a href="#"><i class="fa fa-inbox"></i> ابنباکس
-                <span class="label label-primary pull-left">12</span></a></li>
-              <li><a href="#"><i class="fa fa-envelope-o"></i> ارسال شده</a></li>
-              <li><a href="#"><i class="fa fa-file-text-o"></i> پیش نویس</a></li>
-              <li><a href="#"><i class="fa fa-filter"></i> هرزنامه <span class="label label-warning pull-left">65</span></a>
-              </li>
-              <li><a href="#"><i class="fa fa-trash-o"></i> سطح زباله</a></li>
+              <li class="active"><a href="#"><i class="fa fa-inbox"></i>تعداد نان ها 
+                <span class="label label-primary pull-left">{{breads|length}}</span></a></li>
+              {% for bread in breads %}
+              <li ><a href="#"><i class="fa fa-inbox"></i>فروش {{bread.title}} 
+                <span class="label label-success pull-left">{{bread.count_sell_bread}}</span></a></li>
+              {% endfor %}
             </ul>
           </div>
           <!-- /.box-body -->
         </div>
-        <!-- /. box -->
-        <div class="box box-solid">
-          <div class="box-header with-border">
-            <h3 class="box-title">برچسب ها</h3>
-
-            <div class="box-tools">
-              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-              </button>
-            </div>
-          </div>
-          <div class="box-body no-padding">
-            <ul class="nav nav-pills nav-stacked">
-              <li><a href="#"><i class="fa fa-circle-o text-red"></i> مهم</a></li>
-              <li><a href="#"><i class="fa fa-circle-o text-yellow"></i> شخصی</a></li>
-              <li><a href="#"><i class="fa fa-circle-o text-light-blue"></i> شبکه های اجتماعی</a></li>
-            </ul>
-          </div>
-          <!-- /.box-body -->
-        </div>
-        <!-- /.box -->
+        
       </div>
       <!-- /.col -->
       <div class="col-md-9">
@@ -92,7 +73,7 @@
                   <td class="mailbox-name">{{bread.id}}</td>
                   <td class="mailbox-subject">{{bread.title}}</td>
                   <td class="mailbox-subject">{{bread.price}}</td>
-                  <td class="mailbox-subject"><a href="/adminlte/bread/{{bread.id}}"><i class='fa fa-pencil'></i></a></td>
+                  <td class="mailbox-subject"><a href="/adminlte/bread/edite/{{bread.id}}"><i class='fa fa-pencil'></i></a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
