@@ -3,6 +3,8 @@
 {% url 'dashboard'  as dashboard %}
 {% url 'show_bread_list'  as bread_list %}
 {% url 'user_list'  as user_list %}
+{% url 'show_orders' as  show_orders %}
+{% url 'produce_bread'  as produce_bread %}
 <!DOCTYPE html>
 <html>
 
@@ -64,6 +66,28 @@
               right:1%;
               z-index: 7000;
       }
+      @keyframes animation {
+  0% {
+    stroke-dasharray: 1 98;
+    stroke-dashoffset: -105;
+  }
+  50% {
+    stroke-dasharray: 80 10;
+    stroke-dashoffset: -160;
+  }
+  100% {
+    stroke-dasharray: 1 98;
+    stroke-dashoffset: -300;
+  }
+}
+
+#spinner {
+  transform-origin: center;
+  animation-name: animation;
+  animation-duration: 1.2s;
+  animation-timing-function: cubic-bezier;
+  animation-iteration-count: infinite;
+}
   </style>
 </head>
 
@@ -155,7 +179,7 @@
                     <a href="#" class="btn btn-default btn-flat">پروفایل</a>
                   </div>
                   <div class="pull-left">
-                    <a href="/logout" class="btn btn-default btn-flat">خروج</a>
+                    <a href="/log_out" class="btn btn-default btn-flat">خروج</a>
                   </div>
                 </li>
               </ul>
@@ -204,6 +228,7 @@
 
             </a>
           </li>
+          {% if perms.order.view_bread %}
           <li {% if request.path == bread_list %}class="active"{% endif %}>
             <a href="{{bread_list}}">
               <i class="fa fa-laptop"></i>
@@ -211,6 +236,8 @@
 
             </a>
           </li>
+          {% endif %}
+          {% if perms.auth.view_user %}
           <li {% if request.path == user_list %}class="active"{% endif %}>
             <a href="{{user_list}}">
               <i class="fa  fa-user"></i>
@@ -218,7 +245,22 @@
 
             </a>
           </li>
-          <li class="treeview">
+          {% endif %}
+
+        
+          {% if perms.order.can_access_produce_section %}
+          <li  {% if request.path == produce_bread %}class="active"{% endif %}>
+            <a href="{{produce_bread}}">
+              <i class="fa  fa-cogs"></i>
+              <span>پخت و پز نان </span>
+
+            </a>
+          </li>
+          {%endif%}
+
+
+          {% if perms.order.view_order %}
+          <li class="treeview {% if request.path == show_orders   %}active{% endif %} ">
             <a href="#">
               <i class="fa fa-cart-plus"></i>
               <span>سفارشات</span>
@@ -227,18 +269,19 @@
               </span>
             </a>
             <ul class="treeview-menu">
-              <li><a href="/adminlte/order"><i class="fa fa-circle-o"></i> سفارش ها </a></li>
+              <li><a href="{{show_orders}}"><i class="{% if request.path == show_orders   %}fa fa-circle {%else%}fa fa-circle-o{% endif %}"></i> سفارش ها </a></li>
               <li><a href="pages/layout/boxed.html"><i class="fa fa-circle-o"></i> کدتخفیف </a></li>
             </ul>
           </li>
+          {% endif %}
+
           <li>
-            <a href="/logout">
+            <a href="{%url "admin_logout"%}">
               <i class="fa  fa-sign-out"></i>
               <span>خروج</span>
 
             </a>
           </li>
-
           {% comment %} <li class="treeview">
             <a href="#">
               <i class="fa fa-files-o"></i>

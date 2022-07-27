@@ -22,6 +22,12 @@
 <script src="{% static 'adminlte/dist/js/pages/dashboard2.js' %}"></script>
 <script src="{% static 'adminlte/bower_components/select2/dist/js/select2.full.min.js' %}"></script>
 <script>
+  $(function () {
+    //Initialize Select2 Elements
+    $('.select2').select2()
+  })
+</script>
+<script>
   function turn(){
     var heart_icon=document.getElementById('shut_ico');
     if (heart_icon.classList.contains('text-danger')) {
@@ -106,7 +112,6 @@
         $(".mailbox-messages input[type='checkbox']").iCheck("check");
         $(".fa", this).removeClass("fa-square-o").addClass('fa-check-square-o');
       }
-      console.log($(this));
       $(this).data("clicks", !clicks);
     });
 
@@ -131,12 +136,94 @@
                   $(".mailbox-messages input[type='checkbox']").iCheck("uncheck");
                   location.reload(); 
                 },
+                error: function(xhr, status, error) {
+                  if (xhr.status==403){
+                      showAndDismissAlert('red','دسترسی غیر مجاز است ')
+
+                    }
+                    else{
+                      showAndDismissAlert('red','مشکلی پیش امده است ')
+                    }
+                            
+                }
             });
               
             }
       });
+      $(".RD_Us").click(function() {
+            checkboxes=$(".mailbox-messages input[type='checkbox']:checked");
+            if (checkboxes.length == 0){
+              showAndDismissAlert('red',' هیچ ایتمی انتخاب نشده است')
+            }
+            else{
+              values=[];
+              for(i=0;i<checkboxes.length;i++){
+                values.push(checkboxes[i].value);
+              }
+              $.ajax({
+                url:'/adminlte/api/v1/delete_user_item',
+                headers: {'X-CSRFToken': csrftoken},
+                type:'POST',
+                data:{
+                    'items':values,
+                },
+                success:function(rsp){
+                  $(".mailbox-messages input[type='checkbox']").iCheck("uncheck");
+                  location.reload(); 
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status==403){
+                      showAndDismissAlert('red','دسترسی غیر مجاز است ')
 
+                    }
+                    else{
+                      showAndDismissAlert('red','مشکلی پیش امده است ')
+                    }
+
+                            
+                 }
+            });
+              
+            }
+      });
       $("#id_image").change(function() {
         preview.src=URL.createObjectURL(event.target.files[0]);
       });
+
+      var foo = document.getElementById('id_password');
+        foo.addEventListener('focus', function () {
+            this.setAttribute('data-value', this.value);
+            this.value = '';
+        });
+        foo.addEventListener('blur', function () {
+            if (this.value === '')
+                this.value = this.getAttribute('data-value');
+        });
+
+
+      function change_status(order_id){
+        $.ajax({
+                url:'/adminlte/api/v1/produce/bread',
+                headers: {'X-CSRFToken': csrftoken},
+                type:'POST',
+                data:{
+                    'order_id':order_id,
+                    'status':$('#status_order option:selected').val(),
+                },
+                success:function(rsp){
+                  $('.loader').fadeIn('fast');
+                  $(".box-primary").html(rsp.html);
+                  $('.loader').fadeOut('slow');
+                  $('.select2').select2();
+                 
+                },
+                error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('.box-primary').html(err.html);
+                            $('.loader').fadeOut('slow');
+                            
+                 }
+            });
+      }
 </script>

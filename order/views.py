@@ -88,7 +88,7 @@ class Set_Address(APIView):
 
 
 @check_of_or_on
-@login_required(login_url='/login')
+@login_required(login_url='/signin')
 def cart(request):
     cart=Cart.objects.filter(user=request.user,is_paid=False).first()
     context={

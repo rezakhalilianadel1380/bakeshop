@@ -1,4 +1,5 @@
 from telnetlib import STATUS
+from tkinter import N
 from django.db import models
 from django.contrib.auth.models import User
 from bread.models import Bread
@@ -21,6 +22,11 @@ class Cart(models.Model):
     is_paid=models.BooleanField(default=False)
     status=models.CharField(max_length=1,choices=status_choices,blank=True,default='1')
     address=models.ForeignKey(Address,on_delete=models.SET_NULL,null=True,blank=True)
+    class Meta:
+        permissions = [
+            ("can_view_cart", "میتونه سفارش ها رو مشاهده کنه"),
+            ("can_access_produce_section","دسترسی به بخش تولید نان "),
+        ]
     
     def __str__(self) -> str:
         return self.user.username
@@ -41,13 +47,13 @@ class Cart(models.Model):
     def get_lable_color(self):
         if self.status =='1':
             return 'label-warning'
-        if self.status =='2':
+        elif self.status =='2':
             return 'label-warning'
-        if self.status =='3':
+        elif self.status =='3':
             return 'label-info'
-        if self.status =='4':
+        elif self.status =='4':
             return 'label-danger'
-        if self.status =='5':
+        elif self.status =='5':
             return 'label-success'
 
 

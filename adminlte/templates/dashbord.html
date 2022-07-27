@@ -1,5 +1,6 @@
 {% extends 'adminlte/_Main_layout.html' %}
 {% load static %}
+{% load humanize %}
 {% block title %}داشبرد{% endblock title %} 
 
 {% block content %}
@@ -90,7 +91,7 @@
                 <li>
                   <img src="{{user.user_detail.get_image}}" alt="User Image">
                   <a class="users-list-name" href="#">{{user.get_full_name}}</a>
-                  <span class="users-list-date">{{user.date_joined|timesince}}  پیش</span>
+                  <span class="users-list-date">{{user.date_joined|naturaltime|truncatechars:12}}  </span>
                 </li>
                 {% endfor %}
               </ul>
@@ -98,7 +99,7 @@
             </div>
             <!-- /.box-body -->
             <div class="box-footer text-center">
-              <a href="javascript:void(0)" class="uppercase">نمایش همه کاربران</a>
+              <a href="/adminlte/users" class="uppercase">نمایش همه کاربران</a>
             </div>
             <!-- /.box-footer -->
           </div>
@@ -128,7 +129,6 @@
                     <td><a href="pages/examples/invoice.html">{{cart.id}}</a></td>
                     <td>{{cart.user.get_full_name}}</td>
                     <td><span class="label {{cart.get_lable_color}}">{{cart.get_status_display}}</span></td>
-                    
                   </tr>
                   {% endfor %}
                   </tbody>

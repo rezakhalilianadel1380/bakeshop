@@ -22,12 +22,11 @@ class Address(models.Model):
 
 
 class User_detail(models.Model):
-    phone_number=models.CharField(max_length=11,unique=True)
     image=models.ImageField(upload_to='avatar/',null=True,blank=True) 
     user=models.OneToOneField(User,on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.phone_number
+        return self.user.get_full_name()
 
     def get_image(self):
         if self.image:

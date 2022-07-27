@@ -1,0 +1,129 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% url 'dashboard' as dashboard %}
+{% load static %}
+{% block title %}پختو پز نان{% endblock title %} 
+{% block content %}
+<section class="content-header" style="margin-bottom: 20px;">
+    <h1>
+        تولید نان
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{dashboard}}"><i class="fa fa-dashboard"></i> خانه</a></li>
+      <li class="active">تولید</li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+      
+      <div class="col-md-3">
+        <div class="box box-solid">
+          <div class="box-header with-border">
+            <h3 class="box-title">جزئیات</h3>
+
+            <div class="box-tools">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="box-body no-padding">
+            <ul class="nav nav-pills nav-stacked">
+              <li class="active"><a href="#"><i class="fa fa-inbox"></i>سفارشات امروز
+                <span class="label label-primary pull-left">{{carts|length}}</span></a></li>
+            </ul>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        
+      </div>
+      <!-- /.col -->
+      <div class="col-md-9">
+        <div class="box box-primary">
+              {% if cart.is_empty %}
+                  <div class="box-header with-border">
+                    <h3 class="box-title">سفارش ها</h3>
+                    <div class="box-tools pull-right">
+                            <select name="select" onchange="change_status({{cart.id}})" class="select2" id="status_order">
+                                <option  disabled="disabled" {% if cart.status == '2'%}selected{% endif %}>----</option>
+                                <option value="3" {% if cart.status == '3'%}selected{% endif %}>در حال تولید</option>
+                                <option value="4" {% if cart.status == '4'%}selected{% endif %}>تولید شده </option>
+                            </select>
+                    </div>
+                    <!-- /.box-tools -->
+                  </div>
+                  <!-- /.box-header -->
+                  <div class="box-body padding">
+                    <p> نام کاربر  : <span class="text-danger">{{cart.user.get_full_name}}</span>  </p>
+                    <p> نوع تحویل  :  <span class="text-danger"> {{cart.get_delivery_mode_display}}</span></p>
+                    <p> شماره تلفن همراه:  <span class="text-danger">{{cart.user.username}}</span> </p>
+                    <div class="table-responsive mailbox-messages">
+                        <table class="table table-hover table-striped">
+                          <thead>
+                                <th>محصول</th>
+                                <th>تعداد</th>
+                              </tr>
+                              </thead>
+                          <tbody>
+                        {% for cart_item in cart.cart_item.all %}
+                          <tr>
+                            <td class="mailbox-name">{{cart_item.bread.title}}</td>
+                            <td class="mailbox-subject">{{cart_item.quantity}}</td>
+                          </tr>
+                          {% endfor %}
+                          </tbody>
+                        </table>
+                        <!-- /.table -->
+                    </div>
+                
+                  </div>
+                  <!-- /.box-body -->
+              {% else %}
+              <div  style='display:flex;justify-content:center'>
+              <svg viewBox="0 0 100 100" style='width:300px;height:60px;margin-top:20px'  >
+                <defs>
+                  <filter id="shadow">
+                    <feDropShadow dx="0" dy="0" stdDeviation="1.5" 
+                      flood-color="#fc6767"/>
+                  </filter>
+                </defs>
+                <circle id="spinner" style="fill:transparent;stroke:#dd2476;stroke-width: 7px;stroke-linecap: round;filter:url(#shadow);" cx="50" cy="50" r="45"/>
+              </svg>
+              <br>
+              </div>
+              <h4 style='text-align:center;' class='mb-3' id='elemId'>سفارشی پیدا نشد !  درحال بارگیری</h4>
+              <br>
+              {% endif %}
+        </div>
+        <!-- /. box -->
+      </div>
+     
+      <!-- /.col -->
+    </div>
+    
+    
+
+    <!-- /.row -->
+</section>
+<script>
+  function send_request(){
+    if ($('#elemId').length > 0){
+      $.ajax({
+        url:'/adminlte/api/v1/produce/bread/read',
+        type:'GET',
+        success:function(rsp){
+          $(".box-primary").html(rsp.html);
+          $('.select2').select2();
+         
+        },
+        error: function(xhr, status, error) {
+                    var err = JSON.parse(xhr.responseText);
+                    $('.box-primary').html(err.html);
+                    
+                    
+         }
+       });
+    }
+  }
+  setInterval(send_request,10000); 
+</script>
+{% endblock %}

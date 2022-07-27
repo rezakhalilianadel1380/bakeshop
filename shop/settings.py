@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-phv4_t0y#*zg841+)#pb=!s=_%t2t@khor)s(78q-&xdwmzk2*'
+SECRET_KEY = 'django-insecure-phv4_tSESSION_COOKIE_AGEy#*zg841+)#pb=!s=_%t2t@khor)s(78q-&xdwmzk2*'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -150,3 +151,7 @@ CKEDITOR_CONFIGS={
         'width': 'full', 
     }
 }
+
+SESSION_EXPIRE_SECONDS = 3600
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True  
+SESSION_TIMEOUT_REDIRECT = '/signin'

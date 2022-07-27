@@ -26,8 +26,7 @@ class Resend(APIView):
     @check_of_or_on
     def post(self, request):
         phone=request.data.get('phone')
-        phone_object=User_detail.objects.filter(phone_number=phone).first()
-        user=phone_object.user
+        user=User.objects.filter(username=phone).first()
         code=Code.objects.filter(user=user)
         if code.exists():
             code=code.first()
@@ -48,8 +47,7 @@ class Check_The_Code(APIView):
     def post(self, request):
         phone=request.data.get('phone')
         code=request.data.get('code')
-        phone_object=User_detail.objects.filter(phone_number=phone).first()
-        user=phone_object.user
+        user=User.objects.filter(username=phone).first()
         utc=pytz.UTC
         current_time= utc.localize(datetime.datetime.now()) 
         if user.code.code==code and user.code.expired_time>=current_time:
@@ -63,10 +61,8 @@ class Send_The_Code(APIView):
     @check_of_or_on
     def post(self, request):
         phone=request.data.get('phone')
-        phone_object=User_detail.objects.filter(phone_number=phone).first()
-        user=phone_object.user
+        user=User.objects.filter(username=phone).first()
         code=Code.objects.filter(user=user)
-        
         if code.exists():
             code=code.first()
             code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
@@ -105,9 +101,8 @@ class Check_Password(APIView):
     def post(self, request):
         phone=request.data.get('phone')
         password=request.data.get('password')
-        phone_object=User_detail.objects.filter(phone_number=phone).first()
-        user=phone_object.user
-        if phone_object.user.check_password(password):
+        user=User.objects.filter(username=phone).first()
+        if user.check_password(password):
             login(request,user)
             return Response({'address':'http://127.0.0.1:8000'},status=status.HTTP_200_OK)
         return Response({'password_error':'گذرواژه درست نیست '},status=status.HTTP_400_BAD_REQUEST)
@@ -118,8 +113,8 @@ class Check_Phone(APIView):
         phone=request.data.get('phone')
         if re.search(r"^09\d{9}$",phone) is None:
             return Response({'phone_error':'شماره تلفن اشتباست'},status=status.HTTP_400_BAD_REQUEST)
-        phone_object=User_detail.objects.filter(phone_number=phone)
-        if phone_object.exists():
+        user=User.objects.filter(username=phone)
+        if user.exists():
             html="""  
                      <div class="form-inline" id="login-form">
                         <p class="text-right text-info">رمز خود را وارد کنید </p>

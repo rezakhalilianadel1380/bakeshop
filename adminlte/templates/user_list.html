@@ -1,7 +1,7 @@
 {% extends 'adminlte/_Main_layout.html' %}
 {% url 'dashboard' as dashboard %}
 {% load static %}
-{% block title %}لیست نان{% endblock title %} 
+{% block title %}کاربران{% endblock title %} 
 {% block content %}
 <section class="content-header" style="margin-bottom: 20px;">
     <h1>
@@ -16,8 +16,8 @@
 <section class="content">
     <div class="row">
       <div class="col-md-3">
-        <a href="/adminlte/user/add" class="btn btn-success btn-block "><i class='fa fa-plus ml-5'></i>  اضافه کردن کاربر جدید   </a>
-        <a href="javascript:void(0)"  class="btn btn-danger btn-block margin-bottom RD"><i class='fa fa-remove ml-5'></i>حذف کردن کاربر</a>
+        <a href="/adminlte/user/add" class="btn btn-success btn-block "><i class='fa fa-plus ml-5'></i>  اضافه کردن کاربر    </a>
+        <a href="javascript:void(0)"  class="btn btn-danger btn-block margin-bottom RD_Us"><i class='fa fa-remove ml-5'></i>حذف کردن کاربر</a>
         
         <div class="box box-solid">
           <div class="box-header with-border">
@@ -57,20 +57,22 @@
                     </button></td>
                       <th>شماره</th>
                       <th>نام کاربری</th>
+                      <th>نام و نام خانوادگی</th>
                       <th>ادمین</th>
                       <th>ویرایش</th>
                     </tr>
                     </thead>
                 <tbody>
-               {% for user in users %}
+               {% for user in page_obj %}
                 <tr>
                 <td>
                   <input type="checkbox" value="{{user.id}}" class="flat-red">
                 </td>
                   <td class="mailbox-name">{{user.id}}</td>
                   <td class="mailbox-subject">{{user.username}}</td>
+                  <td class="mailbox-subject">{{user.get_full_name}}</td>
                   <td class="mailbox-subject">{% if user.is_staff %} <i class='fa fa-check text-success'></i>{% else %}<i class='fa fa-remove text-danger'></i> {% endif %}</td>
-                  <td class="mailbox-subject"><a href="/adminlte/bread/edite/{{bread.id}}"><i class='fa fa-pencil'></i></a></td>
+                  <td class="mailbox-subject"><a href="/adminlte/user/edite/{{user.id}}"><i class='fa fa-pencil'></i></a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
@@ -83,10 +85,54 @@
           
         </div>
         <!-- /. box -->
+          <div class="pagination" style='float:left;'>
+            <ul class="pagination " style="margin-right: 10px;">
+              {% if page_obj.has_previous %}
+              <li class="paginate_button previous" ><a href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-angle-right"></i> قبلی </a></li>
+              {% endif %}
+              {% for page in page_obj.paginator.page_range %}
+                  {% if page == page_obj.number%}
+                      <li class="paginate_button  active"><a>{{page}}</a></li>
+                  {% else %}
+                      <li class="paginate_button"><a href="?page={{page}}">{{page}}</a></li>
+                  {% endif %}
+              {% endfor %}
+              {% if page_obj.has_next %}
+              <li class="paginate_button next"><a href="?page={{page_obj.next_page_number}}"> بعدی <i class="fa fa-angle-left"></i></a>
+              <li>
+                  {% endif %}
+          </ul>
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
       </div>
       <!-- /.col -->
     </div>
     <!-- /.row -->
+    
   </section>
 
 {% endblock content %}

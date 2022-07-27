@@ -1,0 +1,142 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% load static %}
+{% block title %}ایجاد کاربر{% endblock title %} 
+{% block content %}
+<section class="content-header" style="margin-bottom: 20px;">
+    <h1>
+        ویرایش کاربر
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{dashboard}}"><i class="fa fa-dashboard"></i> خانه</a></li>
+      <li ><a href="/adminlte/users"><i class="fa fa-laptop"></i>کاربران</a></li>
+      <li class="active">ویرایش </li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <form method="post" enctype="multipart/form-data">
+            <div class="col-md-3">
+                    
+                    <div class="box box-solid">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">عکس </h3>
+
+                        <div class="box-tools">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                        </div>
+                    </div>
+                    <div class="box-body padding">
+                        {% if form2.instance.image  %}
+                            <img src="{{form2.instance.image.url}}" id="preview" width="100%">
+                        {% endif %}
+                        {{form2.image}}
+                    </div>
+                    <!-- /.box-body -->
+                    </div>
+                    
+            </div>
+            <div class="col-md-9">
+                    <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">نان</h3>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body padding">
+                        <div class="table-responsive mailbox-messages">
+                            <div class="form-group ">
+                                {% csrf_token %}
+                                <label for="exampleInputEmail1">شماره تلفن همراه (نام کاربری) :</label>
+                                {{form.username}}
+                                {% for i in form.username.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputPassword1">گذرواژه :</label><br>
+                                <p></p>
+                                <input type="text"   name="password" value="{{form.instance.password}}" placeholder="{{form.instance.password}}" maxlength="128" class="form-control" required="" id="id_password">
+                                {% for i in form.password.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">نام :</label><br>
+                                {{form.first_name}}
+                                {% for i in form.first_name.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                               
+                                <div class="form-group">
+                                <label for="exampleInputFile">نام خانوادگی :</label>
+                                {{form.last_name}}
+                                {% for i in form.last_name.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">ایمیل : </label>
+                                {{form.email}}
+                                {% for i in form.email.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">گروه ها :</label>
+                                {{form.groups}}<br>
+                                {% for i in form.groups.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">اجازه ها  :</label>
+                                {{form.user_permissions}}
+                                {% for i in form.user_permissions.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">فعال  :</label>
+                                {{form.is_active}}
+                                {{form.is_active.help_text}}
+                                {% for i in form.is_active.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                
+                                <div class="form-group">
+                                <label for="exampleInputFile">وضعیت کارمندی :</label>
+                                {{form.is_staff}}
+                                {{form.is_staff.help_text}}
+                                {% for i in form.is_staff.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">ابرکاربر:</label>
+                                {{form.is_superuser}}
+                                {{form.is_superuser.help_text}}
+                                {% for i in form.is_superuser.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                
+                            
+                            <button class='btn btn-success btn-block '>ثبت</button>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                    
+                    </div>
+                    <!-- /. box -->
+            </div>
+        </form>
+    </div>
+    
+  </section>
+
+
+{% endblock %}
