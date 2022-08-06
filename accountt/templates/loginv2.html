@@ -149,7 +149,13 @@
                         },
                         success:function(rsp){
                             document.cookie="phonenumber="+rsp.phone+";max-age=0";
-                            location.replace(rsp.address);
+                            next=findGetParameter('next');
+                            if (next === null){
+                                location.replace(rsp.address);
+                            }
+                            else{
+                                location.replace(rsp.address+next);
+                            }
                         },
                         error: function(xhr, status, error) {
                             var err = JSON.parse(xhr.responseText);
@@ -205,7 +211,13 @@
                         },
                         success:function(rsp){
                             document.cookie="phonenumber="+rsp.phone+";max-age=0";
-                            location.replace(rsp.address);
+                            next=findGetParameter('next');
+                            if (next === null){
+                                location.replace(rsp.address);
+                            }
+                            else{
+                                location.replace(rsp.address+next);
+                            }
                         },
                         error: function(xhr, status, error) {
                             var err = JSON.parse(xhr.responseText);
@@ -304,6 +316,16 @@
                 }
             }
             return "";
+            }
+            function findGetParameter(parameterName) {
+                var result = null,
+                    tmp = [];
+                var items = location.search.substr(1).split("&");
+                for (var index = 0; index < items.length; index++) {
+                    tmp = items[index].split("=");
+                    if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+                }
+                return result;
             }
     </script>
 </body>

@@ -55,8 +55,10 @@ class Resend(APIView):
 
         return Response(status=status.HTTP_200_OK)
         
+
+
+
 class Check_The_Code(APIView):
-    
     def post(self, request):
         phone=request.data.get('phone')
         code=request.data.get('code')
@@ -70,8 +72,9 @@ class Check_The_Code(APIView):
             return Response({'code_error':'کد منتقضی شده یا نادرست است'},status=status.HTTP_400_BAD_REQUEST)
             
 
+
+
 class Send_The_Code(APIView):
-    
     def post(self, request):
         phone=request.data.get('phone')
         user=User.objects.filter(username=phone).first()
@@ -110,7 +113,6 @@ class Send_The_Code(APIView):
 
 
 class Check_Password(APIView):
-    
     def post(self, request):
         phone=request.data.get('phone')
         password=request.data.get('password')
@@ -120,8 +122,9 @@ class Check_Password(APIView):
             return Response({'address':'http://127.0.0.1:8000'},status=status.HTTP_200_OK)
         return Response({'password_error':'گذرواژه درست نیست '},status=status.HTTP_400_BAD_REQUEST)
         
+
+
 class Check_Phone(APIView):
-    
     def post(self, request):
         phone=request.data.get('phone')
         if re.search(r"^09\d{9}$",phone) is None:
@@ -149,11 +152,6 @@ class Check_Phone(APIView):
         else:
             return Response({'phone_error':'شماره تلفن موجود نیست '},status=status.HTTP_400_BAD_REQUEST)
             
-
-
-
-
-
 
 
 ################################# /login APIS ###########################################
