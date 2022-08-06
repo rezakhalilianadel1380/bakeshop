@@ -1,5 +1,3 @@
-from multiprocessing import context
-from pyexpat.errors import messages
 from django.shortcuts import redirect, render
 from bread.models import Bread
 from order.models import Cart
@@ -9,7 +7,7 @@ from rest_framework.response import Response
 from accountt.models import Setting, User_detail
 from rest_framework import status
 from django.contrib import messages
-from .forms import Bread_Form, User_Detail_Form,User_Form,login_form
+from .forms import Bread_Form, User_Detail_Form,User_Form,login_form,Setting_edite_Form
 from django.contrib.auth.password_validation import validate_password
 import re
 from django.core.exceptions import ValidationError,FieldError
@@ -17,10 +15,44 @@ import datetime
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import user_passes_test
-from django.utils.decorators import method_decorator
-from django.contrib.auth import mixins
 from django.contrib.auth import logout,authenticate,login
+from accountt.models import Setting
+from .permissions import Is_View_Cart,Read_Only,Bread_permission,Change_Cart_Permisson,Setting_Permission,User_Delete_Permission
+from rest_framework import permissions
+# from django.contrib.auth import mixins 
+# from .serializers import Bread_Serializer
+# from rest_framework.exceptions import PermissionDenied
+# from rest_framework import generics
+# from django.http import Http404
 # Create your views here.
+
+
+
+
+@user_passes_test(lambda u: u.has_perm('accountt.change_setting'),login_url='/adminlte/login')
+def setting_edite(request,id):
+    setting=Setting.objects.filter(id=1).first()
+    form=Setting_edite_Form(request.POST or None,instance=setting)
+    if form.is_valid():
+        form.save()
+        return redirect('/adminlte/setting')
+
+    context={
+        'form':form,
+    }
+    return render(request,'setting_edite.html',context)
+
+
+
+
+@user_passes_test(lambda u: u.has_perm('accountt.view_setting'),login_url='/adminlte/login')
+def setting_site(request):
+    setting=Setting.objects.filter(id=1).first()
+    context={
+        'setting':setting
+    }
+    return render(request,'setting.html',context)
+
 
 
 
@@ -42,7 +74,7 @@ def admin_login(request):
                 login(request,user)
                 next_page=request.GET.get('next')
                 if next_page:
-                      return redirect(next_page)
+                    return redirect(next_page)
                 return redirect('/adminlte')
             form.add_error('username','اجازه دسترسی داده نشد')
         else:
@@ -65,72 +97,8 @@ def show_orders(request):
 
 
 
-class Send_Order(APIView):
-    @method_decorator(user_passes_test(lambda u: u.is_superuser,login_url='/adminlte/login'))
-    def get(self, request):
-        cart=Cart.objects.filter(status__in=['2',"3"]).first()
-        context={
-                'cart':cart,
-        }
-        if cart is None:
-            html="""
-                        <div  style='display:flex;justify-content:center'>
-                    <svg viewBox="0 0 100 100" style='width:300px;height:60px;margin-top:20px'  >
-                        <defs>
-                        <filter id="shadow">
-                            <feDropShadow dx="0" dy="0" stdDeviation="1.5" 
-                            flood-color="#fc6767"/>
-                        </filter>
-                        </defs>
-                        <circle id="spinner" style="fill:transparent;stroke:#dd2476;stroke-width: 7px;stroke-linecap: round;filter:url(#shadow);" cx="50" cy="50" r="45"/>
-                    </svg>
-                    <br>
-                    </div>
-                    <h4 style='text-align:center;' class='mb-3' id='elemId'>سفارشی پیدا نشد !  درحال بارگیری</h4>
-                    <br>
-                """
-            return Response({'html':html},status=status.HTTP_404_NOT_FOUND)
-        rendered = render_to_string('change_status.html', context)
-        return Response({'html':rendered},status=status.HTTP_200_OK)
 
 
-class Change_Status(APIView):
-    def post(self,request):
-        cart_id=request.data.get('order_id')
-        status_cart=request.data.get('status')
-        cart=Cart.objects.filter(id=cart_id).first()
-        cart.status=status_cart
-        cart.save()
-        if cart.status=='3':
-            print('sms ersanl shode')
-            return Response(status=status.HTTP_200_OK)
-        elif cart.status=='4':
-            cart=Cart.objects.filter(status__in=['2',"3"]).first()
-            if cart is None:
-                html="""
-                        <div  style='display:flex;justify-content:center'>
-                    <svg viewBox="0 0 100 100" style='width:300px;height:60px;margin-top:20px'  >
-                        <defs>
-                        <filter id="shadow">
-                            <feDropShadow dx="0" dy="0" stdDeviation="1.5" 
-                            flood-color="#fc6767"/>
-                        </filter>
-                        </defs>
-                        <circle id="spinner" style="fill:transparent;stroke:#dd2476;stroke-width: 7px;stroke-linecap: round;filter:url(#shadow);" cx="50" cy="50" r="45"/>
-                    </svg>
-                    <br>
-                    </div>
-                    <h4 style='text-align:center;' class='mb-3' id='elemId'>سفارشی پیدا نشد !  درحال بارگیری</h4>
-                    <br>
-                """
-                return Response({'html':html},status=status.HTTP_404_NOT_FOUND)
-            context={
-                'cart':cart,
-            }
-            rendered = render_to_string('change_status.html', context)
-            return Response({'html':rendered},status=status.HTTP_200_OK)
-
-        return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @user_passes_test(lambda u: u.has_perm('order.can_access_produce_section'),login_url='/adminlte/login')
@@ -210,6 +178,7 @@ def user_list(request):
     page_obj = paginator.get_page(page_number)
     admins=len(User.objects.filter(is_staff=True))
     context={
+        'users':users,
         'page_obj':page_obj,
         'admin_num':admins
     }
@@ -243,32 +212,7 @@ def add_bread(request):
     return render(request,'bread_add.html',context)
 
 
-
-
-
-class Delete_User_Item(mixins.UserPassesTestMixin,APIView):
-    def test_func(self):
-        return self.request.user.has_perm('auth.delete_user')
-
-    def post(self,request):
-        items=request.data.getlist('items[]')
-        User.objects.filter(id__in=[int(i) for i in items]).delete()
-        return Response(status=status.HTTP_200_OK)
-
-
-
-class Delete_Bread_Item(mixins.UserPassesTestMixin,APIView):
-    def test_func(self):
-        return self.request.user.has_perm('bread.delete_bread')
-        
-    def post(self,request):
-        items=request.data.getlist('items[]')
-        breads=Bread.objects.filter(id__in=[int(i) for i in items]).delete()
-        return Response(status=status.HTTP_200_OK)
-
-
-
-@user_passes_test(lambda u: u.has_perm('view_bread'),login_url='/adminlte/login')
+@user_passes_test(lambda u: u.has_perm('order.view_bread'),login_url='/adminlte/login')
 def show_bread_list(request):
     breads=Bread.objects.all()
     context={
@@ -282,7 +226,7 @@ def dashboard(request):
     bread_num=len(Bread.objects.all())
     cart_num=len(Cart.objects.all())
     users=User.objects.all().order_by('-date_joined')[:8]
-    carts=Cart.objects.all().order_by('-payment_date')
+    carts=Cart.objects.all().order_by('-payment_date')[:8]
     context={
         'users':users,
         'carts':carts,
@@ -290,6 +234,9 @@ def dashboard(request):
         'cart_num':cart_num,
     }
     return render(request,'dashbord.html',context)
+
+
+
 
 
 @user_passes_test(lambda u: u.is_superuser,login_url='/adminlte/login')
@@ -302,11 +249,112 @@ def switch_render(request):
 
 
 
+######################  APIs ##################################
+
 class turn_off_or_on(APIView):
-    @method_decorator(user_passes_test(lambda u: u.is_superuser,login_url='/adminlte/login'))
-    def post(self, request):
+    permission_classes = (permissions.IsAuthenticated,Setting_Permission)
+
+    def put(self, request):
         is_on=request.data.get('is_on')
         setting=Setting.objects.all().first()
         setting.is_on=bool(int(is_on))
         setting.save()
+        return Response(status=status.HTTP_200_OK)
+
+
+class Send_Order(APIView):
+    permission_classes = (permissions.IsAuthenticated,Read_Only,Is_View_Cart)
+
+    def get(self,request):
+        cart=Cart.objects.filter(status__in=['2',"3"]).first()
+        context={
+                'cart':cart,
+        }
+        if cart is None:
+            html="""
+                        <div  style='display:flex;justify-content:center'>
+                    <svg viewBox="0 0 100 100" style='width:300px;height:60px;margin-top:20px'  >
+                        <defs>
+                        <filter id="shadow">
+                            <feDropShadow dx="0" dy="0" stdDeviation="1.5" 
+                            flood-color="#fc6767"/>
+                        </filter>
+                        </defs>
+                        <circle id="spinner" style="fill:transparent;stroke:#dd2476;stroke-width: 7px;stroke-linecap: round;filter:url(#shadow);" cx="50" cy="50" r="45"/>
+                    </svg>
+                    <br>
+                    </div>
+                    <h4 style='text-align:center;' class='mb-3' id='elemId'>سفارشی پیدا نشد !  درحال بارگیری</h4>
+                    <br>
+                """
+            return Response({'html':html},status=status.HTTP_404_NOT_FOUND)
+        rendered = render_to_string('change_status.html', context)
+        return Response({'html':rendered},status=status.HTTP_200_OK)
+
+
+
+
+
+
+class Change_Status(APIView):
+    permission_classes = (permissions.IsAuthenticated,Change_Cart_Permisson)
+
+
+    def post(self,request):
+        cart_id=request.data.get('order_id')
+        status_cart=request.data.get('status')
+        cart=Cart.objects.filter(id=cart_id).first()
+        cart.status=status_cart
+        cart.save()
+        if cart.status=='3':
+            print('sms ersanl shode')
+            return Response(status=status.HTTP_200_OK)
+        elif cart.status=='4':
+            cart=Cart.objects.filter(status__in=['2',"3"]).first()
+            if cart is None:
+                html="""
+                        <div  style='display:flex;justify-content:center'>
+                    <svg viewBox="0 0 100 100" style='width:300px;height:60px;margin-top:20px'  >
+                        <defs>
+                        <filter id="shadow">
+                            <feDropShadow dx="0" dy="0" stdDeviation="1.5" 
+                            flood-color="#fc6767"/>
+                        </filter>
+                        </defs>
+                        <circle id="spinner" style="fill:transparent;stroke:#dd2476;stroke-width: 7px;stroke-linecap: round;filter:url(#shadow);" cx="50" cy="50" r="45"/>
+                    </svg>
+                    <br>
+                    </div>
+                    <h4 style='text-align:center;' class='mb-3' id='elemId'>سفارشی پیدا نشد !  درحال بارگیری</h4>
+                    <br>
+                """
+                return Response({'html':html},status=status.HTTP_404_NOT_FOUND)
+            context={
+                'cart':cart,
+            }
+            rendered = render_to_string('change_status.html', context)
+            return Response({'html':rendered},status=status.HTTP_200_OK)
+
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+
+class Delete_User_Item(APIView):
+    permission_classes = (permissions.IsAuthenticated,User_Delete_Permission)
+
+    def delete(self,request):
+        items=request.data.getlist('items[]')
+        User.objects.filter(id__in=[int(i) for i in items]).delete()
+        return Response(status=status.HTTP_200_OK)
+
+
+
+class Delete_Bread_Item(APIView):
+    permission_classes = (permissions.IsAuthenticated,Bread_permission)
+
+    def delete(self,request):
+        items=request.data.getlist('items[]')
+        breads=Bread.objects.filter(id__in=[int(i) for i in items]).delete()
         return Response(status=status.HTTP_200_OK)

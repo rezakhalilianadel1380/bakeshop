@@ -11,7 +11,9 @@ Delete_Bread_Item,
 show_bread_list,
 show_orders,
 admin_logout,
-admin_login
+admin_login,
+setting_site,
+setting_edite,
 )
 
 urlpatterns = [
@@ -26,6 +28,8 @@ urlpatterns = [
     path('show_orders',show_orders,name='show_orders'),
     path('logout',admin_logout,name='admin_logout'),
     path('login',admin_login,name='admin_login'),
+    path('setting',setting_site,name='setting_site'),
+    path('setting/edite/<id>',setting_edite,name='setting_edite'),
     # APIs
     path('api/v1/produce/bread',Change_Status.as_view(),name='Change_Status'),
     path('api/v1/produce/bread/read',Send_Order.as_view(),name='read_order'),

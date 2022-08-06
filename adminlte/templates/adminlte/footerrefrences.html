@@ -36,7 +36,7 @@
         $.ajax({
           url:'/adminlte/api/v1/switch',
           headers: {'X-CSRFToken': csrftoken},
-          type:'POST',
+          type:'PUT',
           data:{
               "is_on":1,
           },
@@ -51,7 +51,7 @@
         $.ajax({
           url:'/adminlte/api/v1/switch',
           headers: {'X-CSRFToken': csrftoken},
-          type:'POST',
+          type:'PUT',
           data:{
               "is_on":0,
           },
@@ -128,7 +128,7 @@
               $.ajax({
                 url:'/adminlte/api/v1/delete_item',
                 headers: {'X-CSRFToken': csrftoken},
-                type:'POST',
+                type:'DELETE',
                 data:{
                     'items':values,
                 },
@@ -163,7 +163,7 @@
               $.ajax({
                 url:'/adminlte/api/v1/delete_user_item',
                 headers: {'X-CSRFToken': csrftoken},
-                type:'POST',
+                type:'DELETE',
                 data:{
                     'items':values,
                 },

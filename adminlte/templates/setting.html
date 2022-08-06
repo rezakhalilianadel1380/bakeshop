@@ -1,0 +1,64 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% url 'dashboard' as dashboard %}
+{% load static %}
+{% block title %}تنظیمات{% endblock title %} 
+{% block content %}
+<section class="content-header" style="margin-bottom: 20px;">
+    <h1>
+      تنظیمات
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{dashboard}}"><i class="fa fa-dashboard"></i> خانه</a></li>
+      <li class="active"><i class="fa fa-gear"></i> تنظیمات  </li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title">تنظیمات</h3>
+            <!-- /.box-tools -->
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body no-padding">
+            <div class="table-responsive mailbox-messages">
+              <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                      <th>محدودیت خرید هر فرد</th>
+                      <th>محدودیت خرید  در روز</th>
+                      <th>وضعیت نانوایی</th>
+                      <th>ویرایش</th>
+                    </tr>
+                    </thead>
+                <tbody>
+                <tr>
+                  <td class="mailbox-subject">{{setting.limit_buy}}</td>
+                  <td class="mailbox-subject">{{setting.limit_day}}</td>
+                  <td class="mailbox-subject">{% if setting.is_on %} <i class='fa fa-check text-success'></i>{% else %}<i class='fa fa-remove text-danger'></i> {% endif %}</td>
+                  <td class="mailbox-subject"><a href="/adminlte/setting/edite/{{setting.id}}"><i class='fa fa-pencil'></i></a></td>
+                </tr>
+                </tbody>
+              </table>
+              <!-- /.table -->
+            </div>
+            <!-- /.mail-box-messages -->
+          </div>
+          <!-- /.box-body -->
+          
+        </div>
+        <!-- /. box -->
+          
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    
+  </section>
+
+{% endblock content %}
+
+
+

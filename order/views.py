@@ -11,16 +11,8 @@ from accountt.models import Address
 from decorators.decorator import check_of_or_on
 # Create your views here.
 
-
-
-
-
-
-
-
-
 @check_of_or_on
-@login_required(login_url='/login')
+@login_required
 def cart_item_delete(request,id):
     cart=Cart.objects.filter(user=request.user,is_paid=False).first()
     cart_item=cart.cart_item.all()
@@ -88,7 +80,7 @@ class Set_Address(APIView):
 
 
 @check_of_or_on
-@login_required(login_url='/signin')
+@login_required
 def cart(request):
     cart=Cart.objects.filter(user=request.user,is_paid=False).first()
     context={

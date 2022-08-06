@@ -148,7 +148,8 @@
                             "code":$('#code').val(),
                         },
                         success:function(rsp){
-                            location.replace(rsp.address)
+                            document.cookie="phonenumber="+rsp.phone+";max-age=0";
+                            location.replace(rsp.address);
                         },
                         error: function(xhr, status, error) {
                             var err = JSON.parse(xhr.responseText);
@@ -203,7 +204,8 @@
                             "password":$('#password').val(),
                         },
                         success:function(rsp){
-                            location.replace(rsp.address)
+                            document.cookie="phonenumber="+rsp.phone+";max-age=0";
+                            location.replace(rsp.address);
                         },
                         error: function(xhr, status, error) {
                             var err = JSON.parse(xhr.responseText);

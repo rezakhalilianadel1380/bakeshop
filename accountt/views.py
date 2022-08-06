@@ -10,8 +10,9 @@ from rest_framework.response import Response
 import uuid
 import pytz
 import re
+import datetime
 from rest_framework import status
-from decorators.decorator import check_of_or_on
+from django.utils import timezone
 from django.contrib.auth.models import User
 # Create your views here.
  
@@ -22,8 +23,20 @@ def login2(request):
     return render(request,'loginv2.html',{})
 
 
+def contact_us(request):
+    return render(request,'contact_us.html',{})
+
+
+def about_us(request):
+    return render(request,'about_us.html',{})
+
+
+
+
+################################# login APIS ###########################################
+
+
 class Resend(APIView):
-    @check_of_or_on
     def post(self, request):
         phone=request.data.get('phone')
         user=User.objects.filter(username=phone).first()
@@ -43,14 +56,14 @@ class Resend(APIView):
         return Response(status=status.HTTP_200_OK)
         
 class Check_The_Code(APIView):
-    @check_of_or_on
+    
     def post(self, request):
         phone=request.data.get('phone')
         code=request.data.get('code')
         user=User.objects.filter(username=phone).first()
-        utc=pytz.UTC
-        current_time= utc.localize(datetime.datetime.now()) 
-        if user.code.code==code and user.code.expired_time>=current_time:
+        expired_time=user.code.expired_time.astimezone(timezone.get_current_timezone())
+        print(expired_time)
+        if user.code.code==code and expired_time>=timezone.now():
             login(request,user)
             return Response({'address':'http://127.0.0.1:8000'},status=status.HTTP_200_OK)
         else:
@@ -58,7 +71,7 @@ class Check_The_Code(APIView):
             
 
 class Send_The_Code(APIView):
-    @check_of_or_on
+    
     def post(self, request):
         phone=request.data.get('phone')
         user=User.objects.filter(username=phone).first()
@@ -97,7 +110,7 @@ class Send_The_Code(APIView):
 
 
 class Check_Password(APIView):
-    @check_of_or_on
+    
     def post(self, request):
         phone=request.data.get('phone')
         password=request.data.get('password')
@@ -108,7 +121,7 @@ class Check_Password(APIView):
         return Response({'password_error':'گذرواژه درست نیست '},status=status.HTTP_400_BAD_REQUEST)
         
 class Check_Phone(APIView):
-    @check_of_or_on
+    
     def post(self, request):
         phone=request.data.get('phone')
         if re.search(r"^09\d{9}$",phone) is None:
@@ -143,25 +156,7 @@ class Check_Phone(APIView):
 
 
 
-@check_of_or_on
-def contact_us(request):
-    return render(request,'contact_us.html',{})
-
-@check_of_or_on
-def about_us(request):
-    return render(request,'about_us.html',{})
-
-
-
-
-
-
-
-
-
-
-
-
+################################# /login APIS ###########################################
 
 
 

@@ -1,8 +1,25 @@
 from django import forms
 from bread.models import Bread
-from accountt.models import User_detail
+from accountt.models import User_detail,Setting
 from django.contrib.auth.models import User
 
+
+
+
+
+
+
+class Setting_edite_Form(forms.ModelForm):
+    class Meta:
+        model = Setting
+        fields="__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(Setting_edite_Form,self).__init__(*args, **kwargs)
+        self.fields['limit_day'].widget.attrs.update({'class': 'form-control'})
+        self.fields['limit_buy'].widget.attrs.update({'class': 'form-control'})
+        self.fields['is_on'].widget.attrs.update( {'class': 'flat-red'})
+        
 
 
 
@@ -25,7 +42,6 @@ class login_form(forms.Form):
             }
     ),
     )
-
 
 
 
