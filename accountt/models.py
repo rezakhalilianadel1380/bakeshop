@@ -47,7 +47,7 @@ class Code(models.Model):
 
 class Sign_up(models.Model):
     phone_number=models.CharField(max_length=11,unique=True)
-    code=models.CharField(unique=True,max_length=6)
+    code=models.CharField(max_length=6)
     expired_time=models.DateTimeField(null=True)
 
     def __str__(self):

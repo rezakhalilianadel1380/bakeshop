@@ -64,7 +64,6 @@ class Check_The_Code(APIView):
         code=request.data.get('code')
         user=User.objects.filter(username=phone).first()
         expired_time=user.code.expired_time.astimezone(timezone.get_current_timezone())
-        print(expired_time)
         if user.code.code==code and expired_time>=timezone.now():
             login(request,user)
             return Response({'address':'http://127.0.0.1:8000'},status=status.HTTP_200_OK)
@@ -129,7 +128,7 @@ class Check_Phone(APIView):
         phone=request.data.get('phone')
         if re.search(r"^09\d{9}$",phone) is None:
             return Response({'phone_error':'شماره تلفن اشتباست'},status=status.HTTP_400_BAD_REQUEST)
-        user=User.objects.filter(username=phone)
+        user=User.objects.filter(username=phone,is_active=False)
         if user.exists():
             html="""  
                      <div class="form-inline" id="login-form">
@@ -155,6 +154,93 @@ class Check_Phone(APIView):
 
 
 ################################# /login APIS ###########################################
+
+
+
+
+
+
+
+################################## sign up APIS ##############################################
+
+def sign_upv2(request):
+    return render(request,'sign_upv2.html',{})
+
+
+class Check_Code_Sign_Up(APIView):
+    def get(self, request):
+        code=request.GET.get('code')
+        phone=request.GET.get('phone')
+        code_object=Sign_up.objects.filter(phone_number=phone,code=code).first()
+        expired_time=code_object.expired_time.astimezone(timezone.get_current_timezone())
+        if user.code.code==code and expired_time>=timezone.now():
+            if not User.objects.filter(username=phone).exists():
+                user=User.objects.create(username=phone,is_active=False)
+            html=f"""
+                      <div class="form-inline" id="login-form" >
+                        <p class="text-right text-info">فرم ثبت نام </p>
+
+                        <div class="form-group">
+                            <label for="name" class="text-info mt-2">نام :</label><br>
+                            {{form.name}}                                       
+                        </div>
+                        <span class='text-danger'>{{error}} </span>
+                        <div class="form-group">
+                            <label for="family" class="text-info mt-2">نام و خانوادگی :</label><br>
+                            {{form.family}}                                       
+                        </div>
+                        <span class='text-danger'>{{error}} </span>
+                        <div class="form-group">
+                            <label for="password" class="text-info mt-2">پسورد :</label><br>
+                            {{form.password}}                                       
+                        </div>
+                        <span class='text-danger'>{{error}} </span>
+                        <button type="submit" class="btn btn-info w-100">ثبت نام</button>
+                    </div>
+                """
+            return Response({'html':html},status=status.HTTP_200_OK)
+        else:
+            return Response({'code_error':'کد منتقضی شده یا نادرست است'},status=status.HTTP_400_BAD_REQUEST)
+            
+  
+
+class Check_Phone_Sign_Up(APIView):
+    def get(self, request):
+        phone=request.GET.get('phone')
+        if re.search(r"^09\d{9}$",phone) is None:
+            return Response({'phone_error':'شماره تلفن اشتباست'},status=status.HTTP_400_BAD_REQUEST)
+        if User.objects.filter(username=phone,is_active=True).exists():
+            return Response({'phone_error':'کاربر قبلا ثبت نام شده است '},status=status.HTTP_400_BAD_REQUEST)
+        html=f""" 
+             <div class="form-inline" id="login-form"  >
+                            <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>
+                            <label for="phone" class="text-info mt-2">کد پیامکی : </label><br>
+                            <div class="input-group form-group">
+                                <input type="text" onKeyDown="if(event.keyCode==13) send_code();" name="code" id="code" class="form-control" placeholder="کد تایید" required="">                                      
+                                <div class="input-group-prepend ">
+                                     <button class="btn btn-info btn-md " style="height:46px;" onclick="send_code()">ادامه</button>
+                                </div>
+                            </div>
+                             <span class="text-danger" id="error" style="display:none;"></span><br>
+                        
+                            <p id="link">  ارسال مجدد کد در <span id='time'> (04:00) </span></p>  
+                           
+            </div>
+        """   
+        return Response({'html':html,'phone':phone},status=status.HTTP_200_OK)
+            
+
+
+
+
+
+
+
+
+
+
+################################## /sign up APIS ##############################################
+
 
 
 
