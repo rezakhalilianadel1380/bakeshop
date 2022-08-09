@@ -1,26 +1,24 @@
 from django.shortcuts import redirect, render
-from .forms import Code_register_form, Phone_login_form, Register, password_login_form,code_login_form,Phone_register_form
-from .models import Address, Code,Sign_up, User_detail
+from .models import Code,Sign_up, User_detail
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout
-from django.contrib import messages
 import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
-import uuid
-import pytz
 import re
+import random
 import datetime
 from rest_framework import status
 from django.utils import timezone
 from django.contrib.auth.models import User
+from shop.settings import LOGIN_URL
 # Create your views here.
  
 
-def login2(request):
-    if request.user.is_authenticated:
-        return redirect('/')
-    return render(request,'loginv2.html',{})
+def log_out(request):
+    logout(request)
+    return redirect('/')
+
 
 
 def contact_us(request):
@@ -33,7 +31,13 @@ def about_us(request):
 
 
 
-################################# login APIS ###########################################
+################################# login  ###########################################
+
+
+def login2(request):
+    if request.user.is_authenticated:
+        return redirect('/')
+    return render(request,'loginv2.html',{})
 
 
 class Resend(APIView):
@@ -41,22 +45,16 @@ class Resend(APIView):
         phone=request.data.get('phone')
         user=User.objects.filter(username=phone).first()
         code=Code.objects.filter(user=user)
-        if code.exists():
-            code=code.first()
-            code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
-            code.code=str(uuid.uuid4().int)[:6]
-            code.save()
-            print(code.code)
+        if not code.exists():
+            code=Code.objects.create(user=user)
         else:
-            code=Code.objects.create(user=user,expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4))
-            code.code=str(uuid.uuid4().int)[:6]
-            code.save()
-            print(code.code)
-
+            code=code.first()
+        code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
+        code.code=random.randint(1000,9999)
+        code.save()
+        print(code.save)
         return Response(status=status.HTTP_200_OK)
         
-
-
 
 class Check_The_Code(APIView):
     def post(self, request):
@@ -78,17 +76,14 @@ class Send_The_Code(APIView):
         phone=request.data.get('phone')
         user=User.objects.filter(username=phone).first()
         code=Code.objects.filter(user=user)
-        if code.exists():
-            code=code.first()
-            code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
-            code.code=str(uuid.uuid4().int)[:6]
-            code.save()
-            print(code.code)
+        if not code.exists():
+            code=Code.objects.create(user=user)
         else:
-            code=Code.objects.create(user=user,expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4))
-            code.code=str(uuid.uuid4().int)[:6]
-            code.save()
-            print(code.code) 
+            code=code.first()
+        code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
+        code.code=random.randint(1000,9999)
+        code.save()
+        print(code.code)
         html=f""" 
              <div class="form-inline" id="login-form"  >
                             <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>
@@ -128,7 +123,7 @@ class Check_Phone(APIView):
         phone=request.data.get('phone')
         if re.search(r"^09\d{9}$",phone) is None:
             return Response({'phone_error':'شماره تلفن اشتباست'},status=status.HTTP_400_BAD_REQUEST)
-        user=User.objects.filter(username=phone,is_active=False)
+        user=User.objects.filter(username=phone,is_active=True)
         if user.exists():
             html="""  
                      <div class="form-inline" id="login-form">
@@ -153,49 +148,81 @@ class Check_Phone(APIView):
             
 
 
-################################# /login APIS ###########################################
+################################# /login  ###########################################
 
 
 
 
-
-
-
-################################## sign up APIS ##############################################
+################################## sign up  ##############################################
 
 def sign_upv2(request):
     return render(request,'sign_upv2.html',{})
 
+class Resend_Code(APIView):
+    def get(self,request):
+        phone=request.COOKIES.get('phonenumber')
+        code=Sign_up.objects.filter(phone_number=phone)  
+        if not code.exists():
+            code=Sign_up.objects.create(phone_number=phone)
+        else:
+            code=code.first()
+        code.code=random.randint(1000,9999)
+        code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
+        code.save()
+        print(code.code)
+        return Response(status=status.HTTP_200_OK)
+
+
+
+class Register_User(APIView):
+    def post(self,request):
+        firstname=request.data.get('firstname')
+        lastname=request.data.get('lastname')
+        password=request.data.get('password')
+        re_password=request.data.get('re_password')
+        phone=request.COOKIES.get('phonenumber')
+        user:User=User.objects.filter(username=phone).first()
+        user.first_name=firstname
+        user.last_name=lastname
+        user.set_password(password)
+        user.is_active=True
+        user.save()
+        return Response({'address':f'http://127.0.0.1:8000{LOGIN_URL}'},status=status.HTTP_200_OK)
+
 
 class Check_Code_Sign_Up(APIView):
-    def get(self, request):
-        code=request.GET.get('code')
-        phone=request.GET.get('phone')
-        code_object=Sign_up.objects.filter(phone_number=phone,code=code).first()
+    def post(self, request):
+        code=request.data.get('code')
+        phone=request.COOKIES.get('phonenumber')
+        code_object=Sign_up.objects.filter(phone_number=phone).first()
         expired_time=code_object.expired_time.astimezone(timezone.get_current_timezone())
-        if user.code.code==code and expired_time>=timezone.now():
+        if code_object.code==code and expired_time>=timezone.now():
             if not User.objects.filter(username=phone).exists():
                 user=User.objects.create(username=phone,is_active=False)
+                User_detail.objects.create(user=user)
             html=f"""
                       <div class="form-inline" id="login-form" >
                         <p class="text-right text-info">فرم ثبت نام </p>
 
                         <div class="form-group">
-                            <label for="name" class="text-info mt-2">نام :</label><br>
-                            {{form.name}}                                       
+                            <label for="firstname" class="text-info mt-2">نام :</label><br>
+                            <input type="text" id="firstname"  class="form-control"  placeholder="نام ">                                   
                         </div>
-                        <span class='text-danger'>{{error}} </span>
                         <div class="form-group">
                             <label for="family" class="text-info mt-2">نام و خانوادگی :</label><br>
-                            {{form.family}}                                       
+                            <input type="text" id="lastname" class="form-control"  placeholder="نام خانوادگی">
+                                   
                         </div>
-                        <span class='text-danger'>{{error}} </span>
                         <div class="form-group">
                             <label for="password" class="text-info mt-2">پسورد :</label><br>
-                            {{form.password}}                                       
+                            <input type="text" id="password"  class="form-control"  placeholder="رمز عبور">
                         </div>
-                        <span class='text-danger'>{{error}} </span>
-                        <button type="submit" class="btn btn-info w-100">ثبت نام</button>
+                        <div class="form-group">
+                            <label for="re_password" class="text-info mt-2">تکرار رمز عبور :</label><br>
+                           <input type="text" id="re_password"  class="form-control"  placeholder="تکرار رمز عبور">
+                        </div>
+                        <br>
+                        <button onclick='send_information()' class="btn btn-info w-100">ثبت نام</button>
                     </div>
                 """
             return Response({'html':html},status=status.HTTP_200_OK)
@@ -205,12 +232,21 @@ class Check_Code_Sign_Up(APIView):
   
 
 class Check_Phone_Sign_Up(APIView):
-    def get(self, request):
-        phone=request.GET.get('phone')
+    def post(self, request):
+        phone=request.data.get('phone')
         if re.search(r"^09\d{9}$",phone) is None:
             return Response({'phone_error':'شماره تلفن اشتباست'},status=status.HTTP_400_BAD_REQUEST)
         if User.objects.filter(username=phone,is_active=True).exists():
             return Response({'phone_error':'کاربر قبلا ثبت نام شده است '},status=status.HTTP_400_BAD_REQUEST)
+        code=Sign_up.objects.filter(phone_number=phone)  
+        if not code.exists():
+            code=Sign_up.objects.create(phone_number=phone)
+        else:
+            code=code.first()
+        code.code=random.randint(1000,9999)
+        code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
+        code.save()
+        print(code.code)
         html=f""" 
              <div class="form-inline" id="login-form"  >
                             <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>
@@ -232,108 +268,4 @@ class Check_Phone_Sign_Up(APIView):
 
 
 
-
-
-
-
-
-
-
-################################## /sign up APIS ##############################################
-
-
-
-
-
-
-
-
-
-
-def sign_up(request):
-    if request.user.is_authenticated:
-        return redirect('/')
-    form=Phone_register_form(request.POST or None)
-    if form.is_valid():
-        phone_number=form.cleaned_data.get('phone')
-        phone_object=User_detail.objects.filter(phone_number=phone_number)
-        if phone_object.exists():
-            form.add_error('phone','تلفن در سیستم ثبت شده است ')
-        else:
-            request.session['phone_number_sign_code']=phone_number
-            return redirect('signup/code')
-    context={
-        'form':form,
-    }
-    return render(request,'sign_up.html',context)
-
-def sign_up_code(request):
-    if request.user.is_authenticated:
-        return redirect('/')
-    if request.session.get('phone_number_sign_code') is not None:
-        phone_number=request.session.get('phone_number_sign_code')
-        if request.method=='GET':
-                code=Sign_up.objects.filter(phone_number=phone_number)
-                if code.exists():
-                    code=code.first()
-                    code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
-                    code.code=str(uuid.uuid4().int)[:6]
-                    code.save()
-                    print(code.code)
-                else:
-                    code=Sign_up.objects.create(phone_number=phone_number,expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4))
-                    code.code=str(uuid.uuid4().int)[:6]
-                    code.save()
-                    print(code.code)
-
-        form=Code_register_form(request.POST or None)
-        if form.is_valid():
-            code=form.cleaned_data.get('codes')
-            code_object=Sign_up.objects.filter(phone_number=phone_number,code=code)
-            utc=pytz.UTC
-            current_time= utc.localize(datetime.datetime.now()) 
-            if code_object.exists() and  code_object.first().expired_time>current_time:
-                request.session['checked']=True
-                return redirect('register')
-            else:
-                form.add_error('codes','کد وارد شده اشتباه است')
-        context={
-            'form':form,
-        }
-        return render(request,'sign_up_code.html',context)
-    else:
-        return redirect("/sign_up")
-
-def register(request):
-    if request.user.is_authenticated:
-        return redirect('/')
-    if request.session.get('checked') is not None and request.session.get('checked')==True:
-        phone_number=request.session['phone_number_sign_code']
-        form=Register(request.POST or None)
-        if form.is_valid():
-            name=form.cleaned_data.get('name')
-            family=form.cleaned_data.get('family')
-            address=form.cleaned_data.get('address')
-            password=form.cleaned_data.get('password')
-            user=User.objects.create_user(username=phone_number,password=password,first_name=name,last_name=family)
-            user_detail=User_detail.objects.create(user=user,phone_number=phone_number)
-            Address.objects.create(user=user,address=address)
-            del request.session['checked']
-            del request.session['phone_number_sign_code']
-            return redirect ('/login')
-        context={
-            'form':form,
-        }
-        return render(request,'register.html',context)
-    else:
-        return redirect('/signup')
-
-            
-
-        
-
-
-def log_out(request):
-    logout(request)
-    return redirect('/')
-
+################################## /sign up  ##############################################

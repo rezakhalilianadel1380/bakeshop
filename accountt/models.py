@@ -36,14 +36,12 @@ class User_detail(models.Model):
 
 
 class Code(models.Model):
-    code=models.CharField(unique=True,max_length=6)
+    code=models.CharField(max_length=6)
     user=models.OneToOneField(User,on_delete=models.CASCADE)
     expired_time=models.DateTimeField()
 
     def __str__(self):
         return self.code
-
-
 
 class Sign_up(models.Model):
     phone_number=models.CharField(max_length=11,unique=True)

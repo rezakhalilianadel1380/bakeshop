@@ -31,6 +31,13 @@
                 z-index: 9999;
                 background: url('{% static "loader.gif" %}') 50% 50% no-repeat #fff; /* Change the #fff here to your background color of choice for the preloader fullscreen section */
                 }
+                #login .container #login-row #login-column #login-box {
+                    margin-top: 120px;
+                    max-width: 600px;
+                    height: 440px;
+                    background-color: #ffffff;
+                    border-radius: 15px;
+                }
     </style>
 </head>
 
@@ -44,7 +51,7 @@
             <div class="container">
                 <div id="login-row" class="row justify-content-center align-items-center">
                     <div id="login-column" class="col-md-4">
-                        <div id="login-box" class="col-md-12">
+                        <div id="login-box" class="col-md-12"  >
                             <div class="form-inline" id="login-form">
                                 {% csrf_token %}
                                 <p class="text-right text-info">ایجاد حساب کاربری </p>
@@ -104,13 +111,63 @@
                 display.textContent = '('+minutes + ":" + seconds+')';
         
                 if (--timer < 0) {
-                    link=document.getElementById('link') 
-                    link.style.pointerEvents = 'auto';
+                    $('#link').html("<a onclick='resend_code()' href='javascript:void' class='text-danger '>ارسال مجدد</a>");
                     clearInterval(myinterval); 
                 }
             }, 1000);
         }
-        
+        function resend_code(){
+            $.ajax({
+                        url:'/api/v1/signup/resend',
+                        type:'GET',
+                        success:function(rsp){
+                            $('.loader').fadeIn('fast');
+                            $("#link").html('ارسال مجدد کد در <span id="time"> (04:00) </span>')
+                            document.title = 'ارسال کد';
+                            var fourMinutes = 60*4,
+                            display = document.querySelector('#time');
+                            startTimer(fourMinutes,display);
+                            $('.loader').fadeOut('slow');
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('#error').html(err.phone_error);
+                            $('#error').fadeIn()
+                            $('.loader').fadeOut('slow');
+                            
+                        }
+                });
+        }
+        function send_information(){
+            firstname=document.getElementById('firstname');
+            lastname=document.getElementById('lastname');
+            password=document.getElementById('password');
+            re_password=document.getElementById('re_password');
+            $.ajax({
+                        url:'/api/v1/signup/step3',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
+                        data:{
+                            "firstname":firstname.value,
+                            'lastname':lastname.value,
+                            'password':password.value,
+                            're_password':re_password.value,
+                        },
+                        success:function(rsp){
+                            location.replace(rsp.address);
+                        },
+                        error: function(xhr, status, error) {
+                            var err = JSON.parse(xhr.responseText);
+                            $('.loader').fadeIn('fast');
+                            $('#error').html(err.phone_error);
+                            $('#error').fadeIn()
+                            $('.loader').fadeOut('slow');
+                            
+                        }
+                });
+
+        }
         function send_code(){
             code=document.getElementById('code')
             if (code.value==''){
@@ -120,22 +177,21 @@
             else{
                 $.ajax({
                         url:'/api/v1/signup/step2',
-                        type:'GET',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
                         data:{
                             "code":code.value,
-                            "phone":getCookie('phonenumber'),
                         },
                         success:function(rsp){
                             $('.loader').fadeIn('fast');
                             $('#login-box').html(rsp.html);
                             document.title = 'وارد کردن مشخاصت';
                             $('.loader').fadeOut('slow');
-                            document.cookie="phonenumber="+rsp.phone;
                         },
                         error: function(xhr, status, error) {
                             var err = JSON.parse(xhr.responseText);
                             $('.loader').fadeIn('fast');
-                            $('#error').html(err.phone_error);
+                            $('#error').html(err.code_error);
                             $('#error').fadeIn()
                             $('.loader').fadeOut('slow');
                             
@@ -154,7 +210,8 @@
             else{
                 $.ajax({
                         url:'/api/v1/signup/step1',
-                        type:'GET',
+                        headers: {'X-CSRFToken': csrftoken},
+                        type:'POST',
                         data:{
                             "phone":$('#phone').val(),
                         },
@@ -195,6 +252,7 @@
             }
             return "";
             }
+            const csrftoken = getCookie('csrftoken');
     </script>
 </body>
 
