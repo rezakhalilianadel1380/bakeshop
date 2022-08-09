@@ -14,6 +14,7 @@ adminl panel
 ![image](https://user-images.githubusercontent.com/38360147/181234727-2064ff97-5a50-47d7-8362-baea5c0ff504.png)
 ![image](https://user-images.githubusercontent.com/38360147/181234767-1a46d4ff-31d5-43ff-a0f9-9576e8b58535.png)
 ![image](https://user-images.githubusercontent.com/38360147/178992927-8b6b5032-ac94-42ab-9a5e-d70973809f11.png)
+![image](https://user-images.githubusercontent.com/38360147/183637041-79a4ddf6-bafb-4049-aa09-a18ae161b792.png)
 
 
 
