@@ -1,3 +1,4 @@
+from statistics import mode
 from django.db import models
 from django.contrib.auth.models import User
 from django.templatetags.static import static
@@ -36,16 +37,18 @@ class User_detail(models.Model):
 
 
 class Code(models.Model):
-    code=models.CharField(max_length=6)
+    code=models.CharField(max_length=6,blank=True,null=True)
     user=models.OneToOneField(User,on_delete=models.CASCADE)
-    expired_time=models.DateTimeField()
+    expired_time=models.DateTimeField(blank=True,null=True)
 
     def __str__(self):
         return self.code
 
+
+
 class Sign_up(models.Model):
     phone_number=models.CharField(max_length=11,unique=True)
-    code=models.CharField(max_length=6)
+    code=models.CharField(max_length=6,null=True,blank=True)
     expired_time=models.DateTimeField(null=True)
 
     def __str__(self):

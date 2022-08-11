@@ -32,9 +32,9 @@
                 background: url('{% static "loader.gif" %}') 50% 50% no-repeat #fff; /* Change the #fff here to your background color of choice for the preloader fullscreen section */
                 }
                 #login .container #login-row #login-column #login-box {
-                    margin-top: 120px;
+                    margin-top:80px;
                     max-width: 600px;
-                    height: 440px;
+                    height:440px;
                     background-color: #ffffff;
                     border-radius: 15px;
                 }
@@ -64,7 +64,7 @@
                                 </div>
                                 <span class="text-danger" id="error" style="display:none;"></span>
                             </div>
-                            <div id="register-link" class="text-right">
+                            <div id="register-link" class="text-right mt-2">
                                 <a href="/signin" class="text-info ">برگشت به صفحه ورود</a>
                             </div>
                         </div>
@@ -74,7 +74,7 @@
         </div>
 
         <!-- waves start  -->
-        <div style="margin-top:80px;">
+        <div style="margin-top:12px;">
             <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                 viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
                 <defs>
@@ -149,19 +149,19 @@
                         headers: {'X-CSRFToken': csrftoken},
                         type:'POST',
                         data:{
-                            "firstname":firstname.value,
-                            'lastname':lastname.value,
+                            "first_name":firstname.value,
+                            'family':lastname.value,
                             'password':password.value,
-                            're_password':re_password.value,
+                            'password_confirm':re_password.value,
                         },
                         success:function(rsp){
+                            document.cookie="phonenumber="+rsp.phone+";max-age=0";
                             location.replace(rsp.address);
                         },
                         error: function(xhr, status, error) {
                             var err = JSON.parse(xhr.responseText);
                             $('.loader').fadeIn('fast');
-                            $('#error').html(err.phone_error);
-                            $('#error').fadeIn()
+                            $('#login-box').html(err.html);
                             $('.loader').fadeOut('slow');
                             
                         }

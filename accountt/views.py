@@ -1,5 +1,6 @@
 from django.shortcuts import redirect, render
 from .models import Code,Sign_up, User_detail
+from .forms import Register
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout
 import datetime
@@ -12,13 +13,14 @@ from rest_framework import status
 from django.utils import timezone
 from django.contrib.auth.models import User
 from shop.settings import LOGIN_URL
+from django.template.loader import render_to_string
+from sms_configure.sms import send_message
 # Create your views here.
  
 
 def log_out(request):
     logout(request)
     return redirect('/')
-
 
 
 def contact_us(request):
@@ -49,10 +51,15 @@ class Resend(APIView):
             code=Code.objects.create(user=user)
         else:
             code=code.first()
-        code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
+        code.expired_time=timezone.now()+timezone.timedelta(minutes=4)
         code.code=random.randint(1000,9999)
         code.save()
-        print(code.save)
+        message=f"""
+        نانوی شاپ 
+        سلام خوش اومدید 
+        کد ورود شما  : {code.code}
+        """
+        send_message(phone,message)
         return Response(status=status.HTTP_200_OK)
         
 
@@ -80,10 +87,15 @@ class Send_The_Code(APIView):
             code=Code.objects.create(user=user)
         else:
             code=code.first()
-        code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
+        code.expired_time=timezone.now()+timezone.timedelta(minutes=4)
         code.code=random.randint(1000,9999)
         code.save()
-        print(code.code)
+        message=f"""
+        نانوی شاپ 
+        سلام خوش اومدید 
+        کد ورود شما  : {code.code}
+        """
+        send_message(phone,message)
         html=f""" 
              <div class="form-inline" id="login-form"  >
                             <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>
@@ -167,28 +179,37 @@ class Resend_Code(APIView):
         else:
             code=code.first()
         code.code=random.randint(1000,9999)
-        code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
+        code.expired_time=timezone.now()+timezone.timedelta(minutes=4)
         code.save()
-        print(code.code)
+        message=f"""
+        نانوی شاپ 
+        سلام خوش اومدید 
+        کد ثبت نام شما  : {code.code}
+        """
+        send_message(phone,message)
         return Response(status=status.HTTP_200_OK)
-
-
 
 class Register_User(APIView):
     def post(self,request):
-        firstname=request.data.get('firstname')
-        lastname=request.data.get('lastname')
-        password=request.data.get('password')
-        re_password=request.data.get('re_password')
         phone=request.COOKIES.get('phonenumber')
         user:User=User.objects.filter(username=phone).first()
-        user.first_name=firstname
-        user.last_name=lastname
-        user.set_password(password)
-        user.is_active=True
-        user.save()
-        return Response({'address':f'http://127.0.0.1:8000{LOGIN_URL}'},status=status.HTTP_200_OK)
-
+        form=Register(request.data or None)
+        if form.is_valid():
+            firstname=form.cleaned_data.get('first_name')
+            lastname=form.cleaned_data.get('family')
+            password=form.cleaned_data.get('password')
+            user.first_name=firstname
+            user.last_name=lastname
+            user.set_password(password)
+            user.is_active=True
+            user.save()
+            return Response({'address':f'http://127.0.0.1:8000{LOGIN_URL}'},status=status.HTTP_200_OK)
+        context={
+                'form':form
+            }
+        html=render_to_string('register_form.html',context)
+        return Response({'html':html},status=status.HTTP_400_BAD_REQUEST)
+        
 
 class Check_Code_Sign_Up(APIView):
     def post(self, request):
@@ -200,31 +221,11 @@ class Check_Code_Sign_Up(APIView):
             if not User.objects.filter(username=phone).exists():
                 user=User.objects.create(username=phone,is_active=False)
                 User_detail.objects.create(user=user)
-            html=f"""
-                      <div class="form-inline" id="login-form" >
-                        <p class="text-right text-info">فرم ثبت نام </p>
-
-                        <div class="form-group">
-                            <label for="firstname" class="text-info mt-2">نام :</label><br>
-                            <input type="text" id="firstname"  class="form-control"  placeholder="نام ">                                   
-                        </div>
-                        <div class="form-group">
-                            <label for="family" class="text-info mt-2">نام و خانوادگی :</label><br>
-                            <input type="text" id="lastname" class="form-control"  placeholder="نام خانوادگی">
-                                   
-                        </div>
-                        <div class="form-group">
-                            <label for="password" class="text-info mt-2">پسورد :</label><br>
-                            <input type="text" id="password"  class="form-control"  placeholder="رمز عبور">
-                        </div>
-                        <div class="form-group">
-                            <label for="re_password" class="text-info mt-2">تکرار رمز عبور :</label><br>
-                           <input type="text" id="re_password"  class="form-control"  placeholder="تکرار رمز عبور">
-                        </div>
-                        <br>
-                        <button onclick='send_information()' class="btn btn-info w-100">ثبت نام</button>
-                    </div>
-                """
+            form=Register()
+            context={
+                'form':form
+            }
+            html=render_to_string('register_form.html',context)
             return Response({'html':html},status=status.HTTP_200_OK)
         else:
             return Response({'code_error':'کد منتقضی شده یا نادرست است'},status=status.HTTP_400_BAD_REQUEST)
@@ -244,9 +245,14 @@ class Check_Phone_Sign_Up(APIView):
         else:
             code=code.first()
         code.code=random.randint(1000,9999)
-        code.expired_time=datetime.datetime.now()+datetime.timedelta(minutes=4)
+        code.expired_time=timezone.now()+timezone.timedelta(minutes=4)
         code.save()
-        print(code.code)
+        message=f"""
+        نانوی شاپ 
+        سلام خوش اومدید 
+        کد ثبت نام شما  : {code.code}
+        """
+        send_message(phone,message)
         html=f""" 
              <div class="form-inline" id="login-form"  >
                             <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>

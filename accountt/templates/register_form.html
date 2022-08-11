@@ -1,0 +1,40 @@
+<div class="form-inline" id="login-form" >
+    <p class="text-right text-info">فرم ثبت نام </p>
+
+    <div class="form-group">
+        <label for="firstname" class="text-info mt-2">نام :</label><br>
+        {{form.first_name}}                                   
+    </div>
+
+    {% for error in form.first_name.errors %}
+    <span  class='text-danger'>{{error}}</span>
+    {% endfor %}
+    <div class="form-group">
+        <label for="family" class="text-info mt-2">نام و خانوادگی :</label><br>
+        {{form.family}}               
+    </div>
+    {% for error in form.family.errors %}
+    <span class='text-danger'>{{error}}</span>
+    
+    {% endfor %}
+    <div class="form-group">
+        <label for="password" class="text-info mt-2">پسورد :</label><br>
+       {{form.password}}
+    </div>
+    {% for error in form.password.errors %}
+    <span class='text-danger'>{{error}}</span>
+    
+    {% endfor %}
+    <div class="form-group">
+        <label for="password_confirm" class="text-info mt-2">تکرار رمز عبور :</label><br>
+       {{form.password_confirm}}
+    </div>
+    {% for error in form.password_confirm.errors %}
+    <span class='text-danger'>{{error}}</span>
+    <br>
+    {% endfor %}
+    <br>
+    <button onclick='send_information()' class="btn btn-info w-100">ثبت نام</button>
+    <br>
+    <br>
+</div>
