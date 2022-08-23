@@ -23,6 +23,9 @@
             }); });
         </script>
         <style>
+            .addtext{
+                resize: none;
+            }
             .navbar-nav li{
                 margin-right:29px;
             }
@@ -100,7 +103,44 @@
                 border-radius: 5px;
                 font-size:15px;
                 }
-           
+                .box {
+                position: relative;
+                border-radius: 3px;
+                background: #ffffff;
+                border-top: 3px solid #d2d6de;
+                    border-top-color: rgb(210, 214, 222);
+                margin-bottom: 20px;
+                width: 100%;
+                box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+                }
+                .box.box-primary {
+                    border-top-color: #3c8dbc;
+                    }
+                .box-body {
+                    border-top-right-radius: 0;
+                    border-top-left-radius: 0;
+                    border-bottom-left-radius: 3px;
+                    border-bottom-right-radius: 3px;
+                    padding: 10px;
+                }
+                .profile-user-img {
+                margin: 0 auto;
+                width: 100px;
+                padding: 3px;
+                border: 3px solid #d2d6de;
+                }
+                
+                .a_group li a{
+                    color:black;
+                }
+                .img-circle {
+                    border-radius: 50%;
+                    }
+                .img-responsive{
+                    display: block;
+                    max-width: 100%;
+                    height: auto;
+                }
         </style>
     </head>
     <body>
@@ -171,14 +211,14 @@
                                         </a>
                                       
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                          <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> پروفایل </a></li>
+                                          <li><a class="dropdown-item" href="/profile/DashBoard"><i class="bi bi-person"></i> پروفایل </a></li>
                                           <li><a class="dropdown-item" href="{{log_out}}"><i class="bi bi-box-arrow-left"></i>   خروج  </a></li>
                                         </ul>
                                     </div>
                                     {% else %}
                                     <a href="{{login}}" class="text-dark"><i class="bi bi-box-arrow-in-right"></i><span style='font-size:15px'>ورود</span></a>
                                 {% endif %}
-                                <a class='mt-1 text-dark' href='cart' style='font-size:10px ;padding-right:8px'><i class="bi bi-cart" style='font-size:20px ;'></i> </a>
+                                <a class='mt-1 text-dark' href='/cart' style='font-size:10px ;padding-right:8px'><i class="bi bi-cart" style='font-size:20px ;'></i> </a>
                                
                             </div>
                             </div>

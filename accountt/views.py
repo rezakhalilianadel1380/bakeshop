@@ -1,22 +1,102 @@
+from django.contrib import messages
 from django.shortcuts import redirect, render
-from .models import Code,Sign_up, User_detail
-from .forms import Register
+from order.models import Cart
+from .models import Address, Code,Sign_up, User_detail
+from .forms import Register,User_Form,User_Address
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout
-import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import re
 import random
-import datetime
 from rest_framework import status
 from django.utils import timezone
 from django.contrib.auth.models import User
 from shop.settings import LOGIN_URL
 from django.template.loader import render_to_string
 from sms_configure.sms import send_message
+from django.contrib.auth.decorators import login_required
 # Create your views here.
- 
+
+
+def delete_address(request,id):
+    instance=Address.objects.filter(user=request.user,id=id)
+    if not instance.exists():
+        return redirect('/profile/Address')
+    instance.delete()
+    messages.success(request,'ادرس  با موفقیت حذف  شد ')
+    return redirect('/profile/Address')
+
+
+
+@login_required
+def edite_address(request,id):
+    instance=Address.objects.filter(user=request.user,id=id)
+    if not instance.exists():
+        return redirect('/profile/Address')
+    form=User_Address(request.POST or None,instance=instance.first())
+    if form.is_valid():
+        messages.success(request,'ادرس  با موفقیت ویرایش شد ')
+        form.save()
+        return redirect('/profile/Address')
+    context={
+        'form':form,
+    }
+    return render(request,'edite_address.html',context)
+
+@login_required
+def add_address(request):
+    address=Address.objects.filter(user=request.user)
+    if len(address)>=3:
+        messages.error(request,'داشتن بیش از سه ادرس مجاز نیست')
+        return redirect('/profile/Address')
+    form=User_Address(request.POST or None)
+    if form.is_valid():
+        messages.success(request,'ادرس  با موفقیت ایجاد شد ')
+        add=form.save(commit=False)
+        add.user=request.user
+        add.save()
+        return redirect('/profile/Address')
+    context={
+        'form':form,
+    }
+    return render(request,'add_address.html',context)
+
+
+@login_required
+def show_addresses_in_profile(request):
+    return render(request,'address.html',{})
+
+
+@login_required
+def show_orders_profile(request):
+    orders=Cart.objects.filter(user=request.user,status__in=['4','5'])
+    active_order=Cart.objects.filter(user=request.user,status__in=['2','3'])
+    context={
+        "orders":orders,
+        'active_order':active_order,
+    }
+    return render(request,'order_profile.html',context)
+
+
+def show_right_panel(request):
+    return render(request,'right_panel.html',{})
+
+@login_required
+def edite_account(request):
+    form=User_Form(request.POST or None,instance=request.user)
+    if form.is_valid():
+        form.save()
+        messages.success(request,'حساب کاربری با موفقیت ویرایش شد ')
+        return redirect('/profile/EditeProfile')
+    context={
+        'form':form,
+    }
+    return render(request,'edite_account.html',context)
+
+@login_required
+def profile_dashbord(request):
+    return render(request,'profile.html',{})
 
 def log_out(request):
     logout(request)
@@ -69,7 +149,8 @@ class Check_The_Code(APIView):
         code=request.data.get('code')
         user=User.objects.filter(username=phone).first()
         expired_time=user.code.expired_time.astimezone(timezone.get_current_timezone())
-        if user.code.code==code and expired_time>=timezone.now():
+        current_time=timezone.now().astimezone(timezone.get_current_timezone())
+        if user.code.code==code and expired_time>=current_time:
             login(request,user)
             return Response({'address':'http://127.0.0.1:8000'},status=status.HTTP_200_OK)
         else:

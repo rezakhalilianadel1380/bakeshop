@@ -1,0 +1,41 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+ادرس ها
+{% endblock title %}
+{% block content %}
+
+<div class="container">
+    <div class="row mt-5">
+            {% render_partial 'accountt.views.show_right_panel' %}            
+            <div class="col-md-9">
+                <div class="bg-white shadow mb-2 " style="border-radius:10px;padding:20px">
+                    <div class='row'>
+                        <p class='col-6' style='font-size:20px'><i class="bi bi-geo-alt-fill"></i>  ادرس ها </p>
+                        <p class='col-6 d-flex justify-content-end' style='font-size:20px'><a href="/profile/Address/Add" class='btn btn-outline-success'> <i  class="bi bi-plus-circle"></i> اضافه کردن ادرس</a> </p>
+                    </div>
+                    <hr>
+                    <div class='row'>
+                       {% for address in request.user.address_set.all %}
+                           <p class='col-6'>{{address.get_address}}</p> 
+                           <div class='col-6 d-flex justify-content-end'>
+                            <a href="/profile/Address/Edite/{{address.id}}"><i style="font-size:20px;" class="bi bi-pencil-square"></i>
+                            </a>
+                            <a style="margin-right:20px" href="/profile/Address/Delete/{{address.id}}"><i style="font-size:20px;" class="bi bi-file-x-fill text-danger"></i></i>
+                            </a>
+                        </div> 
+                            <hr>
+                       {% endfor %}
+                    </div>
+                       
+                </div>
+                
+                
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+ویرایش
+{% endblock title %}
+{% block content %}
+
+<div class="container">
+    <div class="row mt-5">
+            {% render_partial 'accountt.views.show_right_panel' %}            
+            <div class="col-md-9">
+                <div class="bg-white shadow mb-2 " style="border-radius:10px;padding:20px">
+                    <div class='row'>
+                        <p class='col-6' style='font-size:20px'><i class="bi bi-geo-alt-fill"></i> ایجاد ادرس جدید</p>
+                    </div>
+                    <hr>
+                        <form method="post" class="form-inline row" style="padding:0px;">
+                            {% csrf_token %}
+                            <div class="col-md-6 mb-2">
+                                <label for="" > <i class="bi bi-telephone-fill"></i> استان  :</label>
+                                {{form.state}}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for=""><i class="bi bi-person-fill"></i> شهر:</label>
+                                {{form.city}}
+                            </div>
+                            <div class="col-md-12 mb-2">
+                                <label for=""><i class="bi bi-person-fill"></i> ادرس پستی  :</label>
+                                {{form.address}}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for=""> <i class="bi bi-envelope-fill"></i>  پلاک :</label>
+                                {{form.pelak}}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for=""> <i class="bi bi-envelope-fill"></i>    واحد :</label>
+                                {{form.vahed}}
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary mt-2">ذخیره</button>
+                    </form>
+                </div>
+                
+                
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

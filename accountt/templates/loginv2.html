@@ -86,7 +86,7 @@
     </div>
     <!-- header  ends  -->
     <div class="content flex">
-        <p>نانوایی انلاین  </p>
+        <p  > <a href="/">نانوایی انلاین</a></p>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
     <script>
@@ -106,6 +106,7 @@
         }
         
         function resend(){
+            $('.loader').fadeIn('fast');
             $.ajax({
                         url:'/api/v1/Resend',
                         headers: {'X-CSRFToken': csrftoken},
@@ -114,17 +115,17 @@
                             "phone":getCookie('phonenumber'),
                         },
                         success:function(rsp){
-                            $('.loader').fadeIn('fast');
                             $("#link").html('ارسال مجدد کد در <span id="time"> (04:00) </span>')
                             document.title = 'ارسال کد';
                             var fourMinutes = 60*4,
                             display = document.querySelector('#time');
                             startTimer(fourMinutes,display);
+                            $('#error').html("");
+                            $('#error').fadeOut()
                             $('.loader').fadeOut('slow');
                         },
                         error: function(xhr, status, error) {
                             var err = JSON.parse(xhr.responseText);
-                            $('.loader').fadeIn('fast');
                             $('#error').html(err.password_error);
                             $('#error').fadeIn()
                             $('.loader').fadeOut('slow');
@@ -139,6 +140,7 @@
                 $('#error').fadeIn()
             }
             else{
+                $('.loader').fadeIn('fast');
                 $.ajax({
                         url:'/api/v1/step3',
                         headers: {'X-CSRFToken': csrftoken},
@@ -159,7 +161,6 @@
                         },
                         error: function(xhr, status, error) {
                             var err = JSON.parse(xhr.responseText);
-                            $('.loader').fadeIn('fast');
                             $('#error').html(err.code_error);
                             $('#error').fadeIn()
                             $('.loader').fadeOut('slow');
@@ -169,6 +170,7 @@
         }
 
         function send_code(){
+            $('.loader').fadeIn('fast');
             $.ajax({
                         url:'/api/v1/Send_The_Code',
                         headers: {'X-CSRFToken': csrftoken},
@@ -177,7 +179,6 @@
                             "phone":getCookie('phonenumber'),
                         },
                         success:function(rsp){
-                            $('.loader').fadeIn('fast');
                             $('#login-box').html(rsp.html);
                             document.title = 'ارسال کد';
                             var fourMinutes = 60*4,

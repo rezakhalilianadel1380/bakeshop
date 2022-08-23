@@ -1,9 +1,47 @@
 from wsgiref.validate import validator
 from django import forms
+from .models import Address
 from django.core.validators import RegexValidator
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.password_validation import CommonPasswordValidator,MinimumLengthValidator,NumericPasswordValidator
+from django.contrib.auth.models import User
 
+
+
+
+
+
+
+class User_Address(forms.ModelForm):
+    class Meta:
+        model = Address
+        exclude=('user',)
+
+    def __init__(self, *args, **kwargs):
+        super(User_Address,self).__init__(*args, **kwargs)
+        self.fields['state'].widget.attrs.update({'class': 'form-control'})
+        self.fields['state'].widget.attrs['readonly'] = True
+        self.fields['city'].widget.attrs['readonly'] = True
+        self.fields['city'].widget.attrs.update(
+            {'class': 'form-control'})
+        self.fields['address'].widget.attrs.update({'class': 'form-control addtext'})
+        self.fields['pelak'].widget.attrs.update({'class': 'form-control'})
+        self.fields['vahed'].widget.attrs.update({'class': 'form-control'})
+
+
+class User_Form(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username','first_name',"last_name",'email')
+
+    def __init__(self, *args, **kwargs):
+        super(User_Form,self).__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control'})
+        self.fields['first_name'].widget.attrs.update(
+            {'class': 'form-control'})
+        self.fields['last_name'].widget.attrs.update({'class': 'form-control'})
+  
 
 
 

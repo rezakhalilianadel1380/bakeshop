@@ -1,3 +1,6 @@
+from email.policy import default
+from pyexpat import model
+from sre_parse import State
 from statistics import mode
 from django.db import models
 from django.contrib.auth.models import User
@@ -13,12 +16,29 @@ class Setting(models.Model):
         return f'{self.is_on}'
 
 
+state_choices=(
+    ('khorasan_razavi','خراسان رضوی'),
+)
+
+city_choices=(
+    ('mashhad','مشهد'),
+)
+
+
+
 class Address(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
+    state=models.CharField(default='khorasan_razavi',choices=state_choices,max_length=50)
+    city=models.CharField(default='mashhad',choices=city_choices,max_length=50)
     address=models.TextField()
+    pelak=models.CharField(max_length=20,null=True)
+    vahed=models.CharField(max_length=20,null=True)
 
     def __str__(self):
         return self.address
+
+    def get_address(self):
+        return f' {self.get_state_display()} , {self.get_city_display()} ,{self.address} , پلاک {self.pelak}   ,  واحد {self.vahed} '
 
 
 

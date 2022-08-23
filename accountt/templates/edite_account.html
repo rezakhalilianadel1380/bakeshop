@@ -1,0 +1,49 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% load render_partial %}
+
+{% block title %}
+ویراش حساب کاربری
+{% endblock title %}
+{% block content %}
+
+<div class="container">
+    <div class="row mt-5">
+        {% render_partial 'accountt.views.show_right_panel' %}            
+            <div class="col-md-9">
+                <div class="bg-white shadow mb-2 " style="border-radius:10px;padding:20px">
+                    <p style='font-size:20px'>ویرایش حساب کاربری</p>
+                    <hr>
+                    <form method="post" class="form-inline row" style="padding:0px;">
+                            {% csrf_token %}
+                            <div class="col-md-6 mb-2">
+                                <label for="" > <i class="bi bi-telephone-fill"></i> شماره همراه   :</label>
+                                {{form.username}}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for=""><i class="bi bi-person-fill"></i>     نام  :</label>
+                                {{form.first_name}}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for=""><i class="bi bi-person-fill"></i> نام خانوادگی  :</label>
+                                {{form.last_name}}
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <label for=""> <i class="bi bi-envelope-fill"></i>    ایمیل  :</label>
+                                {{form.email}}
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary mt-2">ذخیره</button>
+                    </form>
+                    
+                       
+                </div>
+                
+                
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

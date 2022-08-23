@@ -1,0 +1,44 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+ داشبورد
+{% endblock title %}
+{% block content %}
+
+<div class="container">
+    <div class="row mt-5">
+            {% render_partial 'accountt.views.show_right_panel' %}            
+            <div class="col-md-9">
+                <div class="bg-white shadow mb-2 " style="border-radius:10px;padding:20px">
+                    <p style='font-size:20px'>اطلاعات فردی</p>
+                    <hr>
+                    <div class='row'>
+                            <div class="col-md-6" >
+                                <p>
+                                    <i class="bi bi-person-fill"></i>  نام و نام خانوادگی :{{request.user.get_full_name}}  
+                                </p>
+                                <p>
+                                    <i class="bi bi-telephone-fill"></i> شماره تلفن همراه : {{request.user.username}}  
+                                </p>
+                            </div>
+                            <div class="col-md-6"  >
+                                <p>
+                                    <i class="bi bi-calendar-event-fill"></i> تاریخ عضویت: {{request.user.date_joined}}  
+                                </p>
+                                <p>
+                                    <i class="bi bi-envelope-fill"></i> ایمیل : {{request.user.email}}  
+                                </p>
+                            </div>
+                    </div>
+                       
+                </div>
+                
+                
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

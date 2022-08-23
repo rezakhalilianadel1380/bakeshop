@@ -1,0 +1,34 @@
+{% load static %}
+<div class='col-md-3'>
+    <div class="box box-primary shadow" style="border-radius:10px;">
+        <div class="box-body box-profile">
+                <img class="profile-user-img img-responsive img-circle" src="{{request.user.user_detail.get_image}}" alt="User profile picture">
+                <h4 class="profile-username text-center">{{request.user.get_full_name}}</h4>
+                <br>
+                <ul class='a_group'>
+                    <li>
+                        <i class="bi bi-speedometer2"></i> <a href="/profile/DashBoard">   داشبورد</a>
+                    </li>
+                    <hr>
+                    <li>
+                    <i class="bi bi-person"></i><a href="/profile/EditeProfile">   ویرایش حساب کاربری</a>
+                    </li>
+                    <hr>
+                    <li>
+                     <i class="bi bi-geo-alt"></i> <a href="/profile/Address">ادرس ها</a>
+                    </li>
+                    <hr>
+                    <li>
+                    <i class="bi bi-cart-check"></i>  <a href="/profile/orders">سفارشات</a>
+                    </li>
+                    <hr>
+                    <li>
+                        <i class="bi bi-box-arrow-left"></i>  <a href="/log_out">خروج</a>
+                    </li>
+                    <br>
+                </ul>
+    
+        </div>
+        <!-- /.box-body -->
+    </div>
+</div>

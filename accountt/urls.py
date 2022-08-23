@@ -1,5 +1,4 @@
 from django.urls import path
-
 from accountt.views import (
 Register_User,
 Resend_Code,
@@ -13,8 +12,14 @@ Send_The_Code,
 Check_Password,
 Check_Phone,
 contact_us, 
-log_out
-
+log_out,
+profile_dashbord,
+edite_account,
+show_orders_profile,
+show_addresses_in_profile,
+add_address,
+edite_address,
+delete_address
  )
  
 urlpatterns = [
@@ -23,6 +28,13 @@ urlpatterns = [
     path('signup',sign_upv2,name='sign_up'),
     path('about_us',about_us,name='about-us'),
     path('contact_us',contact_us,name='contact-us'),
+    path('profile/DashBoard',profile_dashbord,name='profile_dashbord'),
+    path('profile/EditeProfile',edite_account,name='edite_account'),
+    path('profile/orders',show_orders_profile,name='show_orders_profile'),
+    path('profile/Address',show_addresses_in_profile,name='show_addresses_in_profile'),
+    path('profile/Address/Add',add_address,name='add_address'),
+    path('profile/Address/Edite/<id>',edite_address,name='edite_address'),
+    path('profile/Address/Delete/<id>',delete_address,name='delete_address'),
     #signup APIs
     path('api/v1/signup/step1',Check_Phone_Sign_Up.as_view(),name='Check_Phone_Sign_Up'),
     path('api/v1/signup/step2',Check_Code_Sign_Up.as_view(),name='Check_Code_Sign_Up'),

@@ -1,5 +1,6 @@
 from telnetlib import STATUS
 from tkinter import N
+from turtle import title
 from django.db import models
 from django.contrib.auth.models import User
 from bread.models import Bread
@@ -30,6 +31,14 @@ class Cart(models.Model):
     
     def __str__(self) -> str:
         return self.user.username
+
+    def get_bread_title(self):
+        cart_items=self.cart_item.all()
+        titles=[]
+        for cart_item in cart_items:
+            titles.append(cart_item.bread.title)
+        return ','.join(titles)
+        
 
     def is_empty(self):
         cart_item=self.cart_item.all()

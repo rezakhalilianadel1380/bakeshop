@@ -1,0 +1,73 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% load render_partial %}
+{% block title %}
+سفارشات
+{% endblock title %}
+{% block content %}
+
+<div class="container">
+    <div class="row mt-5">
+            {% render_partial 'accountt.views.show_right_panel' %}            
+            <div class="col-md-9">
+                <div class="bg-white shadow mb-2 " style="border-radius:10px;padding:20px">
+                    <p style='font-size:20px'>سفارشات</p>
+                    <hr>
+                    <div class='row'>
+                        <p style='font-size:15px'>سفارش در جریان :</p>
+                       
+                        <table class="table  table-hover">
+                          <thead>
+                            <tr>
+                              <th scope="col">شماره</th>
+                              <th scope="col">محصول</th>
+                              <th scope="col">تاریخ خرید</th>
+                              <th scope="col">وضعیت</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% for order in active_order %}
+                            <tr>
+                              <th scope="row">{{order.id}}</th>
+                              <td>{{order.get_bread_title}}</td>
+                              <td>{{order.payment_date}}</td>
+                              <td>{{order.get_status_display}}</td>
+                            </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                    </div>
+                    <div class='row'>
+                        <p style='font-size:15px'>سفارش های اخیر :</p>
+                        <table class="table table-hover">
+                            <thead>
+                              <tr>
+                                <th scope="col">شماره</th>
+                                <th scope="col">محصول</th>
+                                <th scope="col">تاریخ خرید</th>
+                                <th scope="col">وضعیت</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            {% for order in orders %}
+                              <tr>
+                                <th scope="row">{{order.id}}</th>
+                                <td>{{order.get_bread_title}}</td>
+                                <td>{{order.payment_date}}</td>
+                                <td>{{order.get_status_display}}</td>
+                              </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                    </div>
+                       
+                </div>
+                
+                
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
