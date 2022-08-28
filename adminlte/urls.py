@@ -14,6 +14,7 @@ admin_logout,
 admin_login,
 setting_site,
 setting_edite,
+Get_SEll_Data
 )
 
 urlpatterns = [
@@ -36,4 +37,5 @@ urlpatterns = [
     path('api/v1/switch',turn_off_or_on.as_view(),name='turn_off_or_on'),
     path('api/v1/delete_item',Delete_Bread_Item.as_view(),name='Delete_Bread_Item'),
     path('api/v1/delete_user_item',Delete_User_Item.as_view(),name='Delete_User_Item'),
+    path('api/v1/sellin',Get_SEll_Data.as_view(),name='Get_SEll_Data'),
 ]

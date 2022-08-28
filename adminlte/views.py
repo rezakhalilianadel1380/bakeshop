@@ -12,6 +12,8 @@ from django.contrib.auth.password_validation import validate_password
 import re
 from django.core.exceptions import ValidationError,FieldError
 import datetime
+from django.db.models import Q
+from django.utils import timezone
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import user_passes_test
@@ -19,6 +21,7 @@ from django.contrib.auth import logout,authenticate,login
 from accountt.models import Setting
 from .permissions import Is_View_Cart,Read_Only,Bread_permission,Change_Cart_Permisson,Setting_Permission,User_Delete_Permission
 from rest_framework import permissions
+from sms_configure.sms import send_message
 # from django.contrib.auth import mixins 
 # from .serializers import Bread_Serializer
 # from rest_framework.exceptions import PermissionDenied
@@ -89,8 +92,26 @@ def admin_login(request):
 
 @user_passes_test(lambda u: u.is_superuser,login_url='/adminlte/login')
 def show_orders(request):
-    carts=Cart.objects.all()
+    carts=Cart.objects.all().order_by('-payment_date')
+    if request.GET.get('filter_time') and request.GET.get('filter_time')=='1' :
+       carts=carts.filter(payment_date__day=timezone.now().day)
+    elif  request.GET.get('filter_time') and request.GET.get('filter_time')=='2' :
+       carts=carts.filter(payment_date__month=timezone.now().month)
+    elif request.GET.get('filter_time') and request.GET.get('filter_time')=='3' :
+       carts=carts.filter(payment_date__year=timezone.now().year)
+    if request.GET.get('qs'):
+        q=request.GET.get('qs')
+        lookup=(
+           Q(user__username=q)|
+           Q(user__first_name__contains=q)|
+           Q(user__last_name__contains=q)
+        )
+        carts=Cart.objects.filter(lookup).distinct()
+    paginator = Paginator(carts,20) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
     context={
+        'page_obj':page_obj,
         'carts':carts
     }
     return render(request,"orders.html",context)
@@ -173,6 +194,10 @@ def add_user(request):
 @user_passes_test(lambda u: u.has_perm('auth.view_user'),login_url='/adminlte/login')
 def user_list(request):
     users=User.objects.all()
+    if request.GET.get('is_admin') :
+       users=users.filter(is_staff=True)
+    if  request.GET.get('is_superuser') :
+       users=users.filter(is_superuser=True)
     paginator = Paginator(users,20) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -226,7 +251,7 @@ def dashboard(request):
     bread_num=len(Bread.objects.all())
     cart_num=len(Cart.objects.all())
     users=User.objects.all().order_by('-date_joined')[:8]
-    carts=Cart.objects.all().order_by('-payment_date')[:8]
+    carts=Cart.objects.all().order_by('-payment_date')[:6]
     context={
         'users':users,
         'carts':carts,
@@ -250,6 +275,24 @@ def switch_render(request):
 
 
 ######################  APIs ##################################
+
+
+class Get_SEll_Data(APIView):
+    def get(self,request):
+        c=Cart.objects.filter(is_paid=True,payment_date__year=timezone.now().year).order_by('payment_date')
+        dictvalue={}
+        for i in c:
+            month=i.payment_date.strftime('%B')
+            if i.payment_date.strftime('%B') in dictvalue:
+                dictvalue[month]+=1
+            else:
+                dictvalue[month]=1
+        context={
+            'lables':dictvalue.keys(),
+            'values':dictvalue.values(),
+        }
+        return Response(context,status=status.HTTP_200_OK)
+
 
 class turn_off_or_on(APIView):
     permission_classes = (permissions.IsAuthenticated,Setting_Permission)
@@ -298,8 +341,6 @@ class Send_Order(APIView):
 
 class Change_Status(APIView):
     permission_classes = (permissions.IsAuthenticated,Change_Cart_Permisson)
-
-
     def post(self,request):
         cart_id=request.data.get('order_id')
         status_cart=request.data.get('status')
@@ -310,6 +351,20 @@ class Change_Status(APIView):
             print('sms ersanl shode')
             return Response(status=status.HTTP_200_OK)
         elif cart.status=='4':
+            phone=cart.user.username
+            if cart.delivery_mode == '1':
+                message="""
+                نانوی شاپ
+                نان شما تولید شد 
+                در اسرع وقت به مغازه مراجعه کنید
+                """
+            else:
+                message="""
+                نانوی شاپ
+                نان شما تولید شد 
+                در اسرع وقت  توسط پیک برای شما ارسال میشود
+                """
+            send_message(phone,message)
             cart=Cart.objects.filter(status__in=['2',"3"]).first()
             if cart is None:
                 html="""
