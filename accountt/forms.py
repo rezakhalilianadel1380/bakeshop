@@ -1,6 +1,6 @@
 from wsgiref.validate import validator
 from django import forms
-from .models import Address
+from .models import Address,Code,Sign_up
 from django.core.validators import RegexValidator
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.password_validation import CommonPasswordValidator,MinimumLengthValidator,NumericPasswordValidator
@@ -8,7 +8,66 @@ from django.contrib.auth.models import User
 
 
 
+class Chang_Phone(forms.Form):
+    previous_phone_confirm_code = forms.CharField(required=True,widget=forms.TextInput(
+        attrs={
+            "class":"form-control", 
+            "placeholder":"کدتایید",
+            'maxlength':'50'
+            }),
+    )
+    new_phone_number = forms.CharField(required=True,widget=forms.TextInput(
+        attrs={
+            "class":"form-control", 
+            "placeholder":"شماره همراه",
+            'maxlength':'50'
+            }),
+    )
+    new_phone_confirm_code = forms.CharField(required=True,widget=forms.TextInput(
+        attrs={
+            "class":"form-control", 
+            "placeholder":"کدتایید",
+            'maxlength':'50'
+            }),
+    )
 
+   
+
+
+
+class Change_Password(forms.Form):
+    previous_pass=forms.CharField(widget=forms.TextInput(
+        attrs={
+            "class":"form-control", 
+            "placeholder":"پسورد قبلی",
+            'maxlength':'50'
+            }),
+
+         )
+
+    password = forms.CharField(widget=forms.TextInput(
+        attrs={
+            "class":"form-control", 
+            "placeholder":" پسورد جدید",
+            'maxlength':'50'
+            }),
+
+         )
+    confirm_pass = forms.CharField(widget=forms.TextInput(
+        attrs={
+            "class":"form-control", 
+            "placeholder":"تایید گذرواژه",
+            'maxlength':'50'
+            }),
+
+         )
+
+    def clean_confirm_pass(self):
+        password=self.cleaned_data.get('password')
+        confirm_password=self.cleaned_data.get('confirm_pass')
+        if password!=confirm_password:
+            raise forms.ValidationError("رمز عبور با تکرار آن برابر نیست")
+        return confirm_password
 
 
 
@@ -32,11 +91,10 @@ class User_Address(forms.ModelForm):
 class User_Form(forms.ModelForm):
     class Meta:
         model = User
-        fields = ('username','first_name',"last_name",'email')
+        fields = ('first_name',"last_name",'email')
 
     def __init__(self, *args, **kwargs):
         super(User_Form,self).__init__(*args, **kwargs)
-        self.fields['username'].widget.attrs.update({'class': 'form-control'})
         self.fields['email'].widget.attrs.update({'class': 'form-control'})
         self.fields['first_name'].widget.attrs.update(
             {'class': 'form-control'})

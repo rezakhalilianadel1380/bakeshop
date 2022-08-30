@@ -1,0 +1,62 @@
+{% extends 'base_layout/_main_layout.html' %}
+{% load static %}
+{% load render_partial %}
+
+{% block title %}
+تغییر شماره همراه
+{% endblock title %}
+{% block content %}
+
+<div class="container">
+    <div class="row mt-5">
+        {% render_partial 'accountt.views.show_right_panel' %}            
+            <div class="col-md-9">
+                <div class="bg-white shadow mb-2 " style="border-radius:10px;padding:20px">
+                    <p style='font-size:20px'>تغییر شماره همراه   </p>
+                    <hr>
+                    <form method="post" class="form-inline row" style="padding:0px;">
+                            {% csrf_token %}
+                            <div class="col-md-4 mb-2">
+                                <label for="" > <i class="bi bi-lock"></i>کد تایید</label>
+                                {{form.previous_phone_confirm_code}}
+                            </div>
+                            {% for error in form.previous_phone_confirm_code.errors %}
+                            <br>
+                            <p class='text-danger'>{{error}}</p>
+                            {% endfor %}
+                            <div class="col-md-8 mb-2" id='send_old'>
+                                <a href='javascript:void(0)' onclick='change_phone_code()' class="btn btn-outline-success mt-4">ارسال کد به {{request.user.username}}</a>
+                            </div>
+                            <div class="col-md-4 mb-2">
+                                <label for="" > <i class="bi bi-lock"></i>شماره تلفن جدید</label>
+                                {{form.new_phone_number}}
+                            </div>
+                            {% for error in form.new_phone_number.errors %}
+                            <p class='text-danger'>{{error}}</p>
+                            {% endfor %}
+                            <div class="col-md-4 mb-2">
+                                <label for="" > <i class="bi bi-lock"></i>کد تایید</label>
+                                {{form.new_phone_confirm_code}}
+                            </div>
+                            {% for error in form.new_phone_confirm_code.errors %}
+                            <p class='text-danger'>{{error}}</p>
+                            {% endfor %}
+                            <div class="col-md-4 mb-2">
+                                <a href='javascript:void(0)' id='send_new' onclick='new_phone_send_code()' class="btn btn-outline-success mt-4">ارسال کد </a>
+                            </div>
+                            <button type='sumbit' id='confirm' class="btn btn-success w-100 mt-4  disabled">تایید</button>
+
+                           
+                    </form>
+                    
+                       
+                </div>
+                
+                
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

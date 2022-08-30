@@ -19,7 +19,11 @@ show_orders_profile,
 show_addresses_in_profile,
 add_address,
 edite_address,
-delete_address
+delete_address,
+change_password,
+change_phone,
+Change_Phone_Confirm_code,
+Change_New_Phone_Confirm_code
  )
  
 urlpatterns = [
@@ -35,6 +39,8 @@ urlpatterns = [
     path('profile/Address/Add',add_address,name='add_address'),
     path('profile/Address/Edite/<id>',edite_address,name='edite_address'),
     path('profile/Address/Delete/<id>',delete_address,name='delete_address'),
+    path('profile/changepassword',change_password,name='change_password'),
+    path('profile/change_phone',change_phone,name='change_phone'),
     #signup APIs
     path('api/v1/signup/step1',Check_Phone_Sign_Up.as_view(),name='Check_Phone_Sign_Up'),
     path('api/v1/signup/step2',Check_Code_Sign_Up.as_view(),name='Check_Code_Sign_Up'),
@@ -46,6 +52,10 @@ urlpatterns = [
     path('api/v1/Send_The_Code',Send_The_Code.as_view(),name='Send_The_Code'),
     path('api/v1/step3',Check_The_Code.as_view(),name='Check_The_Code'),
     path('api/v1/Resend',Resend.as_view(),name='Resend'),
+    #change_phone APIs
+    path('api/v1/change_phone/send_code/old',Change_Phone_Confirm_code.as_view(),name='Change_Phone_Confirm_code'),
+    path('api/v1/change_phone/send_code/new',Change_New_Phone_Confirm_code.as_view(),name='Change_New_Phone_Confirm_code'),
+
 ]
 
 

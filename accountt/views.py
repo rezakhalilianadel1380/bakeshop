@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect, render
 from order.models import Cart
 from .models import Address, Code,Sign_up, User_detail
-from .forms import Register,User_Form,User_Address
+from .forms import Register,User_Form,User_Address,Change_Password,Chang_Phone
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout
 from rest_framework.views import APIView
@@ -19,6 +19,98 @@ from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 
+
+class Change_Phone_Confirm_code(APIView):
+    def get(self,request):
+        code=Code.objects.filter(user=request.user).first()
+        code.expired_time=timezone.now()+timezone.timedelta(minutes=4)
+        code.code=random.randint(1000,9999)
+        code.save()
+        message=f"""
+        نانوی شاپ 
+        تعویض شماره همراه
+        کد شما  : {code.code}
+        """
+        send_message(request.user.username,message)
+        return Response(status=status.HTTP_200_OK)
+
+class Change_New_Phone_Confirm_code(APIView):
+    def get(self,request):
+        phone=request.GET.get('phone_number')
+        user=User.objects.filter(username=phone)
+        if user.exists():
+            return Response({'phone_error':'شماره تلفن قبلا ثبت شده است'},status=status.HTTP_400_BAD_REQUEST)
+        if re.search(r"^09\d{9}$",phone) is None:
+            return Response({'phone_error':'شماره تلفن معتبر نیست'},status=status.HTTP_400_BAD_REQUEST)
+        code=Sign_up.objects.filter(phone_number=phone)
+        if not code.exists():
+            code=Sign_up.objects.create(phone_number=phone)
+        else:
+            code=code.first()
+        code.code=random.randint(1000,9999)
+        code.expired_time=timezone.now()+timezone.timedelta(minutes=4)
+        code.save()
+        message=f"""
+        نانوی شاپ 
+        کد ثبت شماره همراه جدید
+        کد  شما  : {code.code}
+        """
+        send_message(phone,message)
+        return Response(status=status.HTTP_200_OK)
+
+def change_phone(request):
+    form=Chang_Phone(request.POST  or None)
+    if form.is_valid():
+        user=request.user
+        previous_phone_confirm_code=form.cleaned_data.get('previous_phone_confirm_code')
+        new_phone_number=form.cleaned_data.get('new_phone_number')
+        new_phone_confirm_code=form.cleaned_data.get('new_phone_confirm_code')
+
+        expired_time_old=user.code.expired_time.astimezone(timezone.get_current_timezone())
+        current_time=timezone.now().astimezone(timezone.get_current_timezone())
+
+        code_object=Sign_up.objects.filter(phone_number=new_phone_number).first()
+        expired_time=code_object.expired_time.astimezone(timezone.get_current_timezone())
+
+        if user.code.code==previous_phone_confirm_code and expired_time_old>=current_time:
+            if code_object.code==new_phone_confirm_code and expired_time>=timezone.now():
+                user.username=new_phone_number
+                user.save()
+                messages.success(request,'شماره تلفن با موفقیت تغغیر کرد')
+                return redirect('/')
+            else:
+                form.add_error('new_phone_confirm_code','کد تایید اشتباه یا منقضی شده است')
+        else:
+             form.add_error('previous_phone_confirm_code','کد تایید اشتباه یا منقضی شده است')
+
+    context={
+        'form':form,
+    }
+    return  render(request,'change_phone.html',context)
+
+
+
+@login_required
+def change_password(request):
+    form=Change_Password(request.POST or None)
+    if form.is_valid():
+        user:User=request.user
+        password_new=form.cleaned_data.get("password")
+        previous_pass=form.cleaned_data.get("previous_pass")
+        if user.check_password(previous_pass):
+            user.set_password(password_new)
+            user.save()
+            messages.success(request,'رمز با موفقیت تغییر کرد ')
+            return redirect('/profile/DashBoard')
+        form.add_error('previous_pass','پسورد نامعتبراست ')
+    context={
+        'form':form,
+    }
+
+    return render(request,'change_password.html',context)
+
+
+@login_required
 def delete_address(request,id):
     instance=Address.objects.filter(user=request.user,id=id)
     if not instance.exists():

@@ -344,6 +344,44 @@
                 function check_order(){
                     alert('beep')
                 }
+                function change_phone_code(){
+                      $.ajax({
+                            url:'/api/v1/change_phone/send_code/old',
+                            type:'GET',
+                            success:function(rsp){
+                                $("#send_old").html('<span> (4:00)</span>')
+                            },
+                            error: function(xhr, status, error) {
+                                
+                            }
+                        });
+                         }
+
+                function new_phone_send_code(){
+                     if ($('#id_new_phone_number').val()==''){
+                        showAndDismissAlert('red','شماره همراه جدید را وارد کنید');
+                     } 
+                     else{
+                        $.ajax({
+                            url:'/api/v1/change_phone/send_code/new',
+                            type:'GET',
+                            data:{
+                                "phone_number":$('#id_new_phone_number').val(),
+                            },
+                            success:function(rsp){
+                                $("#send_new").html('<span> (4:00)</span>')
+                                button=document.getElementById('confirm')
+                                button.classList.remove('disabled');
+                            },
+                            error: function(xhr, status, error) {
+                                var err = JSON.parse(xhr.responseText);
+                                showAndDismissAlert('red',err.phone_error);
+                               
+                                
+                            }
+                        });
+                     }
+                         }
             </script>
     </body>
 </html>

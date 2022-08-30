@@ -16,11 +16,7 @@
                     <hr>
                     <form method="post" class="form-inline row" style="padding:0px;">
                             {% csrf_token %}
-                            <div class="col-md-6 mb-2">
-                                <label for="" > <i class="bi bi-telephone-fill"></i> شماره همراه   :</label>
-                                {{form.username}}
-                            </div>
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-12 mb-2">
                                 <label for=""><i class="bi bi-person-fill"></i>     نام  :</label>
                                 {{form.first_name}}
                             </div>
