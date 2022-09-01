@@ -334,6 +334,46 @@ $(function () {
                  }
             });
       }
+
+
+
+     
 </script>
 
+<script>
+   $(".Dcode").click(function() {
+            checkboxes=$(".mailbox-messages input[type='checkbox']:checked");
+            if (checkboxes.length == 0){
+              showAndDismissAlert('red',' هیچ ایتمی انتخاب نشده است')
+            }
+            else{
+              values=[];
+              for(i=0;i<checkboxes.length;i++){
+                values.push(checkboxes[i].value);
+              }
+              $.ajax({
+                url:'/adminlte/api/v1/delete_discount_item',
+                headers: {'X-CSRFToken': csrftoken},
+                type:'DELETE',
+                data:{
+                    'items':values,
+                },
+                success:function(rsp){
+                  $(".mailbox-messages input[type='checkbox']").iCheck("uncheck");
+                  location.reload(); 
+                },
+                error: function(xhr, status, error) {
+                    if (xhr.status==403){
+                      showAndDismissAlert('red','دسترسی غیر مجاز است ')
 
+                    }
+                    else{
+                      showAndDismissAlert('red','مشکلی پیش امده است ')
+                    }
+
+                            
+                 }
+            });
+            }
+      });
+</script>

@@ -1,3 +1,4 @@
+from pyexpat import model
 from telnetlib import STATUS
 from tkinter import N
 from turtle import title
@@ -6,6 +7,17 @@ from django.contrib.auth.models import User
 from bread.models import Bread
 from accountt.models import Address
 # Create your models here.
+
+
+class Discount(models.Model):
+    discount_code=models.CharField(max_length=50)
+    dicount_percent=models.IntegerField(default=1)
+    max_price_dicount=models.IntegerField(default=0)
+    price_after_max_price=models.IntegerField(default=0)
+    active=models.BooleanField(default=False)
+
+    def __str__(self) -> str:
+        return self.discount_code
 
 status_choices=(
     ('1','در انتظار پرداخت'),

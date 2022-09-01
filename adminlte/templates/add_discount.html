@@ -1,0 +1,82 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% load static %}
+{% block title %}ایجاد کد تخفیف{% endblock title %} 
+{% block content %}
+<section class="content-header" style="margin-bottom: 20px;">
+    <h1>
+        ویرایش کاربر
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{dashboard}}"><i class="fa fa-dashboard"></i> خانه</a></li>
+      <li ><a href="/adminlte/discount"><i class="fa fa-laptop"></i>کدتخفیف</a></li>
+      <li class="active">ایجاد </li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <form method="post" enctype="multipart/form-data">
+            <div class="col-md-12">
+                    <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">کدتخفیف</h3>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body padding">
+                        <div class="table-responsive mailbox-messages">
+                            <div class="form-group ">
+                                {% csrf_token %}
+                                <label for="exampleInputEmail1">کدتخفیف</label>
+                                {{form.discount_code}}
+                                {% for i in form.discount_code.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputPassword1"> درصد تخفیف :</label><br>
+                                <p></p>
+                                {{form.dicount_percent}}
+                                {% for i in form.dicount_percent.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">حداکثر مبلغ دارای تخخفیف  :</label><br>
+                                {{form.max_price_dicount}}
+                                {% for i in form.max_price_dicount.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                               
+                                <div class="form-group">
+                                <label for="exampleInputFile">فعال / غیر فعال  :</label>
+                                {{form.active}}
+                                {% for i in form.active.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile"> مبلغ تخفیف (تومان) بعد از حداکثر مبلغ دارای تخفیف  : </label>
+                                {{form.price_after_max_price}}
+                                {% for i in form.price_after_max_price.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                
+                            
+                            <button class='btn btn-success btn-block '>ثبت</button>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                    
+                    </div>
+                    <!-- /. box -->
+            </div>
+        </form>
+    </div>
+    
+  </section>
+
+
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% url 'dashboard' as dashboard %}
+{% load static %}
+{% block title %}کدتخفیف{% endblock title %} 
+{% block content %}
+<section class="content-header" style="margin-bottom: 20px;">
+    <h1>
+      کدهای تخفیف
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{dashboard}}"><i class="fa fa-dashboard"></i> خانه</a></li>
+      <li class="active"> کدتخفیف  <i class="fa fa-users"></i></li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+      <div class="col-md-3">
+        <a href="/adminlte/discount/add" class="btn btn-success btn-block "><i class='fa fa-plus ml-5'></i>  اضافه کردن کدتخفیف    </a>
+        <a href="javascript:void(0)"  class="btn btn-danger btn-block margin-bottom Dcode"><i class='fa fa-remove ml-5'></i>حذف کردن کدتخفیف</a>
+        
+        <div class="box box-solid">
+          <div class="box-header with-border">
+            <h3 class="box-title">جزئیات</h3>
+
+            <div class="box-tools">
+              <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+              </button>
+            </div>
+          </div>
+          <div class="box-body no-padding">
+            <ul class="nav nav-pills nav-stacked">
+              <li ><a href="#"><i class="fa fa-users"></i>کدهای تخفیف
+                <span class="label label-primary pull-left">{{page_obj|length}}</span></a></li>
+              . 
+            </ul>
+          </div>
+          <!-- /.box-body -->
+        </div>
+      
+      </div>
+      <!-- /.col -->
+      <div class="col-md-9">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title">کدهای تخفیف</h3>
+            <!-- /.box-tools -->
+          </div>
+          <!-- /.box-header -->
+          <div class="box-body no-padding">
+            <div class="table-responsive mailbox-messages">
+              <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                    <th><button type="button" style='border:none;background-color: white;padding-right:5px;' class="btn  btn-sm checkbox-toggle"><i class="fa fa-square-o " style="font-size:15px;"></i>
+                    </button></td>
+                      <th>شماره</th>
+                      <th>کدتخفیف </th>
+                      <th>درصد تخفیف</th>
+                      <th>حداکثر مبلغ تخفیف</th>
+                      <th>مبلغ کم شده بعد از حداکثر تخفیف</th>
+                      <th>فعال</th>
+                      <th>ویرایش</th>
+                    </tr>
+                    </thead>
+                <tbody>
+               {% for discount in page_obj %}
+                <tr>
+                <td>
+                  <input type="checkbox" value="{{discount.id}}" class="flat-red">
+                </td>
+                  <td class="mailbox-name">{{discount.id}}</td>
+                  <td class="mailbox-subject">{{discount.discount_code}}</td>
+                  <td class="mailbox-subject">{{discount.dicount_percent}}</td>
+                  <td class="mailbox-subject">{{discount.max_price_dicount}}</td>
+                  <td class="mailbox-subject">{{discount.price_after_max_price}}</td>
+                  <td class="mailbox-subject">{% if discount.active %} <i class='fa fa-check text-success'></i>{% else %}<i class='fa fa-remove text-danger'></i> {% endif %}</td>
+                  <td class="mailbox-subject"><a href="/adminlte/discount/edite/{{discount.id}}"><i class='fa fa-pencil'></i></a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+              </table>
+              <!-- /.table -->
+            </div>
+            <!-- /.mail-box-messages -->
+          </div>
+          <!-- /.box-body -->
+          
+        </div>
+        <!-- /. box -->
+          <div class="pagination" style='float:left;'>
+            <ul class="pagination " style="margin-right: 10px;">
+              {% if page_obj.has_previous %}
+              <li class="paginate_button previous" ><a href="?page={{ page_obj.previous_page_number }}{% if request.GET.is_admin %}&is_amdin=1{% endif %}{% if request.GET.is_superuser %}&is_superuser=1{% endif %}"><i class="fa fa-angle-right"></i> قبلی </a></li>
+              {% endif %}
+              {% for page in page_obj.paginator.page_range %}
+                  {% if page == page_obj.number%}
+                      <li class="paginate_button  active"><a>{{page}}</a></li>
+                  {% else %}
+                      <li class="paginate_button"><a href="?page={{page}}{% if request.GET.is_admin %}&is_amdin=1{% endif %}{% if request.GET.is_superuser %}&is_superuser=1{% endif %}">{{page}}</a></li>
+                  {% endif %}
+              {% endfor %}
+              {% if page_obj.has_next %}
+              <li class="paginate_button next"><a href="?page={{page_obj.next_page_number}}{% if request.GET.is_admin %}&is_amdin=1{% endif %}{% if request.GET.is_superuser %}&is_superuser=1{% endif %}"> بعدی <i class="fa fa-angle-left"></i></a>
+              <li>
+                  {% endif %}
+          </ul>
+              
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+      </div>
+      <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    
+  </section>
+
+{% endblock content %}
+
+
+

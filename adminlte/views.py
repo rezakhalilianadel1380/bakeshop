@@ -1,13 +1,14 @@
 from django.shortcuts import redirect, render
 from bread.models import Bread
 from order.models import Cart
+from order.models import Discount
 from django.contrib.auth.models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from accountt.models import Setting, User_detail
 from rest_framework import status
 from django.contrib import messages
-from .forms import Bread_Form, User_Detail_Form,User_Form,login_form,Setting_edite_Form
+from .forms import Bread_Form,User_Detail_Form,Order_Form,User_Form,login_form,Setting_edite_Form,Discount_Form
 from django.contrib.auth.password_validation import validate_password
 import re
 from django.core.exceptions import ValidationError,FieldError
@@ -22,6 +23,7 @@ from accountt.models import Setting
 from .permissions import Is_View_Cart,Read_Only,Bread_permission,Change_Cart_Permisson,Setting_Permission,User_Delete_Permission
 from rest_framework import permissions
 from sms_configure.sms import send_message
+from django.http import Http404
 # from django.contrib.auth import mixins 
 # from .serializers import Bread_Serializer
 # from rest_framework.exceptions import PermissionDenied
@@ -30,6 +32,62 @@ from sms_configure.sms import send_message
 # Create your views here.
 
 
+
+
+
+
+def edite_discount(request,id):
+    object_discount=Discount.objects.filter(id=id).first()
+    form=Discount_Form(request.POST or None,instance=object_discount)
+    if form.is_valid():
+        form.save()
+        messages.success(request,'باموفقیت ویرایش شد ')
+        return redirect('/adminlte/discount')
+    context={
+        'form':form
+    }
+    return render(request,'edite_discount.html',context)
+
+
+def add_discount(request):
+    form=Discount_Form(request.POST or None)
+    if form.is_valid():
+        form.save()
+        messages.success(request,'باموفقیت ایجاد شد ')
+        return redirect('/adminlte/discount')
+    context={
+        'form':form
+    }
+    return render(request,'add_discount.html',context)
+
+
+
+def show_discount(request):
+    discounts=Discount.objects.all()
+    paginator = Paginator(discounts,20) 
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    context={
+        'page_obj':page_obj,
+        
+    }
+    return render(request,'discount.html',context)
+
+
+@user_passes_test(lambda u: u.has_perm('order.change_cart'),login_url='/adminlte/login')
+def show_order_detail(request,id):
+    cart=Cart.objects.filter(id=id)
+    if not cart.exists():
+        raise Http404
+    form=Order_Form(request.POST  or None,instance=cart.first())
+    if form.is_valid():
+        form.save()
+        messages.success(request,'ویرایش با موفقیت اعمال شد ')
+        return redirect('/adminlte/show_orders') 
+    context={
+        'form':form
+    }
+    return render(request,"order_edite.html",context)
 
 
 @user_passes_test(lambda u: u.has_perm('accountt.change_setting'),login_url='/adminlte/login')
@@ -237,7 +295,7 @@ def add_bread(request):
     return render(request,'bread_add.html',context)
 
 
-@user_passes_test(lambda u: u.has_perm('order.view_bread'),login_url='/adminlte/login')
+@user_passes_test(lambda u: u.has_perm('bread.view_bread'),login_url='/adminlte/login')
 def show_bread_list(request):
     breads=Bread.objects.all()
     context={
@@ -394,6 +452,14 @@ class Change_Status(APIView):
 
 
 
+class Delete_Discount_Item(APIView):
+    permission_classes = (permissions.IsAuthenticated,)
+
+    def delete(self,request):
+        print(request.data)
+        items=request.data.getlist('items[]')
+        Discount.objects.filter(id__in=[int(i) for i in items]).delete()
+        return Response(status=status.HTTP_200_OK)
 
 
 class Delete_User_Item(APIView):

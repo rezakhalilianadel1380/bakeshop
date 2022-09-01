@@ -14,7 +14,12 @@ admin_logout,
 admin_login,
 setting_site,
 setting_edite,
-Get_SEll_Data
+Get_SEll_Data,
+show_order_detail,
+show_discount,
+add_discount,
+edite_discount,
+Delete_Discount_Item
 )
 
 urlpatterns = [
@@ -27,15 +32,20 @@ urlpatterns = [
     path('user/edite/<id>',edite_user,name='edite_user'),
     path('produce/bread',produce_bread,name='produce_bread'),
     path('show_orders',show_orders,name='show_orders'),
+    path('show_order/<id>',show_order_detail,name='show_order_detail'),
     path('logout',admin_logout,name='admin_logout'),
     path('login',admin_login,name='admin_login'),
     path('setting',setting_site,name='setting_site'),
     path('setting/edite/<id>',setting_edite,name='setting_edite'),
+    path('discount',show_discount,name='show_discount'),
+    path('discount/add',add_discount,name='add_discount'),
+    path('discount/edite/<id>',edite_discount,name='edite_discount'),
     # APIs
     path('api/v1/produce/bread',Change_Status.as_view(),name='Change_Status'),
     path('api/v1/produce/bread/read',Send_Order.as_view(),name='read_order'),
     path('api/v1/switch',turn_off_or_on.as_view(),name='turn_off_or_on'),
     path('api/v1/delete_item',Delete_Bread_Item.as_view(),name='Delete_Bread_Item'),
     path('api/v1/delete_user_item',Delete_User_Item.as_view(),name='Delete_User_Item'),
+    path('api/v1/delete_discount_item',Delete_Discount_Item.as_view(),name='Delete_Discount_Item'),
     path('api/v1/sellin',Get_SEll_Data.as_view(),name='Get_SEll_Data'),
 ]

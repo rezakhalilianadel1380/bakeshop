@@ -1,0 +1,88 @@
+{% extends 'adminlte/_Main_layout.html' %}
+{% load static %}
+{% block title %}ویرایش سفارشات{% endblock title %} 
+{% block content %}
+<section class="content-header" style="margin-bottom: 20px;">
+    <h1>
+        ویرایش سفارش
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="{{dashboard}}"><i class="fa fa-dashboard"></i> خانه</a></li>
+      <li ><a href="/adminlte/show_orders"><i class="fa fa-laptop"></i>سفارشات</a></li>
+      <li class="active">ویرایش </li>
+    </ol>
+</section>
+
+<section class="content">
+    <div class="row">
+        <form method="post" enctype="multipart/form-data">
+            <div class="col-md-12">
+                    <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">سفارشات</h3>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body padding">
+                        <div class="table-responsive mailbox-messages">
+                            <div class="form-group ">
+                                {% csrf_token %}
+                                <label for="exampleInputEmail1">کاربر</label>
+                                {{form.user}}
+                                {% for i in form.user.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputPassword1">تاریخ پرداخت :</label><br>
+                                <p></p>
+                                {{form.payment_date}}
+                                {% for i in form.payment_date.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">نوع تحویل :</label><br>
+                                {{form.delivery_mode}}
+                                {% for i in form.delivery_mode.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                               
+                                <div class="form-group">
+                                <label for="exampleInputFile">پرداخت شده / نشده  :</label>
+                                {{form.is_paid}}
+                                {% for i in form.is_paid.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile">وضعیت سفارش : </label>
+                                {{form.status}}
+                                {% for i in form.status.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                                <div class="form-group">
+                                <label for="exampleInputFile"> ادرس سفارش :</label>
+                                {{form.address}}<br>
+                                {% for i in form.address.errors  %}
+                                <p class='text-danger' >{{i}}</p>
+                                {% endfor %}
+                                </div>
+                            
+                            <button class='btn btn-success btn-block '>ثبت</button>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                    
+                    </div>
+                    <!-- /. box -->
+            </div>
+        </form>
+    </div>
+    
+  </section>
+
+
+{% endblock %}

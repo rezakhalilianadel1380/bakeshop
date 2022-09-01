@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 import re
 import random
+from adminlte.forms import User_Detail_Form
 from rest_framework import status
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -177,12 +178,20 @@ def show_right_panel(request):
 @login_required
 def edite_account(request):
     form=User_Form(request.POST or None,instance=request.user)
-    if form.is_valid():
+    user=User_detail.objects.filter(user=request.user)
+    if not user.exists():
+        user=User_detail.objects.create(user=request.user)
+    else:
+        user=user.first()
+    form2=User_Detail_Form(request.POST or None,request.FILES or None,instance=user )    
+    if form.is_valid() and form2.is_valid():
         form.save()
+        form2.save()
         messages.success(request,'حساب کاربری با موفقیت ویرایش شد ')
         return redirect('/profile/EditeProfile')
     context={
         'form':form,
+        'form2':form2,
     }
     return render(request,'edite_account.html',context)
 

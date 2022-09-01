@@ -2,12 +2,36 @@ from django import forms
 from bread.models import Bread
 from accountt.models import User_detail,Setting
 from django.contrib.auth.models import User
+from order.models import Cart
+from order.models import Discount
+
+class Discount_Form(forms.ModelForm):
+    class Meta:
+        model = Discount
+        fields="__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(Discount_Form,self).__init__(*args, **kwargs)
+        self.fields['discount_code'].widget.attrs.update({'class': 'form-control'})
+        self.fields['dicount_percent'].widget.attrs.update({'class': 'form-control '})
+        self.fields['max_price_dicount'].widget.attrs.update({'class': 'form-control '})
+        self.fields['price_after_max_price'].widget.attrs.update({'class': 'form-control '})
+        self.fields['active'].widget.attrs.update( {'class': 'flat-red'})
 
 
+class Order_Form(forms.ModelForm):
+    class Meta:
+        model = Cart
+        fields="__all__"
 
-
-
-
+    def __init__(self, *args, **kwargs):
+        super(Order_Form,self).__init__(*args, **kwargs)
+        self.fields['payment_date'].widget.attrs.update({'class': 'form-control'})
+        self.fields['user'].widget.attrs.update({'class': 'form-control select2'})
+        self.fields['delivery_mode'].widget.attrs.update({'class': 'form-control select2'})
+        self.fields['status'].widget.attrs.update({'class': 'form-control select2'})
+        self.fields['address'].widget.attrs.update({'class': 'form-control select2'})
+        self.fields['is_paid'].widget.attrs.update( {'class': 'flat-red'})
 
 class Setting_edite_Form(forms.ModelForm):
     class Meta:

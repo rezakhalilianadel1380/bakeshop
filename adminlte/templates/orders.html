@@ -41,7 +41,7 @@
           </div>
           <div class="box-body no-padding">
             <ul class="nav nav-pills nav-stacked">
-              <li class="active"><a href="javascript:void(0)"><i class="fa fa-inbox"></i>تعداد کل سفارش ها 
+              <li class="active"><a href="javascript:void(0)"><i class="fa fa-inbox"></i>تعداد  سفارش ها 
                 <span class="label label-primary pull-left">{{carts|length}}</span></a></li>
             </ul>
           </div>
@@ -104,7 +104,7 @@
                   <td class="mailbox-subject">{{cart.user.get_full_name}}</td>
                   <td class="mailbox-subject ">{{cart.get_status_display}}</td>
                   <td class="mailbox-subject ">{{cart.payment_date}}</td>
-                  <td class="mailbox-subject"><a href="/adminlte/cart/edite/{{cart.id}}"><i class='fa fa-pencil'></i></a></td>
+                  <td class="mailbox-subject"><a href="/adminlte/show_order/{{cart.id}}"><i class='fa fa-pencil'></i></a></td>
                 </tr>
                 {% endfor %}
                 </tbody>
