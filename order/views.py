@@ -1,5 +1,6 @@
+from typing import final
 from django.shortcuts import redirect, render
-from .models import Cart
+from .models import Cart,Discount
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.response import Response
@@ -21,12 +22,15 @@ def cart_item_delete(request,id):
     return  redirect('/cart')
 
 @check_of_or_on
+@login_required
 def checkout(request):
     cart=Cart.objects.filter(user=request.user,is_paid=False).first()
     address=request.user.address_set.all().first()
+    cart.discount=None
+    cart.save()
     if address is None:
-        messages.error(request,'ادرس ثبت نشده')
-        return redirect('/')
+        messages.error(request,'ادرسی ثبت نشده لطفا اول ادرسی ثبت کنید')
+        return redirect('/profile/Address')
     cart.address=address
     cart.save()
     if cart is None:
@@ -87,3 +91,18 @@ def cart(request):
         'cart':cart
     }
     return render(request,'cart.html',context)
+
+
+
+class Commit_Discount_Code(APIView):
+    def put(self, request):
+        cart_id=request.data.get('cart_id')
+        discount_code=request.data.get('discount_code')
+        discounts=Discount.objects.filter(discount_code=discount_code,active=True)
+        if discounts.exists():
+            cart=Cart.objects.filter(id=cart_id).first()
+            cart.discount=discounts.first()
+            cart.save()
+            final_price,discount_price=cart.calculate_discount()
+            return Response({'final_price':intcomma(final_price,False),'discount_price':intcomma(discount_price,False)},status=status.HTTP_200_OK)
+        return Response({'dis_err':'کد تخفیف نامعتبراست'},status=status.HTTP_400_BAD_REQUEST)

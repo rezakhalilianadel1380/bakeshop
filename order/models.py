@@ -1,7 +1,10 @@
+from dis import dis
+from pickle import TRUE
 from pyexpat import model
 from telnetlib import STATUS
 from tkinter import N
 from turtle import title
+from typing import final
 from django.db import models
 from django.contrib.auth.models import User
 from bread.models import Bread
@@ -10,7 +13,7 @@ from accountt.models import Address
 
 
 class Discount(models.Model):
-    discount_code=models.CharField(max_length=50)
+    discount_code=models.CharField(max_length=50,unique=True)
     dicount_percent=models.IntegerField(default=1)
     max_price_dicount=models.IntegerField(default=0)
     price_after_max_price=models.IntegerField(default=0)
@@ -35,6 +38,7 @@ class Cart(models.Model):
     is_paid=models.BooleanField(default=False)
     status=models.CharField(max_length=1,choices=status_choices,blank=True,default='1')
     address=models.ForeignKey(Address,on_delete=models.SET_NULL,null=True,blank=True)
+    discount=models.ForeignKey(Discount,on_delete=models.SET_NULL,null=True)
     class Meta:
         permissions = [
             ("can_view_cart", "میتونه سفارش ها رو مشاهده کنه"),
@@ -64,6 +68,22 @@ class Cart(models.Model):
         for i in cart_item:
             sum+=i.bread.price*i.quantity
         return sum
+
+    def calculate_discount(self) -> tuple:
+        """ reuturn  final price and discount price return tuple """
+        discount=self.discount
+        total_price=int(self.cart_total_price())
+        final_price=0
+        discount_price=0
+        if total_price<= discount.max_price_dicount:
+            discount_price=int(total_price*(discount.dicount_percent/100))
+            final_price=total_price - discount_price
+        else:
+            discount_price=discount.price_after_max_price
+            final_price=total_price-int(discount.price_after_max_price)
+
+        return int(final_price),int(discount_price)
+
 
     def get_lable_color(self):
         if self.status =='1':

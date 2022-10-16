@@ -23,13 +23,15 @@ delete_address,
 change_password,
 change_phone,
 Change_Phone_Confirm_code,
-Change_New_Phone_Confirm_code
+Change_New_Phone_Confirm_code,
+forget_password
  )
  
 urlpatterns = [
     path('signin',login2,name='login_page'),
     path('log_out',log_out,name='log_out'),
     path('signup',sign_upv2,name='sign_up'),
+    path('signin/forget_password',forget_password,name='forget_password'),
     path('about_us',about_us,name='about-us'),
     path('contact_us',contact_us,name='contact-us'),
     path('profile/DashBoard',profile_dashbord,name='profile_dashbord'),

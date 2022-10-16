@@ -33,24 +33,31 @@
                     <div class="col-12 pt-2">
                         <p style='font-size:20px'>کد تخفیف</p><hr>
                     </div><br>
-                    <div class="col-12 d-flex justify-content-inline pt-2">
-                        <input class='form-control w-50' type="text" name="dicount" id="">
-                        <button class='btn btn-info '>ثبت</button>
+                  
+                    <div class="col-3 " style="padding-left: 0px">
+                              <input id="discount_code"  class="form-control input-sm" placeholder="کدتخفیف">
                     </div>
-                    
+                    <div class="col-5" style="padding-right: 0px">
+                              <button style="padding:10px;height:100%;border-radius:0px px 0px 10px" onclick="send_discount()" type="submit" class="btn btn-danger pull-right btn-block btn-sm">ثبت</button>
+                    </div>
                 </div>
+                 
             </div> 
 
         </div>
        <div class='col-md-3' >
             <div class="content  bg-white shadow mt-3" style="border-radius:10px;padding:8px;">
-               <div class="col mt-3 d-flex justify-content-between">
-                    <span style='font-size:14px'>قیمت کالاها :</span>
-                    <span style='font-size:14px' id='product_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>
-                </div>
                 <div class="col mt-3 d-flex justify-content-between">
                     <span style='font-size:14px'> جمع سبد خرید:</span>
                     <span style='font-size:14px' id='cart_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>
+                </div>
+                <div class="col mt-3 d-flex justify-content-between">
+                    <span style='font-size:14px'>مقدار تخفیف :</span>
+                    <span style='font-size:14px' ><span id="discount_price" class="text-danger">0</span> تومان</span>
+                </div>
+                <div class="col mt-3 d-flex justify-content-between">
+                    <span style='font-size:14px'>مبلغ نهایی : </span>
+                    <span style='font-size:14px' id='final_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>
                 </div>
                 <button onclick="check_order()" class="btn btn-danger w-100" style="margin-top:50%;">پرداخت</button>
             </div>

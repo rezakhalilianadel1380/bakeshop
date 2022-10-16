@@ -21,6 +21,14 @@ from django.contrib.auth.decorators import login_required
 
 
 
+def forget_password(request):
+    if request.user.is_authenticated:
+        return redirect('/')
+    return render(request,'forgot_password.html',{})
+
+
+
+
 class Change_Phone_Confirm_code(APIView):
     def get(self,request):
         code=Code.objects.filter(user=request.user).first()
@@ -321,7 +329,7 @@ class Check_Phone(APIView):
         if user.exists():
             html="""  
                      <div class="form-inline" id="login-form">
-                        <p class="text-right text-info">رمز خود را وارد کنید </p>
+                        <p class="text-right text-info">رمز عبور خود را وارد کنید </p>
                         <label for="phone" class="text-info mt-2">پسورد : </label><br>
                         <div class="input-group form-group">
                             <input type="text" onKeyDown="if(event.keyCode==13) send_password();" name="password" id="password" class="form-control" placeholder="رمز عبور" required="">                                       
@@ -331,10 +339,12 @@ class Check_Phone(APIView):
                         </div>
                          <span class="text-danger" id="error" style="display:none;"></span>
                     </div>
-
-                    <div id="register-link" class="text-right">
-                                            <a href="javascript:void" class="text-info " onclick="send_code()">ورود با رمز عبور پیامکی </a>
+                    <br>
+                    <div id="register-link" class="text-right ">
+                                    <a href="javascript:void" class="text-info " onclick="send_code()">ورود با رمز عبور پیامکی </a>
+                                    <a href="/signin/forget_password" style="margin-right:60px" class="text-info mr-2" >فراموشی رمز عبور</a>
                     </div>
+                    
             """
             return Response({'phone':phone,'password':html},status=status.HTTP_200_OK)
         else:

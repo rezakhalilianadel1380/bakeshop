@@ -1,5 +1,5 @@
 from django.urls import path
-from order.views import Delivery_mode_assign, Set_Address, cart, cart_item_delete, checkout,quantity
+from order.views import Delivery_mode_assign,Commit_Discount_Code, Set_Address, cart, cart_item_delete, checkout,quantity
 
 
 urlpatterns = [
@@ -9,4 +9,5 @@ urlpatterns = [
     path('Set_Address',Set_Address.as_view(),name='Set_Address'),
     path('checkout',checkout,name='checkout'),
     path('delete_item/<id>',cart_item_delete,name='delete_item'),
+    path('api/v1/commitdiscont',Commit_Discount_Code.as_view(),name='Commit_Discount_Code'),
 ]

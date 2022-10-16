@@ -141,6 +141,7 @@
                     max-width: 100%;
                     height: auto;
                 }
+                
         </style>
     </head>
     <body>
@@ -381,6 +382,33 @@
                             }
                         });
                      }
+                         }
+
+                    function send_discount(){
+                    if ($('#discount_code').val()==''){
+                        showAndDismissAlert('red','کدتخفیف نمیتواند خالی باشد');
+                    }
+                    else{
+                      $.ajax({
+                            url:'/api/v1/commitdiscont',
+                            headers: {'X-CSRFToken': csrftoken},
+                            type:'PUT',
+                            data:{
+                                "cart_id":{{cart.id}},
+                                "discount_code":$('#discount_code').val(),
+                            },
+                            success:function(rsp){
+                                $("#final_price").html(rsp.final_price+' تومان')
+                                $("#discount_price").html(rsp.discount_price)
+                                showAndDismissAlert('green','کدباموفقیت ثبت شد ');
+                            },
+                            error: function(xhr, status, error) {
+                                var err = JSON.parse(xhr.responseText);  
+                                showAndDismissAlert('red',err.dis_err);
+                            }
+                        });
+                        
+                             }
                          }
             </script>
     </body>
