@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from order.models import Cart
-from .models import Address, Code,Sign_up, User_detail
+from .models import Address, Code,Sign_up, User_detail,Authenticated_Code
 from .forms import Register,User_Form,User_Address,Change_Password,Chang_Phone
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout
@@ -19,12 +19,20 @@ from sms_configure.sms import send_message
 from django.contrib.auth.decorators import login_required
 # Create your views here.
 
+import string
+import random
 
 
-def forget_password(request):
-    if request.user.is_authenticated:
-        return redirect('/')
-    return render(request,'forgot_password.html',{})
+def generate_unique_code(length:int) -> str:
+    "generate unique code " 
+    unique_code=''
+    char_number_symbols=string.ascii_letters+string.digits
+    for i in range(0,length):
+        unique_code+=random.choice(char_number_symbols)
+    return unique_code
+
+
+
 
 
 
@@ -222,7 +230,7 @@ def about_us(request):
 
 
 
-################################# login  ###########################################
+################################# Begin  login  ###########################################
 
 
 def login2(request):
@@ -352,12 +360,12 @@ class Check_Phone(APIView):
             
 
 
-################################# /login  ###########################################
+################################# End login  ###########################################
 
 
 
 
-################################## sign up  ##############################################
+################################## Begin sign up  ##############################################
 
 def sign_upv2(request):
     return render(request,'sign_upv2.html',{})
@@ -466,4 +474,117 @@ class Check_Phone_Sign_Up(APIView):
 
 
 
-################################## /sign up  ##############################################
+################################## End sign up  ##############################################
+
+
+
+################################## Begin forget password  ##############################################
+
+def forget_password(request):
+    if request.user.is_authenticated:
+        return redirect('/')
+    return render(request,'forgot_password.html',{})
+
+
+
+
+class Check_Phone_forget_password(APIView):
+    def post(self, request):
+        phone=request.data.get('phone')
+        if re.search(r"^09\d{9}$",phone) is None:
+            return Response({'phone_error':'شماره تلفن اشتباست'},status=status.HTTP_400_BAD_REQUEST)
+        user=User.objects.filter(username=phone,is_active=True)
+        if user.exists():
+            code=Code.objects.filter(user=user.first())
+            if not code.exists():
+                code=Code.objects.create(user=user.first())
+            else:
+                code=code.first()
+            code.expired_time=timezone.now()+timezone.timedelta(minutes=4)
+            code.code=random.randint(1000,9999)
+            code.save()
+            message=f"""
+            نانوی شاپ 
+            فراموشی رمز عبور
+            کد احراز هویت شما  : {code.code}
+            """
+            # send_message(phone,message)
+            html=f""" 
+             <div class="form-inline" id="login-form"  >
+                        <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>
+                            <label for="phone" class="text-info mt-2">کد پیامکی : </label><br>
+                            <div class="input-group form-group">
+                                <input type="text" onKeyDown="if(event.keyCode==13) check_the_code();" name="code" id="code" class="form-control" placeholder="کد تایید" required="">                                      
+                                <div class="input-group-prepend ">
+                                     <button class="btn btn-info btn-md " style="height:46px;" onclick="check_the_code()">ادامه</button>
+                                </div>
+                            </div>
+                             <span class="text-danger" id="error" style="display:none;"></span><br>
+                        
+                            <p id="link">  ارسال مجدد کد در <span id='time'> (04:00) </span></p>  
+                    </div>
+            """ 
+            return Response({'phone':phone,'password':html},status=status.HTTP_200_OK)
+        else:
+            return Response({'phone_error':'شماره تلفن موجود نیست '},status=status.HTTP_400_BAD_REQUEST)
+            
+
+
+class Check_The_Code_Forget_Password(APIView):
+    def post(self, request):
+        phone=request.data.get('phone')
+        code=request.data.get('code')
+        user=User.objects.filter(username=phone).first()
+        expired_time=user.code.expired_time.astimezone(timezone.get_current_timezone())
+        current_time=timezone.now().astimezone(timezone.get_current_timezone())
+        if user.code.code==code and expired_time>=current_time:
+            Authenticated_Code.objects.filter(user=user).delete()
+            auth_code=Authenticated_Code.objects.create(user=user,authentication_code=generate_unique_code(20))
+            html=f"""
+             <div class="form-inline" id="login-form"  >
+                    <p class="text-right text-info">با استفاده از فرم زیر رمز عبور خود را تغییر دهید</p>
+                    <div class="form-group">
+                        <label for="password" class="text-info mt-2">رمز عبور :</label><br>
+                    <input type="text" name="password" id="id_password" class="form-control" placeholder="رمز عبور" required="">                                      
+                    </div>
+                    <div class="form-group">
+                        <label for="password_confirm" class="text-info mt-2">تکرار رمز عبور :</label><br>
+                     <input type="text" name="re_password" id="id_repassword" class="form-control" placeholder="تایید رمز عبور"  required="">                                      
+                    </div>
+                    <input type='hidden' id='id_auth' name="auth" value="{auth_code.authentication_code}">
+                    <span class='text-danger' id='errors'></span>
+                    <br>
+                    <br>
+                    <button onclick="change_password()" class="btn btn-info w-100">
+                     ذخیره   
+                    </button >
+                </div>
+            """
+            return Response({'password':html},status=status.HTTP_200_OK)
+        else:
+            return Response({'code_error':'کد منتقضی شده یا نادرست است'},status=status.HTTP_400_BAD_REQUEST)
+            
+
+
+
+
+class Assign_Password(APIView):
+    def post(self, request):
+        password=request.data.get('password')
+        re_password=request.data.get('re_password')
+        auth_code=request.data.get('auth_code')
+        if password!=re_password:
+            return Response({'error':'تکرار رمز عبور اشتباه است','status_code':2},status=status.HTTP_400_BAD_REQUEST)
+        auth_obj=Authenticated_Code.objects.filter(authentication_code=auth_code,create_time__date=timezone.now().date())
+        if auth_obj.exists():
+            user=auth_obj.first().user
+            user.set_password(password)
+            user.save()
+            auth_obj.delete()
+            return Response({'address':'http://127.0.0.1:8000/signin'},status=status.HTTP_200_OK)
+        return Response({'error':'اشتباهی رخ داده دوباره تلاش کنید','status_code':1},status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+################################## End forget password  ##############################################

@@ -24,7 +24,10 @@ change_password,
 change_phone,
 Change_Phone_Confirm_code,
 Change_New_Phone_Confirm_code,
-forget_password
+forget_password,
+Check_Phone_forget_password,
+Check_The_Code_Forget_Password,
+Assign_Password
  )
  
 urlpatterns = [
@@ -57,6 +60,10 @@ urlpatterns = [
     #change_phone APIs
     path('api/v1/change_phone/send_code/old',Change_Phone_Confirm_code.as_view(),name='Change_Phone_Confirm_code'),
     path('api/v1/change_phone/send_code/new',Change_New_Phone_Confirm_code.as_view(),name='Change_New_Phone_Confirm_code'),
+    #forget_passwrod APIs
+    path('api/v1/forget_password_send',Check_Phone_forget_password.as_view(),name='forget_password_send_sms'),
+    path('api/v1/forget_password_send_code',Check_The_Code_Forget_Password.as_view(),name='Check_The_Code_Forget_Password'),
+    path('api/v1/forget_password_assign_Password',Assign_Password.as_view(),name='Assign_Password'),
 
 ]
 

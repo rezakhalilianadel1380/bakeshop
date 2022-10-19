@@ -145,7 +145,13 @@
         </style>
     </head>
     <body>
-
+        {% if request.user.is_stuff or request.user.is_superuser%}
+        <div class='row'>
+            <div class="alert alert-success text-center" role="alert">
+                ورود به    <a href="{% url 'dashboard' %}" target='_blank'>admin</a>  
+             </div>
+        </div>
+        {% endif %}
         <div class="alert-messages">
         </div>
         {% for message in messages  %}

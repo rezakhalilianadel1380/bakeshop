@@ -1,4 +1,5 @@
 from email.policy import default
+from enum import unique
 from pyexpat import model
 from sre_parse import State
 from statistics import mode
@@ -6,6 +7,20 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.templatetags.static import static
 # Create your models here.
+
+
+class Authenticated_Code(models.Model):
+    user=models.OneToOneField(User,on_delete=models.CASCADE)
+    authentication_code=models.CharField(max_length=20,unique=True)
+    create_time=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return self.authentication_code
+
+
+
+
+
 
 class Setting(models.Model):
     is_on=models.BooleanField(default=True)
@@ -64,6 +79,7 @@ class Code(models.Model):
     def __str__(self):
         return self.code
 
+   
 
 
 class Sign_up(models.Model):
