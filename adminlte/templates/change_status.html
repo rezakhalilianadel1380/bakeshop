@@ -6,6 +6,7 @@
               <option value="3" {% if cart.status == '3'%}selected{% endif %}>در حال تولید</option>
               <option value="4" {% if cart.status == '4'%}selected{% endif %}>تولید شده </option>
             </select>
+            <a href="/adminlte/report_pdf/{{cart.id}}" title='چاپ کردن' class='btn btn-success'><i class="fa fa-print"></i></a>
     </div>
     <!-- /.box-tools -->
   </div>

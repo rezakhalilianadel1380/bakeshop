@@ -11,6 +11,7 @@ from django.contrib import messages
 from .forms import Bread_Form,User_Detail_Form,Order_Form,User_Form,login_form,Setting_edite_Form,Discount_Form
 from django.contrib.auth.password_validation import validate_password
 import re
+from django.contrib.humanize.templatetags.humanize import intcomma
 from django.core.exceptions import ValidationError,FieldError
 import datetime
 from django.db.models import Q
@@ -23,14 +24,31 @@ from accountt.models import Setting
 from .permissions import Is_View_Cart,Read_Only,Bread_permission,Change_Cart_Permisson,Setting_Permission,User_Delete_Permission
 from rest_framework import permissions
 from sms_configure.sms import send_message
-from django.http import Http404
+from django.http import Http404,HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
 # from django.contrib.auth import mixins 
 # from .serializers import Bread_Serializer
 # from rest_framework.exceptions import PermissionDenied
 # from rest_framework import generics
 # from django.http import Http404
+import os
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.lib.enums import TA_RIGHT,TA_LEFT
+from reportlab.pdfbase import pdfmetrics
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle 
+from bidi.algorithm import get_display
+from rtl import reshaper
+import textwrap
+import datetime
+from  reportlab.lib import  pagesizes
+from reportlab.platypus import SimpleDocTemplate, Paragraph,Table, TableStyle,Spacer
+from reportlab.lib import colors
+from shop.settings import BASE_DIR
+import io
+from django.http import FileResponse
+from jalali_date import datetime2jalali, date2jalali
 # Create your views here.
-
 
 
 
@@ -152,9 +170,9 @@ def admin_login(request):
 def show_orders(request):
     carts=Cart.objects.all().order_by('-payment_date')
     if request.GET.get('filter_time') and request.GET.get('filter_time')=='1' :
-       carts=carts.filter(payment_date__day=timezone.now().day)
+       carts=carts.filter(payment_date__date=timezone.now().date())
     elif  request.GET.get('filter_time') and request.GET.get('filter_time')=='2' :
-       carts=carts.filter(payment_date__month=timezone.now().month)
+       carts=carts.filter(payment_date__month=timezone.now().month,payment_date__year=timezone.now().year)
     elif request.GET.get('filter_time') and request.GET.get('filter_time')=='3' :
        carts=carts.filter(payment_date__year=timezone.now().year)
     if request.GET.get('qs'):
@@ -182,8 +200,7 @@ def show_orders(request):
 
 @user_passes_test(lambda u: u.has_perm('order.can_access_produce_section'),login_url='/adminlte/login')
 def produce_bread(request):
-    today = datetime.datetime.today()
-    carts=Cart.objects.filter(payment_date__day=today.day)
+    carts=Cart.objects.filter(payment_date__date=timezone.now().date())
     cart=Cart.objects.filter(status__in=['2',"3"]).first()
     context={
         'carts':carts,
@@ -479,3 +496,103 @@ class Delete_Bread_Item(APIView):
         items=request.data.getlist('items[]')
         breads=Bread.objects.filter(id__in=[int(i) for i in items]).delete()
         return Response(status=status.HTTP_200_OK)
+
+
+def get_farsi_text(text):
+        if reshaper.has_arabic_letters(text):
+          words = text.split()
+          reshaped_words = []
+          for word in words:
+            if reshaper.has_arabic_letters(word):
+              # for reshaping and concating words
+              reshaped_text = reshaper.reshape(word)
+              # for right to left    
+              bidi_text = get_display(reshaped_text)
+              reshaped_words.append(bidi_text)
+            else:
+              reshaped_words.append(word)
+          reshaped_words.reverse()
+          return ' '.join(reshaped_words)
+        return text
+
+def get_farsi_bulleted_text(text, wrap_length=None):
+       farsi_text = get_farsi_text(text)
+       if wrap_length:
+           line_list = textwrap.wrap(farsi_text, wrap_length)
+           line_list.reverse()
+           line_list[0] = '{};'.format(line_list[0])
+           farsi_text = '<br/>'.join(line_list)
+           return '<font>%s</font>' % farsi_text
+       return '<font>%s</font>' % farsi_text
+
+def get_farsi_bulleted_text2(text, wrap_length=None):
+      farsi_text = get_farsi_text(text)
+      if wrap_length:
+           line_list = textwrap.wrap(farsi_text, wrap_length)
+           line_list.reverse()
+           line_list[0] = '{}'.format(line_list[0])
+           farsi_text = ''.join(line_list)
+           return '%s' %farsi_text
+      return '%s' %farsi_text
+
+def generate_pdf(buffer,object,path):
+    pdfmetrics.registerFont(TTFont('Persian',path))
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name='Right', alignment=TA_RIGHT, fontName='Persian', fontSize=10)) 
+    styles.add(ParagraphStyle(name='Left', alignment=TA_LEFT, fontName='Persian', fontSize=10)) 
+    doc = SimpleDocTemplate(buffer, pagesize=pagesizes.A6,  rightMargin=10, leftMargin=10, topMargin=65,
+                        bottomMargin=18)
+    Story = []
+    doc.strokeColor = colors.green
+    data= [
+    [get_farsi_bulleted_text2('تعداد'), get_farsi_bulleted_text2('نام محصول ')],
+    ]
+    
+    for i in object.cart_item.all():
+        data.append([i.quantity,get_farsi_bulleted_text2(i.bread.title)])
+
+    t=Table(data,colWidths=130,rowHeights=50)
+    t.setStyle(TableStyle(
+    [
+    ('BACKGROUND',(0, 0), (-1, 0),colors.gray),
+    ('TEXTCOLOR',(0,0),(1,-1),colors.black),
+    ('FONT',(0,0),(-1,-1),'Persian'),
+    ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
+    ('ALIGN',(0,0),(-1,-1),'CENTER'),
+    ('ALIGN',(0,0),(-1,-1),'CENTER'),
+    ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
+    ]
+    )
+    )
+    t.hAlign = 'RIGHT'
+    tw = get_farsi_bulleted_text(f'نام و نام خانوادگی :{object.user.get_full_name()}')
+    p = Paragraph(tw, styles['Right'])
+    Story.append(p)
+    Story.append(Spacer(1,5))
+    tw = get_farsi_bulleted_text(f'شماره تلفن: {object.user.username}')
+    p = Paragraph(tw, styles['Right'])
+    Story.append(p)
+    Story.append(Spacer(1,5))
+    tw = get_farsi_bulleted_text(f'نوع تحویل: {object.get_delivery_mode_display()}')
+    p = Paragraph(tw, styles['Right'])
+    Story.append(p)
+    Story.append(Spacer(1, 20))
+    Story.append(t)
+    Story.append(Spacer(1, 20))
+    Story.append(Spacer(1, 20))
+    tw = get_farsi_bulleted_text(f'جمع خرید : {intcomma(object.cart_total_price(),False)}')
+    p = Paragraph(tw, styles['Left'])
+    Story.append(p)
+    Story.append(Spacer(1, 4))
+    tw = get_farsi_bulleted_text(f'تاریخ پرداخت : {datetime2jalali(object.payment_date).strftime("%H:%M  %Y/%m/%d") }')
+    p = Paragraph(tw, styles['Left'])
+    Story.append(p)
+    doc.build(Story)
+
+def report_pdf(request,id):
+    path=os.path.join(BASE_DIR,'static_cdn\\static_roots\\font','IRANYekanLight.ttf')
+    buffer = io.BytesIO()
+    order=Cart.objects.filter(id=id).first()
+    generate_pdf(buffer,order,path)
+    buffer.seek(0)
+    return FileResponse(buffer, as_attachment=True, filename=f'order_receipt{order.id}.pdf')

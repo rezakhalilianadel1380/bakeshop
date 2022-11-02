@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'accountt',
     'order',
     'adminlte',
+    'jalali_date',
 ]
 
 MIDDLEWARE = [

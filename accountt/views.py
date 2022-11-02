@@ -505,10 +505,10 @@ class Check_Phone_forget_password(APIView):
             code.save()
             message=f"""
             نانوی شاپ 
-            فراموشی رمز عبور
-            کد احراز هویت شما  : {code.code}
+            سلام خوش اومدید 
+            کد ورود شما  : {code.code}
             """
-            # send_message(phone,message)
+            send_message(phone,message)
             html=f""" 
              <div class="form-inline" id="login-form"  >
                         <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>

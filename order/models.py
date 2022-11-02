@@ -38,7 +38,7 @@ class Cart(models.Model):
     is_paid=models.BooleanField(default=False)
     status=models.CharField(max_length=1,choices=status_choices,blank=True,default='1')
     address=models.ForeignKey(Address,on_delete=models.SET_NULL,null=True,blank=True)
-    discount=models.ForeignKey(Discount,on_delete=models.SET_NULL,null=True)
+    discount=models.ForeignKey(Discount,on_delete=models.SET_NULL,null=True,blank=True)
     class Meta:
         permissions = [
             ("can_view_cart", "میتونه سفارش ها رو مشاهده کنه"),

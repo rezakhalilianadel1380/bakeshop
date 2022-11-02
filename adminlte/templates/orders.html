@@ -59,11 +59,11 @@
           <div class="box-body no-padding">
             <form id='filters'>
             <ul class="nav nav-pills nav-stacked">
-              <li class=""><a href="javascript:void(0)"><i class="fa fa-inbox"></i>سفارش های روز 
+              <li class=""><a href="javascript:void(0)"><i class="fa fa-inbox"></i>سفارش های امروز 
                 <span class="label  pull-left"><input  class='radioCheck' {% if request.GET.filter_time == '1' %}checked{% endif %} onclick="check(this);" type="checkbox" name="filter_time" value='1' ></span></a></li>
-              <li class=""><a href="javascript:void(0)"><i class="fa fa-inbox"></i>سفارش های در ماه 
+              <li class=""><a href="javascript:void(0)"><i class="fa fa-inbox"></i>سفارش های این ماه 
                 <span class="label  pull-left"><input class='radioCheck' {% if request.GET.filter_time == '2' %}checked{% endif %} onclick="check(this);" type="checkbox" name="filter_time" value='2'></span></a></li>
-              <li class=""><a href="javascript:void(0)"><i class="fa fa-inbox"></i>سفارش های در سال 
+              <li class=""><a href="javascript:void(0)"><i class="fa fa-inbox"></i>سفارش های این سال 
                 <span class="label  pull-left"><input class='radioCheck ' {% if request.GET.filter_time == '3' %}checked{% endif %} onclick="check(this);" type="checkbox" name="filter_time" value="3"></span></a></li>
               </ul>
             </form>
@@ -90,7 +90,7 @@
                       <th>شماره</th>
                       <th>نام و نام خانوادگی</th>
                       <th>وضعیت</th>
-                      <th>تاریخ پرداخت</th>
+                      <th class='text-center'>تاریخ پرداخت</th>
                       <th>ویرایش</th>
                     </tr>
                     </thead>
@@ -103,7 +103,7 @@
                   <td class="mailbox-name">{{cart.id}}</td>
                   <td class="mailbox-subject">{{cart.user.get_full_name}}</td>
                   <td class="mailbox-subject ">{{cart.get_status_display}}</td>
-                  <td class="mailbox-subject ">{{cart.payment_date}}</td>
+                  <td class="mailbox-subject text-center ">{% if cart.payment_date %}{{cart.payment_date}} {% else %} ---------- {% endif %} </td>
                   <td class="mailbox-subject"><a href="/adminlte/show_order/{{cart.id}}"><i class='fa fa-pencil'></i></a></td>
                 </tr>
                 {% endfor %}

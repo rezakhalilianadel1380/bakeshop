@@ -19,7 +19,8 @@ show_order_detail,
 show_discount,
 add_discount,
 edite_discount,
-Delete_Discount_Item
+Delete_Discount_Item,
+report_pdf
 )
 
 urlpatterns = [
@@ -40,6 +41,7 @@ urlpatterns = [
     path('discount',show_discount,name='show_discount'),
     path('discount/add',add_discount,name='add_discount'),
     path('discount/edite/<id>',edite_discount,name='edite_discount'),
+    path('report_pdf/<id>',report_pdf,name='report_pdf'),
     # APIs
     path('api/v1/produce/bread',Change_Status.as_view(),name='Change_Status'),
     path('api/v1/produce/bread/read',Send_Order.as_view(),name='read_order'),
