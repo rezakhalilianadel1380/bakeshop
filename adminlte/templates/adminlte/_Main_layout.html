@@ -95,6 +95,42 @@
   animation-timing-function: cubic-bezier;
   animation-iteration-count: infinite;
 }
+.blob {
+  background: black;
+  border-radius: 50%;
+  box-shadow: 0 0 0 0 rgba(0, 0, 0, 1);
+  margin: 10px;
+  height:13px;
+  width: 13px;
+  transform: scale(1);
+  animation: pulse-black 2s infinite;
+}
+.blob.green {
+  background: rgb(3, 124, 20);
+  box-shadow: 0 0 0 0 rgba(51, 217, 178, 1);
+  animation: pulse-green 2s infinite;
+}
+@keyframes pulse-green {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(51, 217, 178, 0.7);
+  }
+  
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(51, 217, 178, 0);
+  }
+  
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(51, 217, 178, 0);
+  }
+}
+  .fs{
+    display: flex;
+    justify-content:right;
+    align-items: center;
+  }
   </style>
 </head>
 
@@ -161,8 +197,11 @@
               alt="AVATAR">
           </div>
           <div class="pull-right info">
-            <p>{{request.user.get_full_name}}</p>
-            <a href="#"><i class="fa fa-circle text-success"></i> آنلاین</a>
+            <p style="margin-bottom:4px;">{{request.user.get_full_name}}</p>
+            <div  class="fs">
+              <div class="blob green"></div> 
+              <span style="font-size:11px;">آنلاین</span> 
+            </div>
           </div>
         </div>
         <!-- search form -->

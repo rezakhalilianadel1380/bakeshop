@@ -20,7 +20,8 @@ show_discount,
 add_discount,
 edite_discount,
 Delete_Discount_Item,
-report_pdf
+report_pdf,
+report_exel
 )
 
 urlpatterns = [
@@ -42,6 +43,7 @@ urlpatterns = [
     path('discount/add',add_discount,name='add_discount'),
     path('discount/edite/<id>',edite_discount,name='edite_discount'),
     path('report_pdf/<id>',report_pdf,name='report_pdf'),
+    path('report_exel',report_exel,name='report_exel'),
     # APIs
     path('api/v1/produce/bread',Change_Status.as_view(),name='Change_Status'),
     path('api/v1/produce/bread/read',Send_Order.as_view(),name='read_order'),

@@ -130,7 +130,7 @@
                   <tbody>
                     {% for cart in carts %}
                   <tr>
-                    <td><a href="pages/examples/invoice.html">{{cart.id}}</a></td>
+                    <td><a href="javascript:void(0)">{{cart.id}}</a></td>
                     <td>{{cart.user.get_full_name}}</td>
                     <td><span class="label {{cart.get_lable_color}}">{{cart.get_status_display}}</span></td>
                   </tr>
@@ -152,7 +152,7 @@
          <div class="col-md-12">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">فروش</h3>
+              <h3 class="box-title">فروش سال</h3>
 
               <div class="box-tools pull-right">
                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>

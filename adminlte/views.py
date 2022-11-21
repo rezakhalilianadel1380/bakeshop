@@ -27,6 +27,10 @@ from sms_configure.sms import send_message
 from django.http import Http404,HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
+import jdatetime
+
+
+
 # from django.contrib.auth import mixins 
 # from .serializers import Bread_Serializer
 # from rest_framework.exceptions import PermissionDenied
@@ -42,12 +46,14 @@ from rtl import reshaper
 import textwrap
 import datetime
 from  reportlab.lib import  pagesizes
-from reportlab.platypus import SimpleDocTemplate, Paragraph,Table, TableStyle,Spacer
+from reportlab.lib.units import mm
+from reportlab.platypus import SimpleDocTemplate, Paragraph,Table, TableStyle,Spacer,HRFlowable
 from reportlab.lib import colors
 from shop.settings import BASE_DIR
 import io
 from django.http import FileResponse
 from jalali_date import datetime2jalali, date2jalali
+import xlwt
 # Create your views here.
 
 
@@ -354,17 +360,35 @@ def switch_render(request):
 
 class Get_SEll_Data(APIView):
     def get(self,request):
-        c=Cart.objects.filter(is_paid=True,payment_date__year=timezone.now().year).order_by('payment_date')
-        dictvalue={}
+        jdatetime_now=jdatetime.datetime.now()
+        start=jdatetime.date(jdatetime_now.year,1,1).togregorian()
+        end=jdatetime.date(jdatetime_now.year,12,29)
+        if end.isleap():
+            end=end.togregorian()+timezone.timedelta(days=1)
+        else:
+            end=end.togregorian()
+        c=Cart.objects.filter(is_paid=True,payment_date__range=[start,end]).order_by('payment_date')
+        dictvalue={
+            'فروردین':0,
+            'اردیبهشت':0,
+            'خرداد':0,
+            'تیر':0,
+            'مرداد':0,
+            'شهریور':0,
+            'مهر':0,
+            'آبان':0,
+            'آذر':0,
+            'دی':0,
+            'بهمن':0,
+            'اسفند':0,
+        }
         for i in c:
-            month=i.payment_date.strftime('%B')
-            if i.payment_date.strftime('%B') in dictvalue:
-                dictvalue[month]+=1
-            else:
-                dictvalue[month]=1
+            month=datetime2jalali(i.payment_date).strftime('%B')
+            dictvalue[month]=dictvalue[month]+1
+        dict_value=dict(list(dictvalue.items())[0:jdatetime_now.month])
         context={
-            'lables':dictvalue.keys(),
-            'values':dictvalue.values(),
+            'lables':dict_value.keys(),
+            'values':dict_value.values(),
         }
         return Response(context,status=status.HTTP_200_OK)
 
@@ -538,25 +562,28 @@ def get_farsi_bulleted_text2(text, wrap_length=None):
 def generate_pdf(buffer,object,path):
     pdfmetrics.registerFont(TTFont('Persian',path))
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle(name='Right', alignment=TA_RIGHT, fontName='Persian', fontSize=10)) 
-    styles.add(ParagraphStyle(name='Left', alignment=TA_LEFT, fontName='Persian', fontSize=10)) 
-    doc = SimpleDocTemplate(buffer, pagesize=pagesizes.A6,  rightMargin=10, leftMargin=10, topMargin=65,
-                        bottomMargin=18)
+    styles.add(ParagraphStyle(name='Right', alignment=TA_RIGHT, fontName='Persian', fontSize=9)) 
+    styles.add(ParagraphStyle(name='Left', alignment=TA_LEFT, fontName='Persian', fontSize=9)) 
     Story = []
-    doc.strokeColor = colors.green
     data= [
-    [get_farsi_bulleted_text2('تعداد'), get_farsi_bulleted_text2('نام محصول ')],
+    [get_farsi_bulleted_text2('قیمت'),get_farsi_bulleted_text2('مقدار'), get_farsi_bulleted_text2('نام محصول ')],
     ]
     
     for i in object.cart_item.all():
-        data.append([i.quantity,get_farsi_bulleted_text2(i.bread.title)])
+        data.append([intcomma(i.bread.price*i.quantity,False),i.quantity,get_farsi_bulleted_text2(i.bread.title)])
 
-    t=Table(data,colWidths=130,rowHeights=50)
+    column_number=len(data)-1
+    height_size=75+(column_number*20)
+    doc = SimpleDocTemplate(buffer, pagesize=(78*mm,height_size*mm),  rightMargin=5, leftMargin=5, topMargin=10,
+                        bottomMargin=10)
+    doc.strokeColor = colors.green
+    t=Table(data,colWidths=67,rowHeights=50)
     t.setStyle(TableStyle(
     [
     ('BACKGROUND',(0, 0), (-1, 0),colors.gray),
     ('TEXTCOLOR',(0,0),(1,-1),colors.black),
     ('FONT',(0,0),(-1,-1),'Persian'),
+    ('FONTSIZE', (0, 0), (-1, -1), 9),
     ('INNERGRID', (0,0), (-1,-1), 0.25, colors.black),
     ('ALIGN',(0,0),(-1,-1),'CENTER'),
     ('ALIGN',(0,0),(-1,-1),'CENTER'),
@@ -576,9 +603,11 @@ def generate_pdf(buffer,object,path):
     tw = get_farsi_bulleted_text(f'نوع تحویل: {object.get_delivery_mode_display()}')
     p = Paragraph(tw, styles['Right'])
     Story.append(p)
-    Story.append(Spacer(1, 20))
+    Story.append(Spacer(1,10))
+    Story.append(HRFlowable(width="100%", thickness=0.1, lineCap='round', color=colors.gray, spaceBefore=1, spaceAfter=1, hAlign='CENTER', vAlign='BOTTOM'))
+    Story.append(Spacer(1, 10))
     Story.append(t)
-    Story.append(Spacer(1, 20))
+    Story.append(Spacer(1, 15))
     Story.append(Spacer(1, 20))
     tw = get_farsi_bulleted_text(f'جمع خرید : {intcomma(object.cart_total_price(),False)}')
     p = Paragraph(tw, styles['Left'])
@@ -596,3 +625,110 @@ def report_pdf(request,id):
     generate_pdf(buffer,order,path)
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename=f'order_receipt{order.id}.pdf')
+
+
+def get_the_last_of_month_day(month,leap_year=False):
+    months={
+        1:'31',
+        2:'31',
+        3:'31',
+        4:'31',
+        5:'31',
+        6:'31',
+        7:'30',
+        8:'30',
+        9:'30',
+        10:'30',
+        11:'30',
+        12:'29',
+    }
+    if leap_year: 
+        months[12]='30'
+    return int(months[month])
+
+
+def report_exel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename="report.xls"'
+    day=request.GET.get('by_day')
+    month=request.GET.get('by_month')
+    year=request.GET.get('by_year')
+    current_date_time=timezone.now()
+    jalali_datetime_now=jdatetime.datetime.now()
+    start=jdatetime.date(jalali_datetime_now.year,1,1).togregorian()
+    end=jdatetime.date(jalali_datetime_now.year,12,29)
+    month_start=jdatetime.date(jalali_datetime_now.year , jalali_datetime_now.month , 1).togregorian()
+    month_end=jdatetime.date(jalali_datetime_now.year , jalali_datetime_now.month ,get_the_last_of_month_day(jalali_datetime_now.month,jalali_datetime_now.isleap())).togregorian()
+    if end.isleap():
+        end=end.togregorian()+timezone.timedelta(days=1)
+    else:
+        end=end.togregorian()
+    if day:
+        orders=Cart.objects.filter(payment_date__date=current_date_time.date())
+        message=f'خروجی سفارش امروز {datetime2jalali(current_date_time).strftime("%Y/%m/%d")}' 
+    elif month:
+        orders=Cart.objects.filter(payment_date__range=[month_start,month_end])
+        message=f'خروجی سفارش های این ماه {datetime2jalali(current_date_time).strftime("%Y/%m")}'
+    elif year:
+        orders=Cart.objects.filter(payment_date__range=[start,end]).order_by('payment_date')
+        message=f'خروجی سفارش های سال {datetime2jalali(current_date_time).strftime("%Y" )}'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('orders')
+    xlwt.add_palette_colour("custom_colour", 0x21)
+    wb.set_colour_RGB(0x21,215,240,237 )
+    row_num = 1
+    font_style = xlwt.XFStyle()
+    font_style.font.bold=True
+    borders = xlwt.Borders()
+    borders.left = borders.DOTTED
+    borders.right = borders.DOTTED
+    borders.top = borders.DOTTED
+    borders.bottom = borders.DOTTED
+    align = xlwt.Alignment()
+    align.horz = xlwt.Alignment.HORZ_CENTER
+    align.vert = xlwt.Alignment.VERT_CENTER
+    fnt3 = xlwt.Font()
+    fnt3.name = 'Arial'
+    fnt3.height = 12*20
+    fnt3.style= 'Regular'
+    font_style.font=fnt3
+    pattern = xlwt.Pattern()
+    pattern.pattern = xlwt.Pattern.SOLID_PATTERN
+    pattern.pattern_fore_colour = xlwt.Style.colour_map['custom_colour']
+
+
+
+
+    font_style.pattern = pattern
+    font_style.alignment=align
+    font_style.borders=borders
+    ws.cols_right_to_left = True
+    ws.write_merge(0, 0,0, 3, message,font_style)
+    columns = ['شماره سفارش', 'اسم', 'نام خانوادگی','تاریخ پرداخت']
+    ws.row(0).height_mismatch = True
+    ws.row(0).height = 700
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num],font_style)
+        ws.col(col_num).width = 5000
+
+    ws.row(1).height_mismatch = True
+    ws.row(1).height = 600
+    objects=[]
+    for i in orders:
+        ids=i.id
+        first_name=i.user.first_name
+        last_name=i.user.last_name
+        payment_date=datetime2jalali(i.payment_date).strftime("%H:%M  %Y/%m/%d")
+        tp=(ids,first_name,last_name,payment_date)
+        objects.append(tp)
+    for row in objects:
+        row_num +=1
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, row[col_num],font_style)
+        
+        ws.row(row_num).height_mismatch = True
+        ws.row(row_num).height = 400
+
+    wb.save(response)
+    return response
