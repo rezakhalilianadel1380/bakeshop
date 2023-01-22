@@ -75,9 +75,18 @@ class User_Address(forms.ModelForm):
     class Meta:
         model = Address
         exclude=('user',)
+        widgets = {
+            'lat': forms.HiddenInput(),
+            'lon': forms.HiddenInput(),
+            'pelak': forms.TextInput(),
+            'vahed': forms.TextInput(),
+        }
+
 
     def __init__(self, *args, **kwargs):
         super(User_Address,self).__init__(*args, **kwargs)
+        self.fields['lat'].error_messages = {'required': 'از نقشه بالا موقعیت جغرافیایی خود را وارد کنید '}
+        self.fields['lon'].error_messages = {'required':  'از نقشه بالا موقعیت جغرافیایی خود را وارد کنید '}
         self.fields['state'].widget.attrs.update({'class': 'form-control'})
         self.fields['state'].widget.attrs['readonly'] = True
         self.fields['city'].widget.attrs['readonly'] = True
@@ -86,6 +95,7 @@ class User_Address(forms.ModelForm):
         self.fields['address'].widget.attrs.update({'class': 'form-control addtext'})
         self.fields['pelak'].widget.attrs.update({'class': 'form-control'})
         self.fields['vahed'].widget.attrs.update({'class': 'form-control'})
+       
 
 
 class User_Form(forms.ModelForm):

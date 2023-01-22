@@ -66,6 +66,7 @@
         }
 </script>
 <script>
+
 $(function () {
     $.ajax({
       url:'/adminlte/api/v1/sellin',
@@ -73,7 +74,7 @@ $(function () {
       success:function(rsp){
               var areaChartCanvas = $('#areaChart').get(0).getContext('2d')
               // This will get the first returned node in the jQuery collection.
-              var areaChart       = new Chart(areaChartCanvas)
+              var areaChart = new Chart(areaChartCanvas)
               var lables=rsp.lables;
               var values=rsp.values;
               var areaChartData = {
@@ -246,7 +247,7 @@ $(function () {
                 },
                 error: function(xhr, status, error) {
                   if (xhr.status==403){
-                      showAndDismissAlert('red','دسترسی غیر مجاز است ')
+                      showAndDismissAlert('red','مجوز دسترسی شما رد شد ')
 
                     }
                     else{
@@ -281,7 +282,7 @@ $(function () {
                 },
                 error: function(xhr, status, error) {
                     if (xhr.status==403){
-                      showAndDismissAlert('red','دسترسی غیر مجاز است ')
+                      showAndDismissAlert('red','مجوز دسترسی شما رد شد ')
 
                     }
                     else{

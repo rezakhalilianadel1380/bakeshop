@@ -4,6 +4,8 @@
 {% url 'log_out' as log_out %}
 <html lang="en">
     <head>
+        <link rel="stylesheet" href="{% static 'leafjetjs/leaflet.css' %}"/>
+        <script src="{% static 'leafjetjs/leaflet.js' %}"></script>
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,6 +25,7 @@
             }); });
         </script>
         <style>
+           
             .addtext{
                 resize: none;
             }
@@ -409,6 +412,43 @@
                         
                              }
                          }
+
             </script>
+          <script>
+            var map = L.map('map').setView([36.28805,59.61573],13);
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            var layergroup=L.layerGroup().addTo(map);
+            var cordinate=[];
+            var lat= document.getElementById("id_lat");
+            var lon= document.getElementById("id_lon");
+            var marker=L.marker([lat.value,lon.value]).addTo(layergroup);
+            map.on('click',function(e){
+                layergroup.clearLayers();
+                var marker=L.marker([e.latlng.lat,e.latlng.lng]).addTo(layergroup);
+                cordinate=[marker.getLatLng().lat,marker.getLatLng().lng];
+                lat.value=marker.getLatLng().lat;
+                lon.value=marker.getLatLng().lng;
+                $.ajax({
+                    url:'/api/v1/map/reverse',
+                    type:'GET',
+                    data:{
+                        "lat":marker.getLatLng().lat,
+                        "lon":marker.getLatLng().lng,
+                    },
+                    success:function(rsp){
+                        var textarea = document.getElementById("id_address");
+                        console.log(rsp);
+                        textarea.value =rsp.formatted_address;
+                    },
+                    error: function(xhr, status, error) {
+                        var err = JSON.parse(xhr.responseText);
+                        showAndDismissAlert('red',err.phone_error);
+                    }
+                });
+            });
+            
+    </script>
     </body>
 </html>

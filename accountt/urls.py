@@ -27,7 +27,8 @@ Change_New_Phone_Confirm_code,
 forget_password,
 Check_Phone_forget_password,
 Check_The_Code_Forget_Password,
-Assign_Password
+Assign_Password,
+Reverse_Adress
  )
  
 urlpatterns = [
@@ -64,6 +65,10 @@ urlpatterns = [
     path('api/v1/forget_password_send',Check_Phone_forget_password.as_view(),name='forget_password_send_sms'),
     path('api/v1/forget_password_send_code',Check_The_Code_Forget_Password.as_view(),name='Check_The_Code_Forget_Password'),
     path('api/v1/forget_password_assign_Password',Assign_Password.as_view(),name='Assign_Password'),
+    
+    path('api/v1/map/reverse',Reverse_Adress.as_view(),name='map_reverse'),
+
+
 
 ]
 

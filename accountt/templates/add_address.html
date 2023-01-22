@@ -17,25 +17,48 @@
                     <hr>
                         <form method="post" class="form-inline row" style="padding:0px;">
                             {% csrf_token %}
+                            <div class="col-md-12 mb-3">
+                                <div id="map" style="width: 100%; height: 400px"></div>
+                                {{form.lat}}
+                                {{form.lon}}
+                                {% for i in form.lat.errors  %}
+                                    <span class="text-danger">{{i}}</span>
+                                {% endfor %}
+                            </div>
                             <div class="col-md-6 mb-2">
                                 <label for="" > <i class="bi bi-telephone-fill"></i> استان  :</label>
                                 {{form.state}}
+                                {% for i in form.state.errors  %}
+                                <span class="text-danger">{{i}}</span>
+                                 {% endfor %}
                             </div>
                             <div class="col-md-6 mb-2">
                                 <label for=""><i class="bi bi-person-fill"></i> شهر:</label>
                                 {{form.city}}
+                                {% for i in form.city.errors  %}
+                                <span class="text-danger">{{i}}</span>
+                                {% endfor %}
                             </div>
                             <div class="col-md-12 mb-2">
                                 <label for=""><i class="bi bi-person-fill"></i> ادرس پستی  :</label>
                                 {{form.address}}
+                                {% for i in form.address.errors  %}
+                                <span class="text-danger">{{i}}</span>
+                                {% endfor %}
                             </div>
                             <div class="col-md-6 mb-2">
                                 <label for=""> <i class="bi bi-envelope-fill"></i>  پلاک :</label>
                                 {{form.pelak}}
+                                {% for i in form.pelak.errors  %}
+                                <span class="text-danger">{{i}}</span>
+                                {% endfor %}
                             </div>
                             <div class="col-md-6 mb-2">
                                 <label for=""> <i class="bi bi-envelope-fill"></i>    واحد :</label>
                                 {{form.vahed}}
+                                {% for i in form.vahed.errors  %}
+                                <span class="text-danger">{{i}}</span>
+                                {% endfor %}
                             </div>
                             
                             <button type="submit" class="btn btn-primary mt-2">ذخیره</button>
@@ -46,7 +69,6 @@
             </div>
     </div>
 </div>
-
 
 
 {% endblock %}

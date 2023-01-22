@@ -369,26 +369,17 @@ class Get_SEll_Data(APIView):
             end=end.togregorian()
         c=Cart.objects.filter(is_paid=True,payment_date__range=[start,end]).order_by('payment_date')
         dictvalue={
-            'فروردین':0,
-            'اردیبهشت':0,
-            'خرداد':0,
-            'تیر':0,
-            'مرداد':0,
-            'شهریور':0,
-            'مهر':0,
-            'آبان':0,
-            'آذر':0,
-            'دی':0,
-            'بهمن':0,
-            'اسفند':0,
         }
-        for i in c:
-            month=datetime2jalali(i.payment_date).strftime('%B')
-            dictvalue[month]=dictvalue[month]+1
-        dict_value=dict(list(dictvalue.items())[0:jdatetime_now.month])
+        for i in range(1,jdatetime_now.month+1):
+            start=jdatetime.date(jdatetime_now.year,i,1)
+            months=start.strftime("%B")
+            start=start.togregorian()
+            end=jdatetime.date(jdatetime_now.year,i,get_the_last_of_month_day(i,jdatetime_now.isleap())).togregorian()
+            d=Cart.objects.filter(is_paid=True,payment_date__range=[start,end]).order_by('payment_date')
+            dictvalue[months]=len(d)
         context={
-            'lables':dict_value.keys(),
-            'values':dict_value.values(),
+            'lables':dictvalue.keys(),
+            'values':dictvalue.values(),
         }
         return Response(context,status=status.HTTP_200_OK)
 

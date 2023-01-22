@@ -17,9 +17,11 @@
 <section class="content">
     <div class="row">
       <div class="col-md-3">
+
+          {% if perms.bread.add_bread and perms.bread.delete_bread %}     
         <a href="/adminlte/bread/add" class="btn btn-success btn-block "><i class='fa fa-plus ml-5'></i>  اضافه کردن نان </a>
         <a href="javascript:void(0)"  class="btn btn-danger btn-block margin-bottom RD"><i class='fa fa-remove ml-5'></i> حذف کردن نان</a>
-        
+        {% endif %}   
         <div class="box box-solid">
           <div class="box-header with-border">
             <h3 class="box-title">جزئیات</h3>

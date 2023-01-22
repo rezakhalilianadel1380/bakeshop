@@ -17,8 +17,9 @@ from shop.settings import LOGIN_URL
 from django.template.loader import render_to_string
 from sms_configure.sms import send_message
 from django.contrib.auth.decorators import login_required
+import requests
 # Create your views here.
-
+import json
 import string
 import random
 
@@ -255,6 +256,7 @@ class Resend(APIView):
         نانوی شاپ 
         سلام خوش اومدید 
         کد ورود شما  : {code.code}
+        لغو11
         """
         send_message(phone,message)
         return Response(status=status.HTTP_200_OK)
@@ -291,7 +293,8 @@ class Send_The_Code(APIView):
         message=f"""
         نانوی شاپ 
         سلام خوش اومدید 
-        کد ورود شما  : {code.code}
+        کد ورود شما  :{code.code} 
+        لغو11
         """
         send_message(phone,message)
         html=f""" 
@@ -588,3 +591,32 @@ class Assign_Password(APIView):
 
 
 ################################## End forget password  ##############################################
+
+class Reverse_Adress(APIView):
+    def get(self,request):
+        lat=request.GET.get('lat')
+        lon=request.GET.get('lon')
+        url = 'https://api.neshan.org/v5/reverse'
+        query = {
+            'lat': lat,
+            'lng': lon,
+            }
+        headers = {
+            'Api-Key': 'service.4712cfe03c72438bacc61faaa3a00649'
+            }
+
+        r = requests.get(url,params=query, headers=headers)
+        answer = r.json()
+        print(answer)
+        return Response({'formatted_address':answer['formatted_address']},status=status.HTTP_200_OK)
+
+
+# map.ir api
+# url = 'https://map.ir/reverse'
+        # query = {
+        #     'lat': lat,
+        #     'lon': lon,
+        #     }
+        # headers = {
+        #     'x-api-key': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjhjZjgzMjU3ODEwODgwZmI5ZjViOTcxOTBlN2JmYTUxODI1M2NiMjIyNWUzYjk1ZjNhZTg0MzRiZmYwMmZjZmJmODlmMTdlZDVjYzJkZjkxIn0.eyJhdWQiOiIyMDc3NCIsImp0aSI6IjhjZjgzMjU3ODEwODgwZmI5ZjViOTcxOTBlN2JmYTUxODI1M2NiMjIyNWUzYjk1ZjNhZTg0MzRiZmYwMmZjZmJmODlmMTdlZDVjYzJkZjkxIiwiaWF0IjoxNjc0Mzc5OTA2LCJuYmYiOjE2NzQzNzk5MDYsImV4cCI6MTY3Njg4NTUwNiwic3ViIjoiIiwic2NvcGVzIjpbImJhc2ljIl19.KNm3oQ7yImWkU2Tl6j3USf8VaVbgMDAfchhGNy8NiiQutCqCLc2IAAxC_bjPhItQoXZHsURlDz-wWqgeAcW8gXichr3YdvF3Cj0H0ggTaWMfdHpdMzlmATHnFGCz5PwiEypelbKw6-h7ZyLq2th4yUogpjoFy8l2lp_0nHPL7hr1goyidsOLsmDD3wA5DsWRw3h5A89Su53CyQisW63evWsKH7lGAo0WfpUoW7hPxNz0JOw7b2suVzCT6iIGB5_KwFj1vhj-KayuY3EkfUhG9cnO6CLXPhDT0W6U14tMOJ5R2ZcIUCmrwfYx86pFDbtDAguKBMV30NWSb073jEmQoA'
+        #     }
