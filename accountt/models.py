@@ -32,20 +32,31 @@ class Setting(models.Model):
         return f'{self.is_on}'
 
 
-state_choices=(
-    ('khorasan_razavi','خراسان رضوی'),
-)
+class STate(models.Model):
+    state_code=models.CharField(max_length=50)
+    state_title_fa=models.CharField(max_length=50)
+    state_title_en=models.CharField(max_length=50)
 
-city_choices=(
-    ('mashhad','مشهد'),
-)
+    
+    def __str__(self) -> str:
+        return self.state_title_fa
 
 
+class City(models.Model):
+    city_code=models.CharField(max_length=50)
+    state=models.ForeignKey(STate,on_delete=models.CASCADE,null=True)
+    city_title_fa=models.CharField(max_length=50)
+    city_title_en=models.CharField(max_length=50)
+    is_activated=models.BooleanField(default=False)
+
+
+    def __str__(self) -> str:
+        return self.city_title_fa
 
 class Address(models.Model):
     user=models.ForeignKey(User,on_delete=models.CASCADE)
-    state=models.CharField(default='khorasan_razavi',choices=state_choices,max_length=50)
-    city=models.CharField(default='mashhad',choices=city_choices,max_length=50)
+    state=models.ForeignKey(STate,on_delete=models.CASCADE,null=True)
+    city=models.ForeignKey(City,on_delete=models.CASCADE,null=True)
     address=models.TextField()
     pelak=models.IntegerField(null=True)
     vahed=models.IntegerField(null=True)
@@ -57,7 +68,7 @@ class Address(models.Model):
         return self.address
 
     def get_address(self):
-        return f' {self.get_state_display()} , {self.get_city_display()} ,{self.address} , پلاک {self.pelak}   ,  واحد {self.vahed} '
+        return f' {self.state.state_title_fa} , {self.city.city_title_fa} ,{self.address} , پلاک {self.pelak}   ,  واحد {self.vahed} '
 
 
 

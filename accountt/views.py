@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from order.models import Cart
-from .models import Address, Code,Sign_up, User_detail,Authenticated_Code
+from .models import Address, Code,Sign_up, User_detail,Authenticated_Code,STate,City
 from .forms import Register,User_Form,User_Address,Change_Password,Chang_Phone
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout
@@ -607,8 +607,10 @@ class Reverse_Adress(APIView):
 
         r = requests.get(url,params=query, headers=headers)
         answer = r.json()
-        print(answer)
-        return Response({'formatted_address':answer['formatted_address']},status=status.HTTP_200_OK)
+        city=City.objects.filter(is_activated=True,city_title_fa=answer['city'])
+        if city:
+            return Response({'formatted_address':answer['formatted_address'],'city_id':city.first().id,'state_id':city.first().state.id},status=status.HTTP_200_OK)
+        return Response({'text':'متاسفانه شهر مورد نظر در محدوده نیست '},status=status.HTTP_400_BAD_REQUEST)
 
 
 # map.ir api

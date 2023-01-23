@@ -441,14 +441,25 @@
                         var textarea = document.getElementById("id_address");
                         console.log(rsp);
                         textarea.value =rsp.formatted_address;
+                        var option = $('#id_city option[value='+rsp.city_id+']');
+                        option.attr('selected', true);
+                        var option2 = $('#id_state option[value='+rsp.state_id+']');
+                        option2.attr('selected', true);
                     },
                     error: function(xhr, status, error) {
                         var err = JSON.parse(xhr.responseText);
-                        showAndDismissAlert('red',err.phone_error);
+                        showAndDismissAlert('red',err.text);
+                        layergroup.clearLayers();
+                        lat.value="";
+                        lon.value="";
                     }
                 });
             });
-            
+            function validForm()
+                {
+                    document.getElementById("id_city").disabled = false;
+                    document.getElementById("id_state").disabled = false;
+                }      
     </script>
     </body>
 </html>

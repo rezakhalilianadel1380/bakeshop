@@ -88,8 +88,8 @@ class User_Address(forms.ModelForm):
         self.fields['lat'].error_messages = {'required': 'از نقشه بالا موقعیت جغرافیایی خود را وارد کنید '}
         self.fields['lon'].error_messages = {'required':  'از نقشه بالا موقعیت جغرافیایی خود را وارد کنید '}
         self.fields['state'].widget.attrs.update({'class': 'form-control'})
-        self.fields['state'].widget.attrs['readonly'] = True
-        self.fields['city'].widget.attrs['readonly'] = True
+        self.fields['state'].widget.attrs['disabled'] = True
+        self.fields['city'].widget.attrs['disabled'] = True
         self.fields['city'].widget.attrs.update(
             {'class': 'form-control'})
         self.fields['address'].widget.attrs.update({'class': 'form-control addtext'})
