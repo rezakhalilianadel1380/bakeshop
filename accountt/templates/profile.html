@@ -1,6 +1,7 @@
 {% extends 'base_layout/_main_layout.html' %}
 {% load static %}
 {% load render_partial %}
+{% load jalali_tags %}
 {% block title %}
  داشبورد
 {% endblock title %}
@@ -24,7 +25,7 @@
                             </div>
                             <div class="col-md-6"  >
                                 <p>
-                                    <i class="bi bi-calendar-event-fill"></i> تاریخ عضویت: {{request.user.date_joined}}  
+                                    <i class="bi bi-calendar-event-fill"></i> تاریخ عضویت: {{request.user.date_joined|to_jalali:'%Y/%m/%d'}}  
                                 </p>
                                 <p>
                                     <i class="bi bi-envelope-fill"></i> ایمیل : {{request.user.email}}  

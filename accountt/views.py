@@ -226,7 +226,11 @@ def contact_us(request):
 
 
 def about_us(request):
-    return render(request,'about_us.html',{})
+    cities=City.objects.filter(is_activated=True)
+    context={
+        'cities':cities,
+    }
+    return render(request,'about_us.html',context)
 
 
 
