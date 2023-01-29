@@ -74,6 +74,7 @@ class User_Detail_Form(forms.ModelForm):
     class Meta:
         model = User_detail
         exclude = ('user',)
+        
 
        
 

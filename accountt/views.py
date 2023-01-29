@@ -1,15 +1,14 @@
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from order.models import Cart
-from .models import Address, Code,Sign_up, User_detail,Authenticated_Code,STate,City
-from .forms import Register,User_Form,User_Address,Change_Password,Chang_Phone
+from .models import Address, Code,Sign_up, User_detail,Authenticated_Code,City
+from .forms import Register,User_Form,User_Address,Change_Password,Chang_Phone,User_Avatar
 from django.contrib.auth.models import User
 from django.contrib.auth import login,logout
 from rest_framework.views import APIView
 from rest_framework.response import Response
 import re
 import random
-from adminlte.forms import User_Detail_Form
 from rest_framework import status
 from django.utils import timezone
 from django.contrib.auth.models import User
@@ -200,7 +199,7 @@ def edite_account(request):
         user=User_detail.objects.create(user=request.user)
     else:
         user=user.first()
-    form2=User_Detail_Form(request.POST or None,request.FILES or None,instance=user )    
+    form2=User_Avatar(request.POST or None,request.FILES or None,instance=user )    
     if form.is_valid() and form2.is_valid():
         form.save()
         form2.save()

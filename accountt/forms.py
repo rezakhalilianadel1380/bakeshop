@@ -1,12 +1,26 @@
 from wsgiref.validate import validator
 from django import forms
-from .models import Address,Code,Sign_up
+from .models import Address,User_detail
 from django.core.validators import RegexValidator
 from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.password_validation import CommonPasswordValidator,MinimumLengthValidator,NumericPasswordValidator
 from django.contrib.auth.models import User
 
 
+
+class User_Avatar(forms.ModelForm):
+    class Meta:
+        model = User_detail
+        exclude = ('user',)
+        widgets = {
+            'image':forms.FileInput(),
+        }
+    
+    def __init__(self, *args, **kwargs):
+        super(User_Avatar,self).__init__(*args, **kwargs)
+        self.fields['image'].widget.attrs.update({'class': 'ProfileAvatarInput','onchange':'preview_avatar()'})
+        
+       
 
 class Chang_Phone(forms.Form):
     previous_phone_confirm_code = forms.CharField(required=True,widget=forms.TextInput(

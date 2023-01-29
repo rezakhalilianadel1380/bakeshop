@@ -41,7 +41,11 @@
                                 <label for=""> <i class="bi bi-camera-fill"></i> عکس کاربری:</label>
                                 <br>
                                 <br>
-                                {{form2.image}}
+                                <div class="col-md-3 " >
+                                    {{form2.image}} 
+                                    <img src="{% static 'upload_photo.jpg' %}"  id="preview" class="avatar_back" alt="">
+                                </div>
+                               
                             </div>
                             {% for error in form2.image.errors %}
                             <p class='text-danger'>{{error}}</p>

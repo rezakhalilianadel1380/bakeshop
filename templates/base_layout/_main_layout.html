@@ -25,7 +25,17 @@
             }); });
         </script>
         <style>
-           
+            .ProfileAvatarInput {
+            cursor: pointer;
+            opacity: 0 !important;
+            height:250px;
+            width: 300px;
+            position:absolute;
+            }
+            .avatar_back{
+                height:250px;
+            width: 300px;
+              }
             .addtext{
                 resize: none;
             }
@@ -128,9 +138,10 @@
                 }
                 .profile-user-img {
                 margin: 0 auto;
-                width: 100px;
+                width: 150px;
                 padding: 3px;
                 border: 3px solid #d2d6de;
+                height:150px !important ;
                 }
                 
                 .a_group li a{
@@ -459,7 +470,13 @@
                 {
                     document.getElementById("id_city").disabled = false;
                     document.getElementById("id_state").disabled = false;
-                }      
+                }    
+                
+               function preview_avatar()
+               {
+                  perview=document.getElementById("perview");
+                  preview.src=URL.createObjectURL(event.target.files[0]);
+               }
     </script>
     </body>
 </html>
