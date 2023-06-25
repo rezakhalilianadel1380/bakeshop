@@ -189,7 +189,7 @@ def show_orders(request):
            Q(user__last_name__contains=q)
         )
         carts=Cart.objects.filter(lookup).distinct()
-    paginator = Paginator(carts,20) 
+    paginator = Paginator(carts,2) 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     context={

@@ -387,12 +387,7 @@
                                 button=document.getElementById('confirm')
                                 button.classList.remove('disabled');
                             },
-                            error: function(xhr, status, error) {
-                                var err = JSON.parse(xhr.responseText);
-                                showAndDismissAlert('red',err.phone_error);
-                               
-                                
-                            }
+                           
                         });
                      }
                          }
