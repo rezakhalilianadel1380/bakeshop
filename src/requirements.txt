@@ -54,3 +54,4 @@ webencodings
 xhtml2pdf
 xlwt
 zopfli
+psycopg2
