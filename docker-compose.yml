@@ -9,7 +9,7 @@ services:
     ports:
       - 8000:8000
     depends_on:
-      - postgres
+      - postgres_db
   postgres_db:
     image:  postgres:latest
     environment:
