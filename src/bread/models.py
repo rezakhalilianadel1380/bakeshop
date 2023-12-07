@@ -12,8 +12,9 @@ class Bread(models.Model):
     title=models.CharField(max_length=100)
     description=RichTextUploadingField()
     image=models.ImageField(upload_to='bread/images/')
-    price=models.DecimalField(max_digits=10,decimal_places=0)
+    base_price=models.DecimalField(max_digits=10,decimal_places=0)
     users=models.ManyToManyField(User,blank=True)
+    is_attr=models.BooleanField(default=False)
 
     def __str__(self) -> str:
         return self.title
@@ -30,4 +31,14 @@ class Bread(models.Model):
             cart_item=cart.cart_item.filter(bread=self).first()
             sum+=cart_item.quantity
         return sum
+
+
+class Bread_Attr(models.Model):
+    title=models.CharField(max_length=50)
+    price=models.DecimalField(max_digits=10,decimal_places=0)
+    bread=models.ForeignKey(Bread,on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.title
+
 
