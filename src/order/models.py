@@ -9,6 +9,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from bread.models import Bread
 from accountt.models import Address
+from bread.models import Bread_Attr
 # Create your models here.
 
 
@@ -102,6 +103,7 @@ class Cart(models.Model):
 class Cart_Item(models.Model):
     cart= models.ForeignKey(Cart,on_delete=models.CASCADE,related_name='cart_item')
     bread= models.ForeignKey(Bread,on_delete=models.CASCADE)
+    bread_attr=models.ForeignKey(Bread_Attr,on_delete=models.SET_NULL,null=True)
     quantity=models.IntegerField()
 
     def __str__(self) -> str:
