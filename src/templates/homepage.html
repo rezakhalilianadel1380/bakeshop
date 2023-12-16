@@ -7,21 +7,21 @@
 {% block content %}
 <section>
    <div class="container">
-      <div class="row">
+      <div class="row" >
          {% for bread in breads %}
-            <div class="col-12 mt-3 bg-white shadow mb-2 " style="border-radius:20px;">
+            <div class="col-12 mt-3  shadow mb-2 " style="border-radius:20px;background-color:#3f4045">
                         <div class="col-sm-12 col-md-6 col-lg-6 " style="float:right;">
                            <img src="{{bread.image.url}}" height="500px" alt="">
                         </div>
                         <div class="col-sm-12 col-md-6 col-lg-6 mb-3" style="float:left;padding-top:50px;">
-                           <h3 class="font-weight-bold title_bread">نان {{bread.title}}</h3>
+                           <h3 class="font-weight-bold title_bread text-white">نان {{bread.title}}</h3>
                            <hr class="bg-secondary">
                            <p class="text-left"><span style='font-size:20;color:red'>{{bread.price|intcomma:False}} تومان</span></p>
-                           <h4>توضیحات :</h4>
-                           <p> 
+                           <h4 class="text-white">توضیحات :</h4>
+                           <div class="text-white"> 
                               {{bread.description|safe}} 
-                           </p>
-                              <form method='POST' action=''>
+                           </div>
+                           <form method='POST' action='' class="text-white">
                                  تعداد: {{form.quantity}}
                                  <br>
                                  <input type="hidden" value="{{bread.id}}" name="bread_id" id="id_bread_id">
@@ -45,7 +45,7 @@
                                     {%endif%}   
                                  </div>
                                  <button type='sumbit' class="btn btn-primary w-100 " style="float:left">اضافه به سبد خرید</button>
-                              </form>
+                           </form>
                            
                         </div>
             </div>
