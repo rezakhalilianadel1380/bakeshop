@@ -9,14 +9,15 @@
    <div class="container">
       <div class="row" >
          {% for bread in breads %}
-            <div class="col-12 mt-3  shadow mb-2 " style="border-radius:20px;background-color:#3f4045">
+            <div class="col-12 mt-3  shadow mb-2 " style="border-radius:20px;background-color:#212529">
                         <div class="col-sm-12 col-md-6 col-lg-6 " style="float:right;">
                            <img src="{{bread.image.url}}" height="500px" alt="">
                         </div>
                         <div class="col-sm-12 col-md-6 col-lg-6 mb-3" style="float:left;padding-top:50px;">
                            <h3 class="font-weight-bold title_bread text-white">نان {{bread.title}}</h3>
-                           <hr class="bg-secondary">
-                           <p class="text-left"><span style='font-size:20;color:red'>{{bread.price|intcomma:False}} تومان</span></p>
+                           <hr class="bg-white text-white">
+
+                           <p class="text-left"><span style='font-size:20;color:red'>{{bread.base_price|intcomma:False}} تومان</span></p>
                            <h4 class="text-white">توضیحات :</h4>
                            <div class="text-white"> 
                               {{bread.description|safe}} 
@@ -24,15 +25,19 @@
                            <form method='POST' action='' class="text-white">
                                  تعداد: {{form.quantity}}
                                  <br>
+                                 {% if bread.is_attr %}
+                                 hello
+                                 {% endif %}
+                                 <br>
                                  <input type="hidden" value="{{bread.id}}" name="bread_id" id="id_bread_id">
                                  {% csrf_token %}
                                  <span class='ml-4'> ما را در شبکه های اجتماعی دنبال کنید :</span>
                                  <div class='social-icon mb-1 d-flex justify-content-end'>
-                                    <a href='https://telegram.org/' target='_blank'><i class='bi bi-telegram'></i> </a>
-                                    <a href='https://www.instagram.com/' target='_blank'> <i class='bi bi-instagram text-dark'></i></a>
+                                    <a href='https://telegram.org/' target='_blank'><i class='bi bi-telegram '></i> </a>
+                                    <a href='https://www.instagram.com/' target='_blank'> <i class='bi bi-instagram text-white'></i></a>
                                     {% comment %} <a> <i class='bi bi-heart-fill text-danger'></i></a> {% endcomment %}
                                     {% if request.user.is_authenticated %}
-                                        <a href='javascript:void(0)' onclick='heart_icon_func(this,{{bread.id}})' id='bread_{{bread.id}}'><i class='bi bi-heart text-dark'></i></a>
+                                        <a href='javascript:void(0)' onclick='heart_icon_func(this,{{bread.id}})' id='bread_{{bread.id}}'><i class='bi bi-heart text-white'></i></a>
                                           {% for user in bread.favorite %}
                                                 {% if user.id == request.user.id %}
                                                 <script>

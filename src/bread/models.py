@@ -18,6 +18,13 @@ class Bread(models.Model):
 
     def __str__(self) -> str:
         return self.title
+    
+    def get_price(self):
+        if self.is_attr:
+            bread_attr=self.bread_attr.all().first()
+            return self.base_price + bread_attr.price
+        return self.base_price
+
 
     def favorite(self):
         users=self.users.all()
@@ -36,7 +43,7 @@ class Bread(models.Model):
 class Bread_Attr(models.Model):
     title=models.CharField(max_length=50)
     price=models.DecimalField(max_digits=10,decimal_places=0)
-    bread=models.ForeignKey(Bread,on_delete=models.CASCADE)
+    bread=models.ForeignKey(Bread,on_delete=models.CASCADE,related_name="bread_attr")
 
     def __str__(self) -> str:
         return self.title

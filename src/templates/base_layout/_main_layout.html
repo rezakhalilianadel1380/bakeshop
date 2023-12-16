@@ -26,9 +26,7 @@
         </script>
         <style>
             body{
-              
-                background-color:#02111b 
-             
+                background-color:#02111b !important;
             }
             .ProfileAvatarInput {
             cursor: pointer;
@@ -187,7 +185,7 @@
             {% comment %} this is a header and navbar {% endcomment %}
             <div class="loader"></div>
             <header>
-                <div class="index-top position-relative w-100 bg-white">
+                <div class="index-top position-relative w-100 bg-dark">
                 <div class="main-menu">
                     <div class="container">
                         <div class="row">
@@ -205,13 +203,13 @@
                                     id="navbarSupportedContent">
                                     <ul class="navbar-nav mb-2 mb-lg-0 " >
                                             <li class="nav-item">
-                                            <a class="nav-link {% if request.path == '/' %}active2 {% endif %}"  href="{% url 'homepage' %}">خانه</a>
+                                            <a class="nav-link  text-white {% if request.path == '/' %}active2 {% endif %}"  href="{% url 'homepage' %}">خانه</a>
                                             </li>
                                             <li class="nav-item">
-                                            <a class="nav-link {% if request.path == '/contact_us' %}active2 {% endif %}" href="{% url 'contact-us' %}">تماس با ما </a>
+                                            <a class="nav-link text-white {% if request.path == '/contact_us' %}active2 {% endif %}" href="{% url 'contact-us' %}">تماس با ما </a>
                                             </li>
                                             <li class="nav-item">
-                                            <a class="nav-link {% if request.path == '/about_us' %}active2 {% endif %}" href="{% url 'about-us' %}">درباره ما </a>
+                                            <a class="nav-link  text-white{% if request.path == '/about_us' %}active2 {% endif %}" href="{% url 'about-us' %}">درباره ما </a>
                                             </li>
                                             
                                         </ul>
@@ -219,26 +217,26 @@
                             </nav>
                             </div>
                             <div class="col-md-3 col-4 text-start">
-                            <div class="top-account d-flex justify-content-end">
+                            <div class="top-account d-flex justify-content-end ">
                                
                                 {% if request.user.is_authenticated  %}
-                                    {% comment %} <a href="{{login}}" class="text-dark"><i class="bi bi-person"></i><span style='font-size:15px'>سلام کاربر گرامی</span></a>
-                                    <a href="/admin/logout" class="text-dark"><i class="bi bi-box-arrow-left"></i><span style='font-size:15px'>  </span></a> {% endcomment %}  
-                                    <div class="dropdown">
-                                        <a class=" dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    {% comment %} <a href="{{login}}" class="text-white"><i class="bi bi-person"></i><span style='font-size:15px'>سلام کاربر گرامی</span></a>
+                                    <a href="/admin/logout" class="text-white"><i class="bi bi-box-arrow-left"></i><span style='font-size:15px'>  </span></a> {% endcomment %}  
+                                    <div class="dropdown ">
+                                        <a class=" dropdown-toggle text-white" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="bi bi-person"></i> {{request.user.username}}
                                         </a>
                                       
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                          <li><a class="dropdown-item" href="/profile/DashBoard"><i class="bi bi-person"></i> پروفایل </a></li>
-                                          <li><a class="dropdown-item" href="{{log_out}}"><i class="bi bi-box-arrow-left"></i>   خروج  </a></li>
+                                        <ul class="dropdown-menu bg-dark" aria-labelledby="dropdownMenuLink">
+                                          <li><a class="dropdown-item text-white" href="/profile/DashBoard"><i class="bi bi-person"></i> پروفایل </a></li>
+                                          <li><a class="dropdown-item text-white" href="{{log_out}}"><i class="bi bi-box-arrow-left"></i>   خروج  </a></li>
                                         </ul>
                                     </div>
                                     {% else %}
-                                    <a href="{{login}}" class="text-dark"><i class="bi bi-box-arrow-in-right"></i><span style='font-size:15px'>ورود</span></a>
+                                    <a href="{{login}}" class="text-white"><i class="bi bi-box-arrow-in-right"></i><span style='font-size:15px'>ورود</span></a>
                                 {% endif %}
-                                <a class='mt-1 text-dark' href='/cart' style='font-size:10px ;padding-right:8px'><i class="bi bi-cart" style='font-size:20px ;'></i> </a>
-                               
+                                <a class='mt-1 text-white' href='/cart' style='font-size:10px ;padding-right:8px'><i class="bi bi-cart" style='font-size:20px ;'></i> </a>
+
                             </div>
                             </div>
                         </div>

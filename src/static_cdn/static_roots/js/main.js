@@ -17,7 +17,7 @@ function heart_icon_func(el,bread_id){
     var heart_icon=el.firstElementChild;
     if (heart_icon.classList.contains('bi-heart')) {
         heart_icon.classList.remove('bi-heart');
-        heart_icon.classList.remove('text-dark');
+        heart_icon.classList.remove('text-white');
         heart_icon.classList.add('bi-heart-fill');
         heart_icon.classList.add('text-danger');
         $.ajax({
