@@ -9,7 +9,7 @@
    <div class="container">
       <div class="row" >
          {% for bread in breads %}
-            <div class="col-12 mt-3  shadow mb-2 " style="border-radius:20px;background-color:#212529">
+            <div class="col-12 mt-3  shadow mb-4 " style="border-radius:20px;background-color:#212529">
                         <div class="col-sm-12 col-md-6 col-lg-6 " style="float:right;">
                            <img src="{{bread.image.url}}" height="500px" alt="">
                         </div>
@@ -26,19 +26,9 @@
                                  تعداد: {{form.quantity}}
                                  <br>
                                  {% if bread.is_attr %}
-                                 <div class="dropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
-                                      ویژگی ها 
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="dropdownMenuButton2">
-                                      <li><a class="dropdown-item active" href="#">Action</a></li>
-                                      <li><a class="dropdown-item" href="#">Another action</a></li>
-                                      <li><a class="dropdown-item" href="#">Something else here</a></li>
-                                      <li><hr class="dropdown-divider"></li>
-                                      <li><a class="dropdown-item" href="#">Separated link</a></li>
-                                    </ul>
-                                  </div>
+                                    {{form2.title}}
                                  {% endif %}
+                                 <br>
                                  <br>
                                  <input type="hidden" value="{{bread.id}}" name="bread_id" id="id_bread_id">
                                  {% csrf_token %}
@@ -65,6 +55,7 @@
                            
                         </div>
             </div>
+            
          {% endfor %}  
       </div>
    </div>

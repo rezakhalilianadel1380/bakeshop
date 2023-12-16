@@ -89,8 +89,7 @@ class Bread_Form(forms.ModelForm):
         super(Bread_Form,self).__init__(*args, **kwargs)
         self.fields['title'].widget.attrs.update({'class': 'form-control'})
         self.fields['description'].widget.attrs.update({'class': 'form-control'})
-        self.fields['price'].widget.attrs.update({'class': 'form-control'})
-        self.fields['price'].widget.attrs.update({'class': 'form-control'})
+        self.fields['base_price'].widget.attrs.update({'class': 'form-control'})
 
 class User_Form(forms.ModelForm):
     class Meta:

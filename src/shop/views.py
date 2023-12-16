@@ -4,7 +4,7 @@ from order.forms import Cart_Form
 from django.contrib import messages
 from order.models import Cart,Cart_Item
 from decorators.decorator import check_of_or_on
-
+from bread.forms import Bread_Form
 
 
 
@@ -13,7 +13,8 @@ from decorators.decorator import check_of_or_on
 def homepage(request):
     breads=Bread.objects.all()
     form=Cart_Form(request.POST or None)
-    if form.is_valid():
+    form2=Bread_Form(request.POST or None)
+    if form.is_valid() and  form2.is_valid():
         if not request.user.is_authenticated:
             return redirect('/login')
         quantity=form.cleaned_data.get('quantity')
@@ -40,5 +41,6 @@ def homepage(request):
     context={
         'breads':breads,
         'form':form,
+        'form2':form2,
         }
     return render(request,'homepage.html',context)
