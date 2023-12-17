@@ -31,7 +31,9 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
+
+DJANGO_APPS=[
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -39,15 +41,22 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+]
+
+OTHER_APPS=[
     'django_render_partial',
     'ckeditor',
     'ckeditor_uploader',
+    'jalali_date',
+]
+
+MY_APPS=[
     'bread',
     'accountt',
     'order',
     'adminlte',
-    'jalali_date',
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
