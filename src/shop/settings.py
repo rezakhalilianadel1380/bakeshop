@@ -31,7 +31,6 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
 
 DJANGO_APPS=[
     'django.contrib.admin',
@@ -57,6 +56,7 @@ MY_APPS=[
     'adminlte',
 ]
 
+INSTALLED_APPS = DJANGO_APPS + OTHER_APPS + MY_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
