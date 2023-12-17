@@ -1,4 +1,5 @@
 {% extends 'base_layout/_main_layout.html' %}
+{% load render_partial %}
 {% load static %}
 {% load humanize %}
 {% block title %}
@@ -26,7 +27,7 @@
                                  تعداد: {{form.quantity}}
                                  <br>
                                  {% if bread.is_attr %}
-                                    {{form2.title}}
+                                        {% render_partial 'shop.views.partial_breadform' bread=bread %}
                                  {% endif %}
                                  <br>
                                  <br>

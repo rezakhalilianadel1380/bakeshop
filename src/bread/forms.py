@@ -3,7 +3,7 @@ from .models import Bread
 
 
 class Bread_Form(forms.Form):
-    pass
+    bread_attr=forms.ChoiceField(choices=[],required=False)
        
 
 

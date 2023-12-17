@@ -7,7 +7,15 @@ from decorators.decorator import check_of_or_on
 from bread.forms import Bread_Form
 
 
-
+def partial_breadform(request,bread):
+    form=Bread_Form()
+    bread_attr=bread.bread_attr.all()
+    form.fields['bread_attr'].choices=[ (i.id,i.title) for i in bread_attr]
+    form.fields['bread_attr'].choices.insert(0, (''," "))
+    context={
+        'form':form,
+    }
+    return render(request,'breadattr.html',context)
 
 
 
@@ -46,3 +54,5 @@ def homepage(request):
         'form2':form2,
         }
     return render(request,'homepage.html',context)
+
+
