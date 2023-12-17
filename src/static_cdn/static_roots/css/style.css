@@ -17,7 +17,8 @@ html {
 	font-family:'iran';
 	direction: rtl;
 	font-size:15px;
-	background-color: #faf4f4;
+	background-color:#02111b !important;
+	color:white !important;
 }
 
 img {

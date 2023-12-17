@@ -10,8 +10,8 @@ from bread.forms import Bread_Form
 def partial_breadform(request,bread):
     form=Bread_Form()
     bread_attr=bread.bread_attr.all()
-    form.fields['bread_attr'].choices=[ (i.id,i.title) for i in bread_attr]
-    form.fields['bread_attr'].choices.insert(0, (''," "))
+    form.fields['bread_attr'].choices=[ (i.id,f"{i.title} - {i.price}+") for i in bread_attr]
+    form.fields['bread_attr'].choices.insert(0, (0,"ساده"))
     context={
         'form':form,
     }
