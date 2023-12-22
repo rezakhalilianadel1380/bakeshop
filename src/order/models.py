@@ -67,8 +67,7 @@ class Cart(models.Model):
         sum=0
         cart_item=self.cart_item.all()
         for i in cart_item:
-            if cart_item.bread_attr is None:
-                sum+=i.bread.base_price*i.quantity
+            sum+=i.price*i.quantity
         return sum
 
     def calculate_discount(self) -> tuple:
@@ -110,3 +109,7 @@ class Cart_Item(models.Model):
 
     def __str__(self) -> str:
         return self.cart.user.username
+    
+
+    def calculate_price(self):
+        return self.price*self.quantity

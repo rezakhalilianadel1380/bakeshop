@@ -312,7 +312,7 @@ class Send_The_Code(APIView):
                             </div>
                              <span class="text-danger" id="error" style="display:none;"></span><br>
                         
-                            <p id="link">  ارسال مجدد کد در <span id='time'> (04:00) </span></p>  
+                            <p id="link" class='text-info'>  ارسال مجدد کد در <span id='time'> (04:00) </span></p>  
                            
                         </div>
                         <div id="register-link" class="text-right">
@@ -471,7 +471,7 @@ class Check_Phone_Sign_Up(APIView):
                             </div>
                              <span class="text-danger" id="error" style="display:none;"></span><br>
                         
-                            <p id="link">  ارسال مجدد کد در <span id='time'> (04:00) </span></p>  
+                            <p id="link" class='text-info'>  ارسال مجدد کد در <span id='time'> (04:00) </span></p>  
                            
             </div>
         """   
@@ -527,7 +527,7 @@ class Check_Phone_forget_password(APIView):
                             </div>
                              <span class="text-danger" id="error" style="display:none;"></span><br>
                         
-                            <p id="link text-info" >  ارسال مجدد کد در <span id='time'> (04:00) </span></p>  
+                            <p id="link"  class='text-info'>  ارسال مجدد کد در <span id='time'> (04:00) </span></p>  
                     </div>
             """ 
             return Response({'phone':phone,'password':html},status=status.HTTP_200_OK)

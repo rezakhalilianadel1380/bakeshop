@@ -561,7 +561,7 @@ def generate_pdf(buffer,object,path):
     ]
     
     for i in object.cart_item.all():
-        data.append([intcomma(i.bread.price*i.quantity,False),i.quantity,get_farsi_bulleted_text2(i.bread.title)])
+        data.append([intcomma(i.price*i.quantity,False),i.quantity,get_farsi_bulleted_text2(i.bread.title)])
 
     column_number=len(data)-1
     height_size=75+(column_number*20)
@@ -610,7 +610,7 @@ def generate_pdf(buffer,object,path):
     doc.build(Story)
 
 def report_pdf(request,id):
-    path=os.path.join(BASE_DIR,'static_cdn\\static_roots\\font','IRANYekanLight.ttf')
+    path=os.path.join(BASE_DIR,'static_cdn/static_roots/font','IRANYekanLight.ttf')
     buffer = io.BytesIO()
     order=Cart.objects.filter(id=id).first()
     generate_pdf(buffer,order,path)

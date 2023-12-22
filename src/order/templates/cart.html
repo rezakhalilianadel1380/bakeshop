@@ -9,11 +9,11 @@
 {% if cart.is_empty %}
 
 
-<div class="container">
-    <div class="row d-flex justify-content-between">
-        <div class="col-md-9 col-sm-12 bg-white shadow mt-3 " style="border-radius:15px">
+<div class="container ">
+    <div class="row d-flex justify-content-between ">
+        <div class="col-md-9 col-sm-12 bg-dark text-white shadow mt-3 " style="border-radius:15px">
             <div class="title">
-                <div class="row">
+                <div class="r">
                     <div class="col pt-2"><p style='font-size:20px'>سبد خرید</p></div>
                 </div>
             </div> 
@@ -23,7 +23,15 @@
                                     <div class="col-2"><img class="img-fluid" src="{{cart_item.bread.image.url}}"></div>
                                     <div class="col">
                                         <div class="row text-muted">نان</div>
-                                        <div class="row">{{cart_item.bread.title}}</div>
+                                        <div class="row">
+                                            {{cart_item.bread.title}}
+                                            {% if cart_item.bread.is_attr %}
+                                                {% if cart_item.bread_attr %}
+                                                    ({{cart_item.bread_attr.title}})
+                                                {% else %}
+                                                (ساده)
+                                                {% endif %}
+                                            {% endif %} </div>
                                     </div>
                                     <div class="col col-sm-6">
                                         <div class="number-input d-flex justify-content-center">
@@ -32,14 +40,14 @@
                                             <button onclick="raise_quantity({{cart_item.id}},this)" class="plus bg-success"><i class="bi bi-plus"></i></button>
                                         </div>
                                     </div>
-                                    <div class="col d-flex justify-content-center">{{cart_item.bread.base_price|intcomma:False}} تومان</div>
+                                    <div class="col d-flex justify-content-center">{{cart_item.price|intcomma:False}} تومان</div>
                                     <div class="col d-flex justify-content-end"><span class="close"><a onclick='det_item({{cart_item.id}})' href="javascript:void(0)"> &#10005;</a></span></div>
                                 </div>
                         </div>
             {% endfor %}
         </div>
-       <div class='col-md-3 col-sm-12' >
-            <div class="content  bg-white shadow mt-3" style="border-radius:10px;padding:8px;">
+       <div class='col-md-3 col-sm-12 ' >
+            <div class="content  bg-dark shadow mt-3" style="border-radius:10px;padding:8px;">
                <div class="col mt-3 d-flex justify-content-between">
                     <span style='font-size:14px'>قیمت کالاها :</span>
                     <span style='font-size:14px' id='product_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>

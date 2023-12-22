@@ -35,6 +35,7 @@ def homepage(request):
         quantity=form.cleaned_data.get('quantity')
         bread_id=form.cleaned_data.get('bread_id')
         bread_attr=form2.cleaned_data.get('bread_attr')
+        print(bread_attr)
         cart=Cart.objects.filter(user=request.user,is_paid=False)
         if cart:
             cart_item=Cart_Item.objects.filter(cart=cart.first(),bread_id=bread_id)
@@ -44,10 +45,11 @@ def homepage(request):
             else:
                 cart_item=Cart_Item.objects.create(cart=cart.first(),bread_id=bread_id,quantity=quantity)
                 cart_item.price=cart_item.bread.base_price
-                if bread_attr !='0' and bread_attr is not None:
-                    bread_attr_obj=Bread_Attr.objects.filter(id=int(bread_attr)).first()
-                    cart_item.bread_attr=bread_attr_obj
-                    cart_item.price=cart_item.bread.base_price+bread_attr_obj.price
+                if bread_attr:
+                    if bread_attr !='0':
+                        bread_attr_obj=Bread_Attr.objects.filter(id=bread_attr).first()
+                        cart_item.bread_attr=bread_attr_obj
+                        cart_item.price=cart_item.bread.base_price+bread_attr_obj.price
                 cart_item.save()
                 messages.success(request,'با موفقیت به سبد خرید شما اضافه شد ')
                 return redirect('/')
