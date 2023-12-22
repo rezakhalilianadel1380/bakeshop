@@ -44,6 +44,7 @@ class Bread_Attr(models.Model):
     title=models.CharField(max_length=50)
     price=models.DecimalField(max_digits=10,decimal_places=0)
     bread=models.ForeignKey(Bread,on_delete=models.CASCADE,related_name="bread_attr")
+    
 
     def __str__(self) -> str:
         return self.title

@@ -67,14 +67,15 @@ class Cart(models.Model):
         sum=0
         cart_item=self.cart_item.all()
         for i in cart_item:
-            sum+=i.bread.price*i.quantity
+            if cart_item.bread_attr is None:
+                sum+=i.bread.base_price*i.quantity
         return sum
 
     def calculate_discount(self) -> tuple:
-        """ reuturn  final price and discount price return tuple """
+        """ reuturn  final base_price and discount price return tuple """
         discount=self.discount
         total_price=int(self.cart_total_price())
-        final_price=0
+        final_price=0 
         discount_price=0
         if total_price<= discount.max_price_dicount:
             discount_price=int(total_price*(discount.dicount_percent/100))
@@ -105,6 +106,7 @@ class Cart_Item(models.Model):
     bread= models.ForeignKey(Bread,on_delete=models.CASCADE)
     bread_attr=models.ForeignKey(Bread_Attr,on_delete=models.SET_NULL,null=True)
     quantity=models.IntegerField()
+    price=models.DecimalField(max_digits=10,decimal_places=0,default=0)
 
     def __str__(self) -> str:
         return self.cart.user.username
