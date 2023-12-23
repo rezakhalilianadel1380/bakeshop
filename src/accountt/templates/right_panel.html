@@ -1,7 +1,7 @@
 {% load static %}
 <div class='col-md-3'>
-    <div class="box box-primary shadow" style="border-radius:10px;">
-        <div class="box-body box-profile">
+    <div class="box box-primary shadow " style="border-radius:10px;">
+        <div class="box-body bg-dark box-profile" >
                 <img class="profile-user-img img-responsive img-circle" src="{{request.user.user_detail.get_image}}" alt="User profile picture">
                 <h4 class="profile-username text-center">{{request.user.get_full_name}}</h4>
                 <br>

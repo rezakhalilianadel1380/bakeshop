@@ -9,9 +9,9 @@
 <div class="container">
     <div class="row d-flex justify-content-between">
         <div class="col-md-9  mt-3 " >
-            <div class="title bg-white shadow p-2" style="border-radius:15px">
+            <div class="title bg-dark shadow p-2" style="border-radius:15px">
                 <div class="row">
-                    <div class="col-12 pt-2"><p style='font-size:20px'>نوع ارسال </p>
+                    <div class="col-12 pt-2"><p style='font-size:20px'>نوع دریافت </p>
                         <hr>
                     </div>
                     <br>
@@ -28,7 +28,32 @@
                     
                 </div>
             </div> 
-            <div class="title bg-white shadow mt-3 p-2" style="border-radius:15px">
+            <div class="title bg-dark shadow mt-3 p-2" style="border-radius:15px">
+                <div class="row">
+                    <div class="col-12 pt-2">
+                        <p style='font-size:20px'>انتخاب نایلون</p><hr>
+                    </div><br>
+                    <div class="col-12 pt-2">
+                        <div class="row">
+                            <div class="col-md-6 float-left">
+                                <img  src="{% static "paperbag.png" %}" height="150px" alt="">
+                                <p  style='font-size:15px;margin-right:30px'>کیسه پلاستیکی</p>
+                            </div>
+                            <div class="col-md-6 float-right">
+                                <img src="{% static "plasticbag.png" %}" height="150px" alt="">
+                            <p style='font-size:15px;margin-right:30px'> کیسه کاغذی </p>
+                            </div>
+                            <select name="bagselectbos" class="form-control" id="">
+                                <option value="1">کاغذی </option>
+                                <option value="2">پلاستیکی</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                </div>
+                 
+            </div> 
+            <div class="title bg-dark shadow mt-3 p-2" style="border-radius:15px">
                 <div class="row">
                     <div class="col-12 pt-2">
                         <p style='font-size:20px'>کد تخفیف</p><hr>
@@ -42,10 +67,10 @@
                 </div>
                  
             </div> 
-
+            
         </div>
        <div class='col-md-3' >
-            <div class="content  bg-white shadow mt-3" style="border-radius:10px;padding:8px;">
+            <div class="content  bg-dark shadow mt-3" style="border-radius:10px;padding:8px;">
                 <div class="col mt-3 d-flex justify-content-between">
                     <span style='font-size:14px'> جمع سبد خرید:</span>
                     <span style='font-size:14px' id='cart_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>

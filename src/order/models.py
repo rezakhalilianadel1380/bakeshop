@@ -40,6 +40,8 @@ class Cart(models.Model):
     status=models.CharField(max_length=1,choices=status_choices,blank=True,default='1')
     address=models.ForeignKey(Address,on_delete=models.SET_NULL,null=True,blank=True)
     discount=models.ForeignKey(Discount,on_delete=models.SET_NULL,null=True,blank=True)
+    bag=models.CharField(max_length=1,choices=(('1','کاغذی'),('2','پلاستیکی')),default='1')
+
     class Meta:
         permissions = [
             ("can_view_cart", "میتونه سفارش ها رو مشاهده کنه"),
@@ -113,3 +115,6 @@ class Cart_Item(models.Model):
 
     def calculate_price(self):
         return self.price*self.quantity
+
+
+
