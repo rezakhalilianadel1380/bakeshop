@@ -48,7 +48,7 @@ class Change_Phone_Confirm_code(APIView):
         تعویض شماره همراه
         کد شما  : {code.code}
         """
-        send_message(request.user.username,message)
+        send_message(request.user.username,code.code)
         return Response(status=status.HTTP_200_OK)
 
 class Change_New_Phone_Confirm_code(APIView):
@@ -72,7 +72,7 @@ class Change_New_Phone_Confirm_code(APIView):
         کد ثبت شماره همراه جدید
         کد  شما  : {code.code}
         """
-        send_message(phone,message)
+        send_message(phone,code.code)
         return Response(status=status.HTTP_200_OK)
 
 def change_phone(request):
@@ -261,7 +261,7 @@ class Resend(APIView):
         کد ورود شما  : {code.code}
         لغو11
         """
-        send_message(phone,message)
+        send_message(phone,code.code)
         return Response(status=status.HTTP_200_OK)
         
 
@@ -299,7 +299,7 @@ class Send_The_Code(APIView):
         کد ورود شما  :{code.code} 
         لغو11
         """
-        send_message(phone,message)
+        send_message(phone,code.code)
         html=f""" 
              <div class="form-inline" id="login-form"  >
                             <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>
@@ -392,7 +392,7 @@ class Resend_Code(APIView):
         سلام خوش اومدید 
         کد ثبت نام شما  : {code.code}
         """
-        send_message(phone,message)
+        send_message(phone,code.code)
         return Response(status=status.HTTP_200_OK)
 
 class Register_User(APIView):
@@ -458,7 +458,7 @@ class Check_Phone_Sign_Up(APIView):
         سلام خوش اومدید 
         کد ثبت نام شما  : {code.code}
         """
-        send_message(phone,message)
+        send_message(phone,code.code)
         html=f""" 
              <div class="form-inline" id="login-form"  >
                             <p class="text-right text-info">رمز پیامکی  به شماره تلفن {phone} ارسال شد  </p>
