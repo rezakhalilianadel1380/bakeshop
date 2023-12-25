@@ -4,6 +4,19 @@ from accountt.models import User_detail,Setting
 from django.contrib.auth.models import User
 from order.models import Cart
 from order.models import Discount
+from bread.models import Bread_Attr
+
+
+class Bread_Attr_Form(forms.ModelForm):
+    class Meta:
+        model = Bread_Attr
+        fields="__all__"
+
+    def __init__(self, *args, **kwargs):
+        super(Discount_Form,self).__init__(*args, **kwargs)
+        self.fields['id'].widget.attrs.update({'display': 'none'})
+        
+
 
 class Discount_Form(forms.ModelForm):
     class Meta:

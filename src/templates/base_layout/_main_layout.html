@@ -357,9 +357,7 @@
                         }
                     });
                 }
-                function check_order(){
-                    alert('beep')
-                }
+                
                 function change_phone_code(){
                       $.ajax({
                             url:'/api/v1/change_phone/send_code/old',
@@ -474,7 +472,44 @@
                   perview=document.getElementById("perview");
                   preview.src=URL.createObjectURL(event.target.files[0]);
                }
-             
+               {% comment %} function addbreadattr(event){
+                rm_item=event.parentElement.parentElement;
+                rm_item.remove();
+                total_form = document.getElementById('id_form-TOTAL_FORMS');
+                initial_form = document.getElementById('form-INITIAL_FORMS');
+                total_len=total_len-1;
+                total_form.value= total_len.toString();
+                questionbox=document.getElementById('questionbox');
+                for (let i = 0; i < questionbox.childElementCount ; i++) {
+                    const childNode = questionbox.children[i];
+                    inputs= childNode.getElementsByTagName('input');
+                    for (let j = 0; j < inputs.length ; j++) {
+                        const regex = new RegExp('-\\d+-', 'g');
+                        text=`-${i}-`;
+                        inputs[j].id=inputs[j].id.replace(regex,text)
+                        inputs[j].name=inputs[j].id.replace(regex,text)
+            
+                    }
+            
+                }
+            
+            } {% endcomment %}
+            {% comment %} const add_btn = document.getElementById('add');
+            add_btn.addEventListener('click', function(event) {
+                event.preventDefault(); 
+                const parentdiv = document.getElementById('questionbox');
+                const total_form = document.getElementById('id_form-TOTAL_FORMS');
+                const pattern_div = document.getElementById('pattern');
+                const clonedDiv = pattern_div.cloneNode(true);
+                const regex = new RegExp('__prefix__','g');
+                total_len=parseInt(total_form.value);
+                clonedDiv.innerHTML= clonedDiv.innerHTML.replace(regex,total_len)
+                total_len=total_len+1;
+                clonedDiv.removeAttribute('style');
+                clonedDiv.removeAttribute('id');
+                total_form.value= total_len.toString();
+                parentdiv.append(clonedDiv);
+            }); {% endcomment %}
     </script>
     </body>
 </html>

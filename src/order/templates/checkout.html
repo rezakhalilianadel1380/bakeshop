@@ -7,6 +7,8 @@
 
 {% block content %}
 <div class="container">
+    <form method='post'>
+        {% csrf_token %}
     <div class="row d-flex justify-content-between">
         <div class="col-md-9  mt-3 " >
             <div class="title bg-dark shadow p-2" style="border-radius:15px">
@@ -83,9 +85,10 @@
                     <span style='font-size:14px'>مبلغ نهایی : </span>
                     <span style='font-size:14px' id='final_price'>{{cart.cart_total_price|intcomma:False}} تومان</span>
                 </div>
-                <button onclick="check_order()" class="btn btn-danger w-100" style="margin-top:50%;">پرداخت</button>
+                <button type='submit' class="btn btn-danger w-100" style="margin-top:50%;">پرداخت</button>
             </div>
        </div>
     </div>
+</form>
 </div>
 {% endblock content %}

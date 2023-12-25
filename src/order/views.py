@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from .models import Cart,Discount
 from rest_framework.views import APIView
 from rest_framework import status
+from django.utils import timezone
 from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
 from .models import Cart_Item
@@ -37,6 +38,16 @@ def checkout(request):
         return redirect('/cart')
     if not cart.is_empty():
         return redirect('/cart')
+    
+    if request.method=='POST':
+        bag=request.POST.get('bagselectbos')
+        cart.bag=bag
+        cart.is_paid=True
+        cart.payment_date=timezone.now()
+        cart.status='2'
+        cart.save()
+        messages.success(request,'باموفقیت پراخت شد ')
+        return redirect('/')
     context={
         'cart':cart
     }   

@@ -26,6 +26,8 @@ from rest_framework import permissions
 from sms_configure.sms import send_message
 from django.http import Http404,HttpResponse
 from django.template.loader import get_template
+from bread.models import Bread_Attr
+from .forms import Bread_Attr_Form
 from xhtml2pdf import pisa
 import jdatetime
 
@@ -52,6 +54,7 @@ from reportlab.lib import colors
 from shop.settings import BASE_DIR
 import io
 from django.http import FileResponse
+from django.forms import formset_factory,modelformset_factory
 from jalali_date import datetime2jalali, date2jalali
 import xlwt
 # Create your views here.
@@ -307,6 +310,8 @@ def edite_bread(request,id):
 
 @user_passes_test(lambda u: u.has_perm('bread.add_bread'),login_url='/adminlte/login')
 def add_bread(request):
+    breadattribute_formset=modelformset_factory(Bread_Attr,form=Bread_Attr_Form,extra=0,can_delete=True)
+    formset=breadattribute_formset(queryset=Bread_Attr.objects.none())
     form=Bread_Form(request.POST or None ,request.FILES or None )
     if form.is_valid():
         form.save()
@@ -314,6 +319,7 @@ def add_bread(request):
         return redirect('/adminlte/bread')
     context={
         'form':form,
+        'formset':formset,
     }
     return render(request,'bread_add.html',context)
 
