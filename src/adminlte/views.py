@@ -323,7 +323,6 @@ def add_bread(request):
     }
     return render(request,'bread_add.html',context)
 
-
 @user_passes_test(lambda u: u.has_perm('bread.view_bread'),login_url='/adminlte/login')
 def show_bread_list(request):
     breads=Bread.objects.all()
