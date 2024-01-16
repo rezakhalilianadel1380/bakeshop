@@ -5,6 +5,7 @@ from django.contrib import messages
 from order.models import Cart,Cart_Item
 from decorators.decorator import check_of_or_on
 from bread.forms import Bread_Form
+from django.contrib.auth.hashers import make_password, check_password
 
 
 def partial_breadform(request,bread):
