@@ -14,5 +14,6 @@ def send_message(phone_number,message):
         'Mobile':phone_number,
         }
     r = requests.get('https://amootsms.com/webservice2.asmx/SendWithPattern', params=payload)
+    return r.status_code
     
 
